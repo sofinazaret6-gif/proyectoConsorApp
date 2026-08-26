@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../ConsorApp.Datos/ConsorApp.Datos.csproj" />
+  <Project Path="../ConsorApp.Entidades/ConsorApp.Entidades.csproj" />
+  <Project Path="../ConsorApp.Negocio/ConsorApp.Negocio.csproj" />
+  <Project Path="consorApp.csproj" />
+</Solution>
