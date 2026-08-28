@@ -1,10 +1,26 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\sofia\\source\\repos\\consorApp\\",
+  "WorkspaceRootPath": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A41B516A-8672-4F58-B800-BD72AFC8F5F9}|consorApp.csproj|c:\\users\\sofia\\source\\repos\\consorapp\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A41B516A-8672-4F58-B800-BD72AFC8F5F9}|consorApp.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|c:\\users\\sofia\\onedrive\\escritorio\\proyectoconsorapp\\consorapp\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|c:\\users\\sofia\\onedrive\\escritorio\\proyectoconsorapp\\consorapp\\views\\loginview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|solutionrelative:views\\loginview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|c:\\users\\sofia\\onedrive\\escritorio\\proyectoconsorapp\\consorapp\\views\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|solutionrelative:views\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|c:\\users\\sofia\\onedrive\\escritorio\\proyectoconsorapp\\consorapp\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|c:\\users\\sofia\\onedrive\\escritorio\\proyectoconsorapp\\consorapp\\consorapp.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|solutionrelative:consorapp.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,19 +30,73 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "LoginView.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\Views\\LoginView.xaml.cs",
+              "RelativeDocumentMoniker": "Views\\LoginView.xaml.cs",
+              "ToolTip": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\Views\\LoginView.xaml.cs",
+              "RelativeToolTip": "Views\\LoginView.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-28T04:34:23.638Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\sofia\\source\\repos\\consorApp\\MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\sofia\\source\\repos\\consorApp\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAYwCAAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-20T01:31:06.22Z",
+              "WhenOpened": "2026-08-28T04:10:04.583Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LoginView.xaml",
+              "DocumentMoniker": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\Views\\LoginView.xaml",
+              "RelativeDocumentMoniker": "Views\\LoginView.xaml",
+              "ToolTip": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\Views\\LoginView.xaml*",
+              "RelativeToolTip": "Views\\LoginView.xaml*",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-08-28T04:05:26.562Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "consorApp",
+              "DocumentMoniker": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\consorApp.csproj",
+              "RelativeDocumentMoniker": "consorApp.csproj",
+              "ToolTip": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\consorApp.csproj",
+              "RelativeToolTip": "consorApp.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-08-28T03:17:01.852Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "MainWindow.xaml",
+              "ToolTip": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\MainWindow.xaml",
+              "RelativeToolTip": "MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-08-28T03:17:13.512Z",
               "EditorCaption": ""
             }
           ]

@@ -5,8 +5,199 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:consorApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="ConsorApp"
+        Height="750"
+        Width="1100"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- PALETA DE COLORES EXTRAÍDA DIRECTAMENTE DEL LOGO -->
+        <SolidColorBrush x:Key="ColorGrisOscuro" Color="#2E363A"/>
+        <SolidColorBrush x:Key="ColorTaupeBronce" Color="#A09285"/>
+        <SolidColorBrush x:Key="ColorFondoElegante" Color="#F7F5F2"/>
+        <SolidColorBrush x:Key="ColorTextoSecundario" Color="#666666"/>
+
+        <!-- ESTILO PERSONALIZADO PARA EL BOTÓN -->
+        <Style x:Key="EstiloBotonElegante" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource ColorGrisOscuro}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Efecto Hover: Cambia al color Taupe al pasar el mouse -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource ColorTaupeBronce}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource ColorFondoElegante}">
+
+        <!-- FILAS PRINCIPALES -->
+        <Grid.RowDefinitions>
+            <!-- Encabezado -->
+            <RowDefinition Height="160"/>
+            <!-- Avisos -->
+            <RowDefinition Height="*"/>
+            <!-- Botón -->
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+
+        <!-- ==================== ENCABEZADO ==================== -->
+        <StackPanel Grid.Row="0"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Margin="0,15,0,0">
+
+            <!-- TÍTULO CON LOS DOS COLORES EXACTOS DEL LOGO -->
+            <TextBlock FontSize="38"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center">
+                <Run Text="Consor" Foreground="{StaticResource ColorGrisOscuro}"/><Run Text="App" Foreground="{StaticResource ColorTaupeBronce}"/>
+            </TextBlock>
+
+            <!-- LÍNEA DECORATIVA ESTILO LOGO -->
+            <Rectangle Width="100" 
+                       Height="2" 
+                       Fill="{StaticResource ColorTaupeBronce}" 
+                       Margin="0,6,0,8"/>
+
+            <TextBlock Text="Gestión de tu consorcio"
+                       FontSize="15"
+                       Foreground="{StaticResource ColorTextoSecundario}"
+                       HorizontalAlignment="Center"/>
+
+        </StackPanel>
+
+        <!-- ==================== AVISOS ==================== -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      Margin="160,10,160,10">
+
+            <StackPanel>
+
+                <TextBlock Text="AVISOS IMPORTANTES"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource ColorGrisOscuro}"
+                           HorizontalAlignment="Center"
+                           Margin="0,10,0,20"/>
+
+                <!-- AVISO 1 -->
+                <Border Background="White"
+                        CornerRadius="10"
+                        BorderBrush="#E5E0DA"
+                        BorderThickness="1"
+                        Padding="18,16"
+                        Margin="0,0,0,14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Franja lateral de acento -->
+                        <Border Grid.Column="0" Background="{StaticResource ColorTaupeBronce}" CornerRadius="3"/>
+
+                        <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                            <TextBlock Text="Corte programado de agua"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource ColorGrisOscuro}"/>
+
+                            <TextBlock Text="Mañana de 08:00 a 12:00 hs."
+                                       FontSize="14"
+                                       Foreground="{StaticResource ColorTextoSecundario}"
+                                       Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- AVISO 2 -->
+                <Border Background="White"
+                        CornerRadius="10"
+                        BorderBrush="#E5E0DA"
+                        BorderThickness="1"
+                        Padding="18,16"
+                        Margin="0,0,0,14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Background="{StaticResource ColorGrisOscuro}" CornerRadius="3"/>
+
+                        <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                            <TextBlock Text="Reunión de propietarios"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource ColorGrisOscuro}"/>
+
+                            <TextBlock Text="Viernes a las 20:00 hs."
+                                       FontSize="14"
+                                       Foreground="{StaticResource ColorTextoSecundario}"
+                                       Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- AVISO 3 -->
+                <Border Background="White"
+                        CornerRadius="10"
+                        BorderBrush="#E5E0DA"
+                        BorderThickness="1"
+                        Padding="18,16"
+                        Margin="0,0,0,14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Background="{StaticResource ColorTaupeBronce}" CornerRadius="3"/>
+
+                        <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                            <TextBlock Text="Mantenimiento del ascensor"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource ColorGrisOscuro}"/>
+
+                            <TextBlock Text="El lunes permanecerá fuera de servicio."
+                                       FontSize="14"
+                                       Foreground="{StaticResource ColorTextoSecundario}"
+                                       Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+            </StackPanel>
+
+        </ScrollViewer>
+
+        <!-- ==================== BOTÓN INICIAR SESIÓN ==================== -->
+        <Button Grid.Row="2"
+                Content="INICIAR SESIÓN"
+                Width="220"
+                Height="46"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Style="{StaticResource EstiloBotonElegante}" Click="BtnIniciarSesion_Click"/>
 
     </Grid>
+
 </Window>

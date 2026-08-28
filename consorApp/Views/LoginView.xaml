@@ -1,0 +1,195 @@
+﻿<Window x:Class="consorApp.Views.LoginView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:consorApp.Views"
+        mc:Ignorable="d"
+        Title="ConsorApp - Iniciar Sesión"
+        Height="700"
+        Width="1000"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- PALETA DE COLORES DEL LOGO -->
+        <SolidColorBrush x:Key="ColorGrisOscuro" Color="#2E363A"/>
+        <SolidColorBrush x:Key="ColorTaupeBronce" Color="#A09285"/>
+        <SolidColorBrush x:Key="ColorFondoElegante" Color="#F7F5F2"/>
+        <SolidColorBrush x:Key="ColorTextoSecundario" Color="#666666"/>
+        <SolidColorBrush x:Key="ColorBordeInput" Color="#D1CBC5"/>
+
+        <!-- ESTILO DEL BOTÓN PRINCIPAL -->
+        <Style x:Key="EstiloBotonIngresar" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource ColorGrisOscuro}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="12">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource ColorTaupeBronce}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ESTILO DEL BOTÓN SECUNDARIO (VOLVER) -->
+        <Style x:Key="EstiloBotonVolver" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource ColorTextoSecundario}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" Padding="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource ColorGrisOscuro}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ESTILO PARA LOS CAMPOS DE TEXTO -->
+        <Style x:Key="EstiloTextBox" TargetType="TextBox">
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ColorBordeInput}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ESTILO PARA EL CAMPO DE CONTRASEÑA -->
+        <Style x:Key="EstiloPasswordBox" TargetType="PasswordBox">
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ColorBordeInput}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource ColorFondoElegante}">
+
+        <!-- TARJETA CENTRAL DE LOGIN -->
+        <Border Width="420"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="White"
+                CornerRadius="14"
+                BorderBrush="#E5E0DA"
+                BorderThickness="1"
+                Padding="40,35">
+
+            <StackPanel>
+
+                <!-- LOGO Y TÍTULO -->
+                <TextBlock FontSize="34"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center">
+                    <Run Text="Consor" Foreground="{StaticResource ColorGrisOscuro}"/><Run Text="App" Foreground="{StaticResource ColorTaupeBronce}"/>
+                </TextBlock>
+
+                <Rectangle Width="80" 
+                           Height="2" 
+                           Fill="{StaticResource ColorTaupeBronce}" 
+                           Margin="0,6,0,20"/>
+
+                <TextBlock Text="¡Bienvenido de nuevo!"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource ColorGrisOscuro}"
+                           HorizontalAlignment="Center"/>
+
+                <TextBlock Text="Ingresa tus credenciales para acceder"
+                           FontSize="13"
+                           Foreground="{StaticResource ColorTextoSecundario}"
+                           HorizontalAlignment="Center"
+                           Margin="0,4,0,25"/>
+
+                <!-- CAMPO USUARIO -->
+                <TextBlock Text="Usuario"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource ColorGrisOscuro}"
+                           Margin="0,0,0,6"/>
+
+                <TextBox x:Name="TxtUsuario"
+                         Style="{StaticResource EstiloTextBox}"
+                         Margin="0,0,0,18"/>
+
+                <!-- CAMPO CONTRASEÑA -->
+                <TextBlock Text="Contraseña"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource ColorGrisOscuro}"
+                           Margin="0,0,0,6"/>
+
+                <PasswordBox x:Name="TxtPassword"
+                             Style="{StaticResource EstiloPasswordBox}"
+                             Margin="0,0,0,25"/>
+
+                <!-- BOTÓN INGRESAR -->
+                <Button x:Name="BtnIngresar"
+                        Content="INGRESAR"
+                        Style="{StaticResource EstiloBotonIngresar}"
+                        Margin="0,0,0,12"
+                        Click="BtnIngresar_Click"/>
+
+                <!-- BOTÓN VOLVER -->
+                <Button x:Name="BtnVolver"
+                        Content="← Volver al inicio"
+                        Style="{StaticResource EstiloBotonVolver}"
+                        HorizontalAlignment="Center"
+                        Click="BtnVolver_Click"/>
+
+            </StackPanel>
+
+        </Border>
+
+    </Grid>
+
+</Window>

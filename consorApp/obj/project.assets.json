@@ -3535,19 +3535,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\": {}
+    "C:\\Users\\sofia\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\consorApp.csproj",
+      "projectUniqueName": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\consorApp.csproj",
       "projectName": "consorApp",
-      "projectPath": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\consorApp.csproj",
-      "packagesPath": "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\obj\\",
+      "projectPath": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\consorApp.csproj",
+      "packagesPath": "C:\\Users\\sofia\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\consorApp\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Dorrego Octavio\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\sofia\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -3555,6 +3560,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3562,8 +3568,8 @@
           "framework": "net10.0-windows7.0",
           "targetAlias": "net10.0-windows",
           "projectReferences": {
-            "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\ConsorApp.Negocio\\ConsorApp.Negocio.csproj": {
-              "projectPath": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\ConsorApp.Negocio\\ConsorApp.Negocio.csproj"
+            "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\ConsorApp.Negocio\\ConsorApp.Negocio.csproj": {
+              "projectPath": "C:\\Users\\sofia\\OneDrive\\Escritorio\\ProyectoConsorApp\\ConsorApp.Negocio\\ConsorApp.Negocio.csproj"
             }
           }
         }
