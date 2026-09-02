@@ -9,12 +9,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ConsorApp.Negocio;
+using ConsorApp.Entidades;
 
 namespace consorApp.Views
 {
-    /// <summary>
-    /// Lógica de interacción para Window1.xaml
-    /// </summary>
     public partial class LoginView : Window
     {
         public LoginView()
@@ -24,13 +23,37 @@ namespace consorApp.Views
 
         private void BtnIngresar_Click(object sender, RoutedEventArgs e)
         {
-            // Más adelante aquí se validará con la capa de Negocio
-            MessageBox.Show("Iniciando sesión...", "ConsorApp");
+            string usuario = TxtUsuario.Text;
+            string password = TxtPassword.Password;
+
+            if (string.IsNullOrWhiteSpace(usuario) || string.IsNullOrWhiteSpace(password))
+            {
+                MessageBox.Show("Por favor, ingresa usuario y contraseña.", "Campos vacíos", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            UsuarioNegocio negocio = new UsuarioNegocio();
+
+            // Agregamos '?' a Usuario? para indicar explícitamente que el resultado puede ser nulo
+            Usuario? usuarioLogueado = negocio.IniciarSesion(usuario, password);
+
+            if (usuarioLogueado != null)
+            {
+                string nombreCompleto = $"{usuarioLogueado.Nombre} {usuarioLogueado.Apellido}";
+                string nombrePerfil = usuarioLogueado.Perfil?.NombrePerfil ?? "Usuario";
+
+                DashboardView dashboard = new DashboardView(nombreCompleto, nombrePerfil);
+                dashboard.Show();
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Usuario o contraseña incorrectos.", "Error de Autenticación", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void BtnVolver_Click(object sender, RoutedEventArgs e)
         {
-            // Regresar a la ventana principal
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
             this.Close();
