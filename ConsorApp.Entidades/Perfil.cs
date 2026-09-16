@@ -9,6 +9,6 @@ namespace ConsorApp.Entidades
     {
         [Key]
         public int IdPerfil { get; set; }
-        public string NombrePerfil { get; set; }
+        public string NombrePerfil { get; set; } = string.Empty;
     }
 }

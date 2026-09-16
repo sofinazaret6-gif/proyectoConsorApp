@@ -13,8 +13,11 @@ namespace ConsorApp.Datos
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // Configuración para usar LocalDB de SQL Server en tu PC
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ConsorAppDB;Trusted_Connection=True;MultipleActiveResultSets=true");
+            if (!optionsBuilder.IsConfigured)
+            {
+                // El punto (.) indica "mi servidor local de SQL Express actual"
+                optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=consorAppDb;Integrated Security=True;TrustServerCertificate=True;");
+            }
         }
     }
 }

@@ -1,0 +1,69 @@
+﻿<Window x:Class="consorApp.Views.UsuarioView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:consorApp.Views"
+        mc:Ignorable="d"
+        Title="ConsorApp - Gestión de Usuarios" Height="650" Width="1050"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid Background="#F7F5F2">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="320"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- PANEL IZQUIERDO: FORMULARIO DE CARGA -->
+        <Border Grid.Column="0" Background="White" BorderBrush="#E5E0DA" BorderThickness="0,0,1,0" Padding="20">
+            <StackPanel>
+                <TextBlock Text="Detalle de Usuario" FontSize="18" FontWeight="Bold" Foreground="#2E363A" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Nombre" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
+                <TextBox x:Name="TxtNombre" Height="38" Margin="0,0,0,12"/>
+
+                <TextBlock Text="Apellido" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
+                <TextBox x:Name="TxtApellido" Height="38" Margin="0,0,0,12"/>
+
+                <TextBlock Text="Usuario de Sistema" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
+                <TextBox x:Name="TxtUsuarioSistema" Height="38" Margin="0,0,0,12"/>
+
+                <TextBlock Text="Contraseña" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
+                <PasswordBox x:Name="TxtContrasenia" Height="38" Margin="0,0,0,12"/>
+
+                <TextBlock Text="Perfil" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
+                <ComboBox x:Name="CmbPerfil" Height="38" Margin="0,0,0,25"/>
+
+                <Button x:Name="BtnGuardar" Content="💾 Guardar" Height="38" Margin="0,0,0,8" Click="BtnGuardar_Click"/>
+                <Button x:Name="BtnLimpiar" Content="🧹 Limpiar Campos" Height="38" Click="BtnLimpiar_Click"/>
+            </StackPanel>
+        </Border>
+
+        <!-- PANEL DERECHO: LISTADO Y ACCIONES -->
+        <Grid Grid.Column="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="60"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Gestión de Usuarios del Sistema" FontSize="20" FontWeight="Bold" Foreground="#2E363A" VerticalAlignment="Center"/>
+
+            <DataGrid x:Name="DgUsuarios" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False"
+                      Background="White" SelectionMode="Single" IsReadOnly="True" SelectionChanged="DgUsuarios_SelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding IdUsuario}" Width="50"/>
+                    <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="120"/>
+                    <DataGridTextColumn Header="Apellido" Binding="{Binding Apellido}" Width="120"/>
+                    <DataGridTextColumn Header="Usuario" Binding="{Binding UsuarioSistema}" Width="120"/>
+                    <DataGridTextColumn Header="Perfil" Binding="{Binding NombrePerfil}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button x:Name="BtnModificar" Content="✏️ Modificar" Width="130" Height="35" Margin="0,0,10,0" Click="BtnModificar_Click"/>
+                <Button x:Name="BtnEliminar" Content="🗑️ Eliminar" Width="120" Height="35" Click="BtnEliminar_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
