@@ -5,38 +5,49 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:consorApp.Views"
         mc:Ignorable="d"
-        Title="ConsorApp - Gestión de Usuarios" Height="650" Width="1050"
+        Title="ConsorApp - Gestión de Usuarios" Height="700" Width="1150"
         WindowStartupLocation="CenterScreen">
 
     <Grid Background="#F7F5F2">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="320"/>
+            <ColumnDefinition Width="340"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- PANEL IZQUIERDO: FORMULARIO DE CARGA -->
-        <Border Grid.Column="0" Background="White" BorderBrush="#E5E0DA" BorderThickness="0,0,1,0" Padding="20">
-            <StackPanel>
-                <TextBlock Text="Detalle de Usuario" FontSize="18" FontWeight="Bold" Foreground="#2E363A" Margin="0,0,0,15"/>
+        <!-- PANEL IZQUIERDO: FORMULARIO DE CARGA CON SCROLL -->
+        <Border Grid.Column="0" Background="White" BorderBrush="#E5E0DA" BorderThickness="0,0,1,0" Padding="15">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0,0,5,0">
+                    <TextBlock Text="Detalle de Usuario" FontSize="18" FontWeight="Bold" Foreground="#2E363A" Margin="0,0,0,15"/>
 
-                <TextBlock Text="Nombre" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
-                <TextBox x:Name="TxtNombre" Height="38" Margin="0,0,0,12"/>
+                    <TextBlock Text="Nombre" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
+                    <TextBox x:Name="TxtNombre" Height="35" Margin="0,0,0,10"/>
 
-                <TextBlock Text="Apellido" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
-                <TextBox x:Name="TxtApellido" Height="38" Margin="0,0,0,12"/>
+                    <TextBlock Text="Apellido" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
+                    <TextBox x:Name="TxtApellido" Height="35" Margin="0,0,0,10"/>
 
-                <TextBlock Text="Usuario de Sistema" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
-                <TextBox x:Name="TxtUsuarioSistema" Height="38" Margin="0,0,0,12"/>
+                    <TextBlock Text="DNI" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
+                    <TextBox x:Name="TxtDni" Height="35" Margin="0,0,0,10"/>
 
-                <TextBlock Text="Contraseña" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
-                <PasswordBox x:Name="TxtContrasenia" Height="38" Margin="0,0,0,12"/>
+                    <TextBlock Text="Teléfono" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
+                    <TextBox x:Name="TxtTelefono" Height="35" Margin="0,0,0,10"/>
 
-                <TextBlock Text="Perfil" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
-                <ComboBox x:Name="CmbPerfil" Height="38" Margin="0,0,0,25"/>
+                    <TextBlock Text="Correo Electrónico" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
+                    <TextBox x:Name="TxtEmail" Height="35" Margin="0,0,0,10"/>
 
-                <Button x:Name="BtnGuardar" Content="💾 Guardar" Height="38" Margin="0,0,0,8" Click="BtnGuardar_Click"/>
-                <Button x:Name="BtnLimpiar" Content="🧹 Limpiar Campos" Height="38" Click="BtnLimpiar_Click"/>
-            </StackPanel>
+                    <TextBlock Text="Usuario de Sistema" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
+                    <TextBox x:Name="TxtUsuarioSistema" Height="35" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Contraseña" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
+                    <PasswordBox x:Name="TxtContrasenia" Height="35" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Perfil" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" Margin="0,0,0,4"/>
+                    <ComboBox x:Name="CmbPerfil" Height="35" Margin="0,0,0,20"/>
+
+                    <Button x:Name="BtnGuardar" Content="💾 Guardar" Height="38" Margin="0,0,0,8" Click="BtnGuardar_Click"/>
+                    <Button x:Name="BtnLimpiar" Content="🧹 Limpiar Campos" Height="38" Click="BtnLimpiar_Click"/>
+                </StackPanel>
+            </ScrollViewer>
         </Border>
 
         <!-- PANEL DERECHO: LISTADO Y ACCIONES -->
@@ -47,22 +58,47 @@
                 <RowDefinition Height="60"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Gestión de Usuarios del Sistema" FontSize="20" FontWeight="Bold" Foreground="#2E363A" VerticalAlignment="Center"/>
+            <!-- CABECERA CON TÍTULO Y FILTRO DE ESTADO -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
+                <TextBlock Grid.Column="0" Text="Gestión de Usuarios del Sistema" FontSize="20" FontWeight="Bold" Foreground="#2E363A" VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Filtrar Estado:" FontSize="12" FontWeight="SemiBold" Foreground="#2E363A" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <ComboBox x:Name="CmbFiltroEstado" Width="120" Height="30" SelectionChanged="CmbFiltroEstado_SelectionChanged">
+                        <ComboBoxItem Content="Todos" IsSelected="True"/>
+                        <ComboBoxItem Content="Activos (1)"/>
+                        <ComboBoxItem Content="Inactivos (0)"/>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+
+            <!-- TABLA CON TODAS LAS COLUMNAS -->
             <DataGrid x:Name="DgUsuarios" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False"
                       Background="White" SelectionMode="Single" IsReadOnly="True" SelectionChanged="DgUsuarios_SelectionChanged">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID" Binding="{Binding IdUsuario}" Width="50"/>
-                    <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="120"/>
-                    <DataGridTextColumn Header="Apellido" Binding="{Binding Apellido}" Width="120"/>
-                    <DataGridTextColumn Header="Usuario" Binding="{Binding UsuarioSistema}" Width="120"/>
-                    <DataGridTextColumn Header="Perfil" Binding="{Binding NombrePerfil}" Width="*"/>
+                    <DataGridTextColumn Header="ID" Binding="{Binding IdUsuario}" Width="45"/>
+                    <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="100"/>
+                    <DataGridTextColumn Header="Apellido" Binding="{Binding Apellido}" Width="100"/>
+                    <DataGridTextColumn Header="DNI" Binding="{Binding Dni}" Width="90"/>
+                    <DataGridTextColumn Header="Teléfono" Binding="{Binding Telefono}" Width="100"/>
+                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="130"/>
+                    <DataGridTextColumn Header="Usuario" Binding="{Binding UsuarioSistema}" Width="100"/>
+                    <DataGridTextColumn Header="Perfil" Binding="{Binding NombrePerfil}" Width="110"/>
+                    <DataGridTextColumn Header="Fecha Alta" Binding="{Binding FechaAlta, StringFormat=dd/MM/yyyy}" Width="90"/>
+                    <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="60"/>
                 </DataGrid.Columns>
             </DataGrid>
 
+            <!-- ACCIONES / BOTONES INFERIORES -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button x:Name="BtnModificar" Content="✏️ Modificar" Width="130" Height="35" Margin="0,0,10,0" Click="BtnModificar_Click"/>
-                <Button x:Name="BtnEliminar" Content="🗑️ Eliminar" Width="120" Height="35" Click="BtnEliminar_Click"/>
+                <Button x:Name="BtnActivar" Content="🔄 Activar" Width="110" Height="35" Margin="0,0,8,0" Click="BtnActivar_Click"/>
+                <Button x:Name="BtnModificar" Content="✏️ Modificar" Width="120" Height="35" Margin="0,0,8,0" Click="BtnModificar_Click"/>
+                <Button x:Name="BtnEliminar" Content="🗑️ Dar de Baja" Width="120" Height="35" Click="BtnEliminar_Click"/>
             </StackPanel>
         </Grid>
     </Grid>

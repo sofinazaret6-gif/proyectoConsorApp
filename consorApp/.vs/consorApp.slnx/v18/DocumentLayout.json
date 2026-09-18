@@ -3,24 +3,23 @@
   "WorkspaceRootPath": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|c:\\users\\dorrego octavio\\source\\repos\\proyectoconsorapp\\consorapp\\views\\dashboardview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|solutionrelative:views\\dashboardview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|c:\\users\\dorrego octavio\\source\\repos\\proyectoconsorapp\\consorapp\\views\\usuarioview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|solutionrelative:views\\usuarioview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|c:\\users\\dorrego octavio\\source\\repos\\proyectoconsorapp\\consorapp\\views\\dashboardview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|solutionrelative:views\\dashboardview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{52317AE1-D2BE-AC72-FD41-5817196D9520}|..\\ConsorApp.Entidades\\ConsorApp.Entidades.csproj|c:\\users\\dorrego octavio\\source\\repos\\proyectoconsorapp\\consorapp.entidades\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|c:\\users\\dorrego octavio\\source\\repos\\proyectoconsorapp\\consorapp\\views\\usuarioview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|solutionrelative:views\\usuarioview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|c:\\users\\dorrego octavio\\source\\repos\\proyectoconsorapp\\consorapp\\views\\usuarioview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|solutionrelative:views\\usuarioview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|c:\\users\\dorrego octavio\\source\\repos\\proyectoconsorapp\\consorapp\\views\\dashboardview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|solutionrelative:views\\dashboardview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|c:\\users\\dorrego octavio\\source\\repos\\proyectoconsorapp\\consorapp\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|solutionrelative:assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|c:\\users\\dorrego octavio\\source\\repos\\proyectoconsorapp\\consorapp\\views\\dashboardview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{1971E0E7-BC13-D6C9-77A3-724F1159F917}|consorApp.csproj|solutionrelative:views\\dashboardview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,23 +37,54 @@
             },
             {
               "$type": "Bookmark",
+              "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "UsuarioView.xaml",
-              "DocumentMoniker": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\Views\\UsuarioView.xaml",
-              "RelativeDocumentMoniker": "Views\\UsuarioView.xaml",
-              "ToolTip": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\Views\\UsuarioView.xaml",
-              "RelativeToolTip": "Views\\UsuarioView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-09-10T02:05:00.883Z",
+              "DocumentIndex": 3,
+              "Title": "DashboardView.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\Views\\DashboardView.xaml.cs",
+              "RelativeDocumentMoniker": "Views\\DashboardView.xaml.cs",
+              "ToolTip": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\Views\\DashboardView.xaml.cs",
+              "RelativeToolTip": "Views\\DashboardView.xaml.cs",
+              "ViewState": "AgIAADsAAAAAAAAAAAAgwBAAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-10T01:57:31.488Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UsuarioView.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\Views\\UsuarioView.xaml.cs",
+              "RelativeDocumentMoniker": "Views\\UsuarioView.xaml.cs",
+              "ToolTip": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\Views\\UsuarioView.xaml.cs",
+              "RelativeToolTip": "Views\\UsuarioView.xaml.cs",
+              "ViewState": "AgIAADABAAAAAAAAAAAqwEQBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-10T13:23:41.026Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "Usuario.cs",
+              "DocumentMoniker": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\ConsorApp.Entidades\\Usuario.cs",
+              "RelativeDocumentMoniker": "..\\ConsorApp.Entidades\\Usuario.cs",
+              "ToolTip": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\ConsorApp.Entidades\\Usuario.cs",
+              "RelativeToolTip": "..\\ConsorApp.Entidades\\Usuario.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-17T22:50:02.332Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "DashboardView.xaml",
               "DocumentMoniker": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\Views\\DashboardView.xaml",
               "RelativeDocumentMoniker": "Views\\DashboardView.xaml",
@@ -66,41 +96,14 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "DashboardView.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\Views\\DashboardView.xaml.cs",
-              "RelativeDocumentMoniker": "Views\\DashboardView.xaml.cs",
-              "ToolTip": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\Views\\DashboardView.xaml.cs",
-              "RelativeToolTip": "Views\\DashboardView.xaml.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAuwBAAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-10T01:57:31.488Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AssemblyInfo.cs",
-              "DocumentMoniker": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\AssemblyInfo.cs",
-              "RelativeDocumentMoniker": "AssemblyInfo.cs",
-              "ToolTip": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\AssemblyInfo.cs",
-              "RelativeToolTip": "AssemblyInfo.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-14T20:11:54.945Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "UsuarioView.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\Views\\UsuarioView.xaml.cs",
-              "RelativeDocumentMoniker": "Views\\UsuarioView.xaml.cs",
-              "ToolTip": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\Views\\UsuarioView.xaml.cs",
-              "RelativeToolTip": "Views\\UsuarioView.xaml.cs",
-              "ViewState": "AgIAAGgAAAAAAAAAAAAswAoAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-10T13:23:41.026Z",
+              "DocumentIndex": 2,
+              "Title": "UsuarioView.xaml",
+              "DocumentMoniker": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\Views\\UsuarioView.xaml",
+              "RelativeDocumentMoniker": "Views\\UsuarioView.xaml",
+              "ToolTip": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\consorApp\\Views\\UsuarioView.xaml",
+              "RelativeToolTip": "Views\\UsuarioView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-09-10T02:05:00.883Z",
               "EditorCaption": ""
             }
           ]
