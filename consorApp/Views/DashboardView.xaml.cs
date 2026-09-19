@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace consorApp.Views
 {
@@ -19,7 +10,6 @@ namespace consorApp.Views
             InitializeComponent();
         }
 
-        // Recibe el nombre completo del usuario y el NombrePerfil tal como viene de la tabla dbo.Perfiles
         public DashboardView(string nombreUsuario, string nombrePerfil) : this()
         {
             TxtNombreUsuario.Text = nombreUsuario;
@@ -30,42 +20,54 @@ namespace consorApp.Views
 
         private void AplicarPermisosPorPerfil(string nombrePerfil)
         {
-            // Convertimos a minúsculas para comparar de forma segura sin importar mayúsculas/minúsculas
             string perfil = nombrePerfil.ToLower();
 
-            // Administrador: Ve todo
+            // Administrador: Tiene acceso completo a todo (incluyendo Datos Edificio)
             if (perfil.Contains("admin"))
             {
+                BtnEdificio.Visibility = Visibility.Visible;
                 return;
             }
-            // Encargado / Mantenimiento: Se oculta gestión financiera y de usuarios
+            // Encargado: Se le oculta Edificio, Expensas y Usuarios
             else if (perfil.Contains("encargado"))
             {
+                BtnEdificio.Visibility = Visibility.Collapsed;
                 BtnExpensas.Visibility = Visibility.Collapsed;
                 BtnUsuarios.Visibility = Visibility.Collapsed;
             }
-            // Propietario / Inquilino: Se oculta todo el bloque de gestión
-            else if (perfil.Contains("propietario"))
+            // Propietario / Inquilino: Se oculta toda la sección de gestión
+            else if (perfil.Contains("propietario") || perfil.Contains("inquilino"))
             {
                 HeaderGestion.Visibility = Visibility.Collapsed;
+                BtnEdificio.Visibility = Visibility.Collapsed;
                 BtnExpensas.Visibility = Visibility.Collapsed;
                 BtnUsuarios.Visibility = Visibility.Collapsed;
                 BtnUnidades.Visibility = Visibility.Collapsed;
             }
         }
 
+        // Abrir la ventana de Datos Edificio
+        private void BtnEdificio_Click(object sender, RoutedEventArgs e)
+        {
+            EdificioView ventanaEdificio = new EdificioView();
+            ventanaEdificio.ShowDialog();
+        }
+
+        private void BtnUsuarios_Click(object sender, RoutedEventArgs e)
+        {
+            UsuarioView ventanaUsuarios = new UsuarioView();
+            ventanaUsuarios.ShowDialog();
+        }
+        private void BtnUnidades_Click(object sender, RoutedEventArgs e)
+        {
+            DepartamentoView ventanaDepartamentos = new DepartamentoView();
+            ventanaDepartamentos.ShowDialog();
+        }
         private void BtnCerrarSesion_Click(object sender, RoutedEventArgs e)
         {
             LoginView login = new LoginView();
             login.Show();
             this.Close();
-        }
-
-        private void BtnUsuarios_Click(object sender, RoutedEventArgs e)
-        {
-            // Reemplazá 'UsuarioView' por el nombre real de la ventana
-            UsuarioView ventanaUsuarios = new UsuarioView();
-            ventanaUsuarios.ShowDialog();
         }
     }
 }

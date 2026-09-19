@@ -1,0 +1,288 @@
+﻿<Window x:Class="consorApp.Views.DepartamentoView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ConsorApp - Gestión de Departamentos"
+        Height="600"
+        Width="950"
+        WindowStartupLocation="CenterScreen">
+
+    <!-- Definición de la paleta de colores y recursos -->
+    <Window.Resources>
+        <SolidColorBrush x:Key="ColorGrisOscuro" Color="#2E363A"/>
+        <SolidColorBrush x:Key="ColorTaupeBronce" Color="#A09285"/>
+        <SolidColorBrush x:Key="ColorFondoContenido" Color="#F7F5F2"/>
+        <SolidColorBrush x:Key="ColorBordeTarjeta" Color="#E2DDD5"/>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource ColorFondoContenido}">
+
+        <Grid.ColumnDefinitions>
+            <!-- Formulario a la izquierda -->
+            <ColumnDefinition Width="320"/>
+
+            <!-- Panel de tarjetas a la derecha -->
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+
+        <!-- ====================================================== -->
+        <!-- COLUMNA IZQUIERDA: FORMULARIO -->
+        <!-- ====================================================== -->
+
+        <Border Grid.Column="0"
+                Background="White"
+                Margin="15"
+                CornerRadius="8"
+                Padding="15">
+
+            <StackPanel VerticalAlignment="Top">
+
+                <TextBlock Text="Datos del Departamento"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource ColorGrisOscuro}"
+                           Margin="0,0,0,15"/>
+
+
+                <!-- Edificio -->
+                <TextBlock Text="Edificio:"
+                           FontWeight="SemiBold"/>
+
+                <ComboBox x:Name="CmbEdificio"
+                          DisplayMemberPath="Descripcion"
+                          SelectedValuePath="IdEdificio"
+                          Margin="0,3,0,10"
+                          Height="28"/>
+
+
+                <!-- Piso -->
+                <TextBlock Text="Piso (Ej: 1, PB):"
+                           FontWeight="SemiBold"/>
+
+                <TextBox x:Name="TxtPiso"
+                         Margin="0,3,0,10"
+                         Height="28"/>
+
+
+                <!-- Unidad -->
+                <TextBlock Text="Unidad (Ej: A, 102):"
+                           FontWeight="SemiBold"/>
+
+                <TextBox x:Name="TxtUnidad"
+                         Margin="0,3,0,15"
+                         Height="28"/>
+
+
+                <!-- Botones -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Margin="0,10,0,0">
+
+                    <Button x:Name="BtnLimpiar"
+                            Content="Limpiar"
+                            Width="80"
+                            Height="30"
+                            Margin="0,0,8,0"
+                            Click="BtnLimpiar_Click"/>
+
+                    <Button x:Name="BtnGuardar"
+                            Content="Guardar"
+                            Width="90"
+                            Height="30"
+                            Background="{StaticResource ColorTaupeBronce}"
+                            Foreground="White"
+                            FontWeight="Bold"
+                            Click="BtnGuardar_Click"/>
+
+                </StackPanel>
+
+            </StackPanel>
+
+        </Border>
+
+
+        <!-- ====================================================== -->
+        <!-- COLUMNA DERECHA -->
+        <!-- ====================================================== -->
+
+        <Grid Grid.Column="1"
+              Margin="0,10,10,10">
+
+            <Grid.RowDefinitions>
+
+                <!-- Filtro -->
+                <RowDefinition Height="Auto"/>
+
+                <!-- Tarjetas -->
+                <RowDefinition Height="*"/>
+
+            </Grid.RowDefinitions>
+
+
+            <!-- ================================================== -->
+            <!-- FILTRO POR EDIFICIO -->
+            <!-- ================================================== -->
+
+            <Border Grid.Row="0"
+                    Background="White"
+                    CornerRadius="8"
+                    BorderBrush="{StaticResource ColorBordeTarjeta}"
+                    BorderThickness="1"
+                    Padding="10"
+                    Margin="8,0,0,8">
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+
+                    <TextBlock Grid.Column="0"
+                               Text="Filtrar por edificio:"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource ColorGrisOscuro}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,10,0"/>
+
+
+                    <ComboBox Grid.Column="1"
+                              x:Name="CmbFiltroEdificio"
+                              DisplayMemberPath="Descripcion"
+                              SelectedValuePath="IdEdificio"
+                              Height="28"
+                              SelectionChanged="CmbFiltroEdificio_SelectionChanged"/>
+
+                </Grid>
+
+            </Border>
+
+
+            <!-- ================================================== -->
+            <!-- TARJETAS -->
+            <!-- ================================================== -->
+
+            <ScrollViewer Grid.Row="1"
+                          VerticalScrollBarVisibility="Auto">
+
+                <ItemsControl x:Name="LstDepartamentos">
+
+                    <!-- Organización de tarjetas -->
+                    <ItemsControl.ItemsPanel>
+
+                        <ItemsPanelTemplate>
+
+                            <WrapPanel Orientation="Horizontal"/>
+
+                        </ItemsPanelTemplate>
+
+                    </ItemsControl.ItemsPanel>
+
+
+                    <!-- Diseño de cada tarjeta -->
+                    <ItemsControl.ItemTemplate>
+
+                        <DataTemplate>
+
+                            <Border Width="180"
+                                    Height="210"
+                                    Margin="8"
+                                    Background="White"
+                                    CornerRadius="10"
+                                    BorderBrush="{StaticResource ColorBordeTarjeta}"
+                                    BorderThickness="1"
+                                    Padding="12"
+                                    MouseDown="TarjetaDepartamento_MouseDown">
+
+                                <Border.Effect>
+
+                                    <DropShadowEffect BlurRadius="8"
+                                                      ShadowDepth="2"
+                                                      Direction="270"
+                                                      Opacity="0.1"/>
+
+                                </Border.Effect>
+
+
+                                <StackPanel HorizontalAlignment="Center">
+
+
+                                    <!-- Ícono de casa -->
+
+                                    <Path Data="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"
+                                          Fill="{StaticResource ColorTaupeBronce}"
+                                          Stretch="Uniform"
+                                          Width="45"
+                                          Height="45"
+                                          HorizontalAlignment="Center"
+                                          Margin="0,5,0,8"/>
+
+
+                                    <!-- Unidad -->
+
+                                    <TextBlock Text="{Binding Unidad, StringFormat='Unidad: {0}'}"
+                                               FontWeight="Bold"
+                                               FontSize="15"
+                                               Foreground="{StaticResource ColorGrisOscuro}"
+                                               HorizontalAlignment="Center"/>
+
+
+                                    <!-- Piso -->
+
+                                    <TextBlock Text="{Binding Piso, StringFormat='Piso {0}'}"
+                                               FontSize="12"
+                                               Foreground="Gray"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,0,0,6"/>
+
+
+                                    <Separator Margin="0,2,0,8"
+                                               Background="#EEE"/>
+
+
+                                    <!-- Edificio -->
+
+                                    <TextBlock Text="{Binding NombreEdificio}"
+                                               FontWeight="SemiBold"
+                                               FontSize="11"
+                                               Foreground="{StaticResource ColorGrisOscuro}"
+                                               TextTrimming="CharacterEllipsis"
+                                               HorizontalAlignment="Center"/>
+
+
+                                    <!-- Propietario -->
+
+                                    <TextBlock Text="{Binding NombrePropietario}"
+                                               FontSize="11"
+                                               Foreground="#555"
+                                               TextTrimming="CharacterEllipsis"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,3,0,0"/>
+
+
+                                    <!-- ID -->
+
+                                    <TextBlock Text="{Binding IdDepartamento, StringFormat='ID: {0}'}"
+                                               FontSize="10"
+                                               Foreground="#AAA"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,6,0,0"/>
+
+                                </StackPanel>
+
+                            </Border>
+
+                        </DataTemplate>
+
+                    </ItemsControl.ItemTemplate>
+
+                </ItemsControl>
+
+            </ScrollViewer>
+
+        </Grid>
+
+    </Grid>
+
+</Window>

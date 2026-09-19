@@ -1,0 +1,59 @@
+﻿<Window x:Class="consorApp.Views.EdificioView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ConsorApp - Gestión de Edificios" Height="500" Width="900" 
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="ColorGrisOscuro" Color="#2E363A"/>
+        <SolidColorBrush x:Key="ColorTaupeBronce" Color="#A09285"/>
+        <SolidColorBrush x:Key="ColorFondoContenido" Color="#F7F5F2"/>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource ColorFondoContenido}">
+        <Grid.ColumnDefinitions>
+            <!-- Columna Izquierda: Formulario -->
+            <ColumnDefinition Width="320"/>
+            <!-- Columna Derecha: Tabla -->
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- FORMULARIO -->
+        <Border Grid.Column="0" Background="White" Margin="15" CornerRadius="8" Padding="15">
+            <StackPanel VerticalAlignment="Top">
+                <TextBlock Text="Datos del Edificio" FontSize="18" FontWeight="Bold" Foreground="{StaticResource ColorGrisOscuro}" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Nombre / Descripción:" FontWeight="SemiBold"/>
+                <TextBox x:Name="TxtDescripcion" Margin="0,3,0,10" Height="28"/>
+
+                <TextBlock Text="Ubicación / Dirección:" FontWeight="SemiBold"/>
+                <TextBox x:Name="TxtUbicacion" Margin="0,3,0,10" Height="28"/>
+
+                <TextBlock Text="Cantidad de Pisos:" FontWeight="SemiBold"/>
+                <TextBox x:Name="TxtCantPisos" PreviewTextInput="SoloNumeros_PreviewTextInput" Margin="0,3,0,10" Height="28"/>
+
+                <TextBlock Text="Cantidad de Departamentos:" FontWeight="SemiBold"/>
+                <TextBox x:Name="TxtCantDepto" PreviewTextInput="SoloNumeros_PreviewTextInput" Margin="0,3,0,15" Height="28"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                    <Button x:Name="BtnLimpiar" Content="Limpiar" Width="80" Height="30" Margin="0,0,8,0" Click="BtnLimpiar_Click"/>
+                    <Button x:Name="BtnGuardar" Content="Guardar" Width="90" Height="30" Background="{StaticResource ColorTaupeBronce}" Foreground="White" FontWeight="Bold" Click="BtnGuardar_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- TABLA DE EDIFICIOS -->
+        <Border Grid.Column="1" Background="White" Margin="0,15,15,15" CornerRadius="8" Padding="10">
+            <DataGrid x:Name="DgEdificios" AutoGenerateColumns="False" 
+                      IsReadOnly="True" SelectionMode="Single" SelectionChanged="DgEdificios_SelectionChanged" GridLinesVisibility="Horizontal">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding IdEdificio}" Width="40"/>
+                    <DataGridTextColumn Header="Nombre / Descripción" Binding="{Binding Descripcion}" Width="*"/>
+                    <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="*"/>
+                    <DataGridTextColumn Header="Pisos" Binding="{Binding CantPisos}" Width="60"/>
+                    <DataGridTextColumn Header="Deptos" Binding="{Binding CantDepto}" Width="60"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </Grid>
+</Window>
