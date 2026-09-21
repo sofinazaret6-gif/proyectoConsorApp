@@ -20,22 +20,25 @@ namespace consorApp.Views
 
         private void AplicarPermisosPorPerfil(string nombrePerfil)
         {
-            string perfil = nombrePerfil.ToLower();
 
-            // Administrador: Tiene acceso completo a todo (incluyendo Datos Edificio)
+            if (string.IsNullOrEmpty(nombrePerfil)) return;
+
+            string perfil = nombrePerfil.ToLower().Trim();
+
+            // Administrador
             if (perfil.Contains("admin"))
             {
                 BtnEdificio.Visibility = Visibility.Visible;
                 return;
             }
-            // Encargado: Se le oculta Edificio, Expensas y Usuarios
-            else if (perfil.Contains("encargado"))
+            // Encargado 
+            else if (perfil.Contains("encargado") || perfil.Contains("Encargado") || perfil.Contains("operario"))
             {
                 BtnEdificio.Visibility = Visibility.Collapsed;
                 BtnExpensas.Visibility = Visibility.Collapsed;
                 BtnUsuarios.Visibility = Visibility.Collapsed;
             }
-            // Propietario / Inquilino: Se oculta toda la sección de gestión
+            // Propietario / Inquilino
             else if (perfil.Contains("propietario") || perfil.Contains("inquilino"))
             {
                 HeaderGestion.Visibility = Visibility.Collapsed;

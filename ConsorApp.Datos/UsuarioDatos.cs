@@ -104,19 +104,22 @@ namespace ConsorApp.Datos
             }
         }
 
-        // 6. Validación de credenciales para login
+        // 6. Validación de credenciales para login usando LEFT JOIN para evitar bloqueos
         public Usuario? ValidarCredenciales(string usuario, string password)
         {
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             {
                 conexion.Open();
-                string query = @"SELECT IdUsuario, Nombre, Apellido, Dni, Email, UsuarioSistema, Contrasenia, IdPerfil 
-                                FROM Usuarios 
-                                WHERE UsuarioSistema = @Usuario AND Contrasenia = @Password AND Estado = 1";
+                string query = @"SELECT u.IdUsuario, u.Nombre, u.Apellido, u.Dni, u.Email, 
+                                u.UsuarioSistema, u.Contrasenia, u.IdPerfil, ISNULL(p.NombrePerfil, 'Usuario') AS NombrePerfil 
+                        FROM Usuarios u
+                        LEFT JOIN Perfiles p ON u.IdPerfil = p.IdPerfil
+                        WHERE u.UsuarioSistema = @Usuario AND u.Contrasenia = @Password AND u.Estado = 1";
 
                 SqlCommand comando = new SqlCommand(query, conexion);
-                comando.Parameters.AddWithValue("@Usuario", usuario);
-                comando.Parameters.AddWithValue("@Password", password);
+                // Usamos .Trim() por las dudas si se filtran espacios accidentales al escribir
+                comando.Parameters.AddWithValue("@Usuario", usuario.Trim());
+                comando.Parameters.AddWithValue("@Password", password.Trim());
 
                 using (SqlDataReader reader = comando.ExecuteReader())
                 {
@@ -131,12 +134,31 @@ namespace ConsorApp.Datos
                             Email = reader["Email"].ToString() ?? string.Empty,
                             UsuarioSistema = reader["UsuarioSistema"].ToString() ?? string.Empty,
                             Contrasenia = reader["Contrasenia"].ToString() ?? string.Empty,
-                            IdPerfil = Convert.ToInt32(reader["IdPerfil"])
+                            IdPerfil = Convert.ToInt32(reader["IdPerfil"]),
+                            NombrePerfil = reader["NombrePerfil"].ToString() ?? string.Empty
                         };
                     }
                 }
             }
             return null;
+        }
+
+        // 7. Obtiene únicamente los usuarios que tienen el rol de Propietario
+        public DataTable ObtenerPropietarios()
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            {
+                string query = @"
+                    SELECT u.IdUsuario, (u.Nombre + ' ' + u.Apellido) AS Nombre, u.Dni, u.Email
+                    FROM Usuarios u
+                    INNER JOIN Perfiles p ON u.IdPerfil = p.IdPerfil
+                    WHERE p.NombrePerfil = 'Propietario' AND u.Estado = 1";
+
+                SqlDataAdapter adaptador = new SqlDataAdapter(query, conexion);
+                DataTable dt = new DataTable();
+                adaptador.Fill(dt);
+                return dt;
+            }
         }
     }
 }

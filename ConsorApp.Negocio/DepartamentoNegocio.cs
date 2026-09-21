@@ -24,10 +24,9 @@ namespace ConsorApp.Negocio
 
         /// <summary>
         /// Evalúa si debe insertar o actualizar un departamento.
-        /// También controla que no se supere la cantidad máxima
-        /// de departamentos permitidos por el edificio.
+        /// Controla que no se supere el límite y devuelve el ID del departamento (ideal para asociar cosas).
         /// </summary>
-        public void GuardarDepartamento(Departamento depto)
+        public int GuardarDepartamento(Departamento depto)
         {
             ValidarDepartamento(depto);
 
@@ -51,13 +50,30 @@ namespace ConsorApp.Negocio
                         $"No se pueden agregar más departamentos.");
                 }
 
-                _datos.InsertarDepartamento(depto);
+                // Insertamos y recuperamos el ID generado por la base de datos
+                return _datos.InsertarDepartamento(depto);
             }
             else
             {
-                // Si es una edición, no controlamos el límite.
+                // Si es una edición, actualizamos y devolvemos su ID actual
                 _datos.ActualizarDepartamento(depto);
+                return depto.IdDepartamento;
             }
+        }
+
+        /// <summary>
+        /// Vincula un departamento con un usuario propietario en la tabla intermedia.
+        /// </summary>
+        public void AsignarPropietarioADepartamento(int idDepartamento, int idUsuarioPropietario)
+        {
+            if (idDepartamento <= 0)
+                throw new Exception("El ID del departamento no es válido para asignar propietario.");
+
+            if (idUsuarioPropietario <= 0)
+                throw new Exception("Debe seleccionar un propietario válido.");
+
+            // Llamamos a la capa de datos para hacer el insert en la relación Propietario
+            _datos.AsignarPropietario(idDepartamento, idUsuarioPropietario);
         }
 
         /// <summary>

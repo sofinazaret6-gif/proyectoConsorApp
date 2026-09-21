@@ -40,7 +40,11 @@ namespace consorApp.Views
             if (usuarioLogueado != null)
             {
                 string nombreCompleto = $"{usuarioLogueado.Nombre} {usuarioLogueado.Apellido}";
-                string nombrePerfil = usuarioLogueado.Perfil?.NombrePerfil ?? "Usuario";
+
+                // Leemos directamente el NombrePerfil que viene de la base de datos a través de la consulta
+                string nombrePerfil = !string.IsNullOrEmpty(usuarioLogueado.NombrePerfil)
+                    ? usuarioLogueado.NombrePerfil
+                    : "Usuario";
 
                 DashboardView dashboard = new DashboardView(nombreCompleto, nombrePerfil);
                 dashboard.Show();

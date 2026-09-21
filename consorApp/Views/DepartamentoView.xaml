@@ -69,8 +69,19 @@
                            FontWeight="SemiBold"/>
 
                 <TextBox x:Name="TxtUnidad"
-                         Margin="0,3,0,15"
+                         Margin="0,3,0,10"
                          Height="28"/>
+
+
+                <!-- Propietario (Opcional) -->
+                <TextBlock Text="Propietario (Opcional):"
+                           FontWeight="SemiBold"/>
+
+                <ComboBox x:Name="CmbPropietario"
+                          DisplayMemberPath="Nombre"
+                          SelectedValuePath="IdUsuario"
+                          Margin="0,3,0,15"
+                          Height="28"/>
 
 
                 <!-- Botones -->

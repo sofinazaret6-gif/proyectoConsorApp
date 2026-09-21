@@ -10,7 +10,7 @@ namespace consorApp.Views
 {
     /// <summary>
     /// Lógica de interacción para la vista de gestión de Departamentos
-    /// en formato de Tarjetas.
+    /// en formato de Tarjetas. Permite agregar, filtrar y asociar propietarios.
     /// </summary>
     public partial class DepartamentoView : Window
     {
@@ -19,6 +19,10 @@ namespace consorApp.Views
 
         private readonly EdificioNegocio _edificioNegocio =
             new EdificioNegocio();
+
+        // Instancia para manejar la lógica de usuarios y buscar a los propietarios
+        private readonly UsuarioNegocio _usuarioNegocio =
+            new UsuarioNegocio();
 
         // Guarda el ID del departamento seleccionado para edición.
         // Si es null, se crea uno nuevo.
@@ -33,10 +37,10 @@ namespace consorApp.Views
         {
             InitializeComponent();
 
+            // Cargamos los desplegables y la grilla de tarjetas al iniciar la vista
             CargarDesplegableEdificios();
-
             CargarFiltroEdificios();
-
+            CargarDesplegablePropietarios();
             CargarDepartamentos();
         }
 
@@ -71,6 +75,32 @@ namespace consorApp.Views
 
 
         // =========================================================
+        // CARGAR PROPIETARIOS PARA EL FORMULARIO
+        // =========================================================
+
+        /// <summary>
+        /// Busca y carga en el ComboBox únicamente a los usuarios que tienen rol de propietario.
+        /// </summary>
+        private void CargarDesplegablePropietarios()
+        {
+            try
+            {
+                DataTable dtPropietarios = _usuarioNegocio.ObtenerPropietarios();
+
+                CmbPropietario.ItemsSource = dtPropietarios.DefaultView;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "No se pudo cargar la lista de propietarios: " + ex.Message,
+                    "Aviso",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
+        }
+
+
+        // =========================================================
         // CARGAR EDIFICIOS PARA EL FILTRO
         // =========================================================
 
@@ -96,7 +126,7 @@ namespace consorApp.Views
                 CmbFiltroEdificio.ItemsSource =
                     dtEdificios.DefaultView;
 
-                // Seleccionamos "Todos los edificios"
+                // Seleccionamos "Todos los edificios" por defecto
                 CmbFiltroEdificio.SelectedValue = 0;
             }
             catch (Exception ex)
@@ -116,7 +146,7 @@ namespace consorApp.Views
         // =========================================================
 
         /// <summary>
-        /// Obtiene y muestra todos los departamentos.
+        /// Obtiene y muestra todos los departamentos en las tarjetas.
         /// </summary>
         private void CargarDepartamentos()
         {
@@ -145,18 +175,15 @@ namespace consorApp.Views
         // =========================================================
 
         /// <summary>
-        /// Filtra las tarjetas según el edificio seleccionado.
+        /// Filtra las tarjetas según el edificio que elegimos en el combo superior.
         /// </summary>
         private void CmbFiltroEdificio_SelectionChanged(
             object sender,
             SelectionChangedEventArgs e)
         {
-            // Si todavía no cargamos los departamentos,
-            // no hacemos nada.
             if (_departamentos == null)
                 return;
 
-            // Si no hay selección, mostramos todos.
             if (CmbFiltroEdificio.SelectedValue == null)
             {
                 LstDepartamentos.ItemsSource =
@@ -169,7 +196,6 @@ namespace consorApp.Views
                 Convert.ToInt32(
                     CmbFiltroEdificio.SelectedValue);
 
-            // 0 significa "Todos los edificios"
             if (idEdificio == 0)
             {
                 LstDepartamentos.ItemsSource =
@@ -178,16 +204,12 @@ namespace consorApp.Views
                 return;
             }
 
-            // Creamos una vista sobre los datos originales.
             DataView vista =
                 new DataView(_departamentos);
 
-            // Filtramos por edificio.
             vista.RowFilter =
                 $"IdEdificio = {idEdificio}";
 
-            // Mostramos solamente los departamentos
-            // del edificio seleccionado.
             LstDepartamentos.ItemsSource = vista;
         }
 
@@ -197,7 +219,7 @@ namespace consorApp.Views
         // =========================================================
 
         /// <summary>
-        /// Guarda o actualiza un departamento.
+        /// Valida los campos, guarda el departamento y le asigna el propietario opcional si se eligió uno.
         /// </summary>
         private void BtnGuardar_Click(
             object sender,
@@ -208,7 +230,7 @@ namespace consorApp.Views
                 if (CmbEdificio.SelectedValue == null)
                 {
                     MessageBox.Show(
-                        "Debe seleccionar un edificio.",
+                        "Che, te faltó seleccionar un edificio.",
                         "Validación",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
@@ -220,14 +242,13 @@ namespace consorApp.Views
                     string.IsNullOrWhiteSpace(TxtUnidad.Text))
                 {
                     MessageBox.Show(
-                        "Debe completar los campos de Piso y Unidad.",
+                        "Completá el piso y la unidad antes de guardar.",
                         "Validación",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
 
                     return;
                 }
-
 
                 Departamento depto = new Departamento
                 {
@@ -245,27 +266,29 @@ namespace consorApp.Views
                         TxtUnidad.Text.Trim()
                 };
 
+                int idDeptoGuardado = _deptoNegocio.GuardarDepartamento(depto);
 
-                _deptoNegocio.GuardarDepartamento(depto);
+                if (CmbPropietario.SelectedValue != null)
+                {
+                    int idUsuarioPropietario = Convert.ToInt32(CmbPropietario.SelectedValue);
 
+                    _deptoNegocio.AsignarPropietarioADepartamento(idDeptoGuardado, idUsuarioPropietario);
+                }
 
                 MessageBox.Show(
-                    "Departamento guardado correctamente.",
-                    "Éxito",
+                    "¡Departamento guardado con éxito!",
+                    "Excelente",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
 
-
                 LimpiarCampos();
 
-                // Volvemos a cargar los departamentos
-                // para actualizar las tarjetas.
                 CargarDepartamentos();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Error al guardar: " + ex.Message,
+                    "Hubo un problema al guardar: " + ex.Message,
                     "Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
@@ -278,8 +301,7 @@ namespace consorApp.Views
         // =========================================================
 
         /// <summary>
-        /// Se dispara al hacer clic sobre cualquier tarjeta
-        /// de departamento.
+        /// Carga los datos del departamento en el formulario al hacerle clic a su tarjeta.
         /// </summary>
         private void TarjetaDepartamento_MouseDown(
             object sender,
@@ -308,9 +330,6 @@ namespace consorApp.Views
         // LIMPIAR
         // =========================================================
 
-        /// <summary>
-        /// Evento del botón Limpiar.
-        /// </summary>
         private void BtnLimpiar_Click(
             object sender,
             RoutedEventArgs e)
@@ -320,17 +339,16 @@ namespace consorApp.Views
 
 
         /// <summary>
-        /// Restablece los controles del formulario
-        /// y cancela la selección actual.
+        /// Resetea los controles del formulario y cancela la selección actual.
         /// </summary>
         private void LimpiarCampos()
         {
             _idDepartamentoSeleccionado = null;
 
             CmbEdificio.SelectedIndex = -1;
+            CmbPropietario.SelectedIndex = -1;
 
             TxtPiso.Clear();
-
             TxtUnidad.Clear();
         }
     }

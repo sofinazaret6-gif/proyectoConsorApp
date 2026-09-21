@@ -7,7 +7,7 @@ namespace ConsorApp.Datos
 {
     /// <summary>
     /// Gestiona las operaciones de persistencia y consultas SQL directas
-    /// sobre la tabla Departamento.
+    /// sobre la tabla Departamento y sus relaciones.
     /// </summary>
     public class DepartamentoDatos
     {
@@ -17,7 +17,7 @@ namespace ConsorApp.Datos
 
         /// <summary>
         /// Realiza una consulta con JOINs para obtener los departamentos,
-        /// agregando el nombre del edificio y el nombre del propietario.
+        /// agregando el nombre del edificio y el nombre del propietario actual.
         /// </summary>
         public DataTable ObtenerDepartamentos()
         {
@@ -111,9 +111,9 @@ namespace ConsorApp.Datos
         }
 
         /// <summary>
-        /// Inserta un nuevo departamento en la base de datos.
+        /// Inserta un nuevo departamento en la base de datos y devuelve el ID generado.
         /// </summary>
-        public void InsertarDepartamento(Departamento depto)
+        public int InsertarDepartamento(Departamento depto)
         {
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             {
@@ -123,7 +123,8 @@ namespace ConsorApp.Datos
                     INSERT INTO Departamento
                     (id_Edificio, piso, unidad)
                     VALUES
-                    (@Id_edificio, @Piso, @Unidad)";
+                    (@Id_edificio, @Piso, @Unidad);
+                    SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                 SqlCommand comando =
                     new SqlCommand(query, conexion);
@@ -136,6 +137,32 @@ namespace ConsorApp.Datos
 
                 comando.Parameters.AddWithValue(
                     "@Unidad", depto.Unidad);
+
+                // Ejecutamos y capturamos el ID que se acaba de crear en la tabla
+                return Convert.ToInt32(comando.ExecuteScalar());
+            }
+        }
+
+        /// <summary>
+        /// Registra la relación entre un departamento y un usuario en la tabla intermedia Propietario.
+        /// </summary>
+        public void AsignarPropietario(int idDepartamento, int idUsuarioPropietario)
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            {
+                conexion.Open();
+
+                string query = @"
+                    INSERT INTO Propietario
+                    (Id_Usuario, Id_Departamento, fechaDesde, estado)
+                    VALUES
+                    (@IdUsuario, @IdDepartamento, GETDATE(), 1)";
+
+                SqlCommand comando =
+                    new SqlCommand(query, conexion);
+
+                comando.Parameters.AddWithValue("@IdUsuario", idUsuarioPropietario);
+                comando.Parameters.AddWithValue("@IdDepartamento", idDepartamento);
 
                 comando.ExecuteNonQuery();
             }

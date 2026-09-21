@@ -51,6 +51,15 @@ namespace ConsorApp.Negocio
             return datos.ValidarCredenciales(usuario, password);
         }
 
+        /// <summary>
+        /// Obtiene una lista con los usuarios que tienen rol de propietario.
+        /// </summary>
+        public DataTable ObtenerPropietarios()
+        {
+            // Corregido: usamos la variable 'datos' que ya está definida arriba
+            return datos.ObtenerPropietarios();
+        }
+
         public void ValidarUsuario(Usuario usuario)
         {
             if (usuario == null)
