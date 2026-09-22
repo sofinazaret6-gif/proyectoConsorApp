@@ -10,27 +10,41 @@ namespace ConsorApp.Datos
         private readonly string cadenaConexion =
             "Server=.\\SQLEXPRESS;Database=consorAppDb;Integrated Security=True;TrustServerCertificate=True;";
 
-        // Obtener todos los edificios
-        public DataTable ObtenerEdificios()
+        // Obtener el único edificio registrado (TOP 1)
+        public EDIFICIO ObtenerUnicoEdificio()
         {
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             {
+                conexion.Open();
+
                 string query = @"
-                    SELECT 
-                        Id_edificio AS IdEdificio,
+                    SELECT TOP 1 
+                        Id_edificio AS id_edificio,
                         Descripcion,
                         CantDepto,
                         CantPisos,
                         Ubicacion
                     FROM Edificio";
 
-                SqlDataAdapter adaptador =
-                    new SqlDataAdapter(query, conexion);
+                SqlCommand comando = new SqlCommand(query, conexion);
 
-                DataTable dt = new DataTable();
-                adaptador.Fill(dt);
+                using (SqlDataReader reader = comando.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new EDIFICIO
+                        {
+                            id_edificio = Convert.ToInt32(reader["id_edificio"]),
+                            Descripcion = reader["Descripcion"]?.ToString() ?? string.Empty,
+                            CantPisos = Convert.ToInt32(reader["CantPisos"]),
+                            CantDepto = Convert.ToInt32(reader["CantDepto"]),
+                            Ubicacion = reader["Ubicacion"]?.ToString() ?? string.Empty
+                        };
+                    }
+                }
 
-                return dt;
+                // Si aún no hay ningún edificio cargado, retorna null
+                return default!;
             }
         }
 
@@ -42,45 +56,20 @@ namespace ConsorApp.Datos
                 conexion.Open();
 
                 string query = @"
-                    INSERT INTO Edificio
-                    (
-                        Descripcion,
-                        CantDepto,
-                        CantPisos,
-                        Ubicacion
-                    )
-                    VALUES
-                    (
-                        @Descripcion,
-                        @CantDepto,
-                        @CantPisos,
-                        @Ubicacion
-                    )";
+                    INSERT INTO Edificio (Descripcion, CantDepto, CantPisos, Ubicacion)
+                    VALUES (@Descripcion, @CantDepto, @CantPisos, @Ubicacion)";
 
-                SqlCommand comando =
-                    new SqlCommand(query, conexion);
-
-                comando.Parameters.AddWithValue(
-                    "@Descripcion",
-                    edificio.Descripcion);
-
-                comando.Parameters.AddWithValue(
-                    "@CantDepto",
-                    edificio.CantDepto);
-
-                comando.Parameters.AddWithValue(
-                    "@CantPisos",
-                    edificio.CantPisos);
-
-                comando.Parameters.AddWithValue(
-                    "@Ubicacion",
-                    edificio.Ubicacion);
+                SqlCommand comando = new SqlCommand(query, conexion);
+                comando.Parameters.AddWithValue("@Descripcion", edificio.Descripcion);
+                comando.Parameters.AddWithValue("@CantDepto", edificio.CantDepto);
+                comando.Parameters.AddWithValue("@CantPisos", edificio.CantPisos);
+                comando.Parameters.AddWithValue("@Ubicacion", edificio.Ubicacion);
 
                 comando.ExecuteNonQuery();
             }
         }
 
-        // Actualizar un edificio existente
+        // Actualizar el edificio existente
         public void ActualizarEdificio(EDIFICIO edificio)
         {
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
@@ -96,87 +85,47 @@ namespace ConsorApp.Datos
                         Ubicacion = @Ubicacion
                     WHERE Id_edificio = @IdEdificio";
 
-                SqlCommand comando =
-                    new SqlCommand(query, conexion);
-
-                comando.Parameters.AddWithValue(
-                    "@IdEdificio",
-                    edificio.id_edificio);
-
-                comando.Parameters.AddWithValue(
-                    "@Descripcion",
-                    edificio.Descripcion);
-
-                comando.Parameters.AddWithValue(
-                    "@CantDepto",
-                    edificio.CantDepto);
-
-                comando.Parameters.AddWithValue(
-                    "@CantPisos",
-                    edificio.CantPisos);
-
-                comando.Parameters.AddWithValue(
-                    "@Ubicacion",
-                    edificio.Ubicacion);
+                SqlCommand comando = new SqlCommand(query, conexion);
+                comando.Parameters.AddWithValue("@IdEdificio", edificio.id_edificio);
+                comando.Parameters.AddWithValue("@Descripcion", edificio.Descripcion);
+                comando.Parameters.AddWithValue("@CantDepto", edificio.CantDepto);
+                comando.Parameters.AddWithValue("@CantPisos", edificio.CantPisos);
+                comando.Parameters.AddWithValue("@Ubicacion", edificio.Ubicacion);
 
                 comando.ExecuteNonQuery();
             }
         }
 
-        // Obtener cuántos departamentos tiene actualmente un edificio
         public int ObtenerCantidadDepartamentos(int idEdificio)
         {
-            using (SqlConnection conexion =
-                new SqlConnection(cadenaConexion))
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             {
                 conexion.Open();
-
-                string query = @"
-                    SELECT COUNT(*)
-                    FROM Departamento
-                    WHERE id_Edificio = @IdEdificio";
-
-                SqlCommand comando =
-                    new SqlCommand(query, conexion);
-
-                comando.Parameters.AddWithValue(
-                    "@IdEdificio",
-                    idEdificio);
-
-                return Convert.ToInt32(
-                    comando.ExecuteScalar());
+                string query = "SELECT COUNT(*) FROM Departamento WHERE id_Edificio = @IdEdificio";
+                SqlCommand comando = new SqlCommand(query, conexion);
+                comando.Parameters.AddWithValue("@IdEdificio", idEdificio);
+                return Convert.ToInt32(comando.ExecuteScalar());
             }
         }
 
-        // Obtener el piso más alto que tiene departamentos registrados
         public int ObtenerPisoMaximo(int idEdificio)
         {
-            using (SqlConnection conexion =
-                new SqlConnection(cadenaConexion))
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             {
                 conexion.Open();
-
                 string query = @"
                     SELECT MAX(
                         CASE
-                            WHEN ISNUMERIC(piso) = 1
-                            THEN CAST(piso AS INT)
+                            WHEN ISNUMERIC(piso) = 1 THEN CAST(piso AS INT)
                             ELSE NULL
                         END
                     )
-                    FROM Departamento
-                    WHERE id_Edificio = @IdEdificio";
+                    FROM Departamento WHERE id_Edificio = @IdEdificio";
 
-                SqlCommand comando =
-                    new SqlCommand(query, conexion);
+                SqlCommand comando = new SqlCommand(query, conexion);
+                comando.Parameters.AddWithValue("@IdEdificio", idEdificio);
 
-                comando.Parameters.AddWithValue(
-                    "@IdEdificio",
-                    idEdificio);
-
-                object resultado =
-                    comando.ExecuteScalar();
-
+                object resultado = comando.ExecuteScalar();
                 if (resultado == DBNull.Value || resultado == null)
                     return 0;
 

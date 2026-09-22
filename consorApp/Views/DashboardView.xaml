@@ -90,7 +90,7 @@
                                Foreground="{StaticResource ColorTextoSecundario}"
                                FontSize="11" FontWeight="Bold"
                                Margin="20,10,0,5"/>
-
+                    <Button x:Name="BtnMiDpto" Content="🏠  Mi Departamento" Style="{StaticResource EstiloBotonMenu}"/>
                     <Button x:Name="BtnAvisos" Content="📢  Avisos" Style="{StaticResource EstiloBotonMenu}"/>
                     <Button x:Name="BtnReclamos" Content="🛠️  Reclamos" Style="{StaticResource EstiloBotonMenu}"/>
                     <Button x:Name="BtnReservas" Content="📅  Reservas" Style="{StaticResource EstiloBotonMenu}"/>

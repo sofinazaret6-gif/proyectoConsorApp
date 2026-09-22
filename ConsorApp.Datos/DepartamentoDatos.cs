@@ -16,8 +16,8 @@ namespace ConsorApp.Datos
             "Server=.\\SQLEXPRESS;Database=consorAppDb;Integrated Security=True;TrustServerCertificate=True;";
 
         /// <summary>
-        /// Realiza una consulta con JOINs para obtener los departamentos,
-        /// agregando el nombre del edificio y el nombre del propietario actual.
+        /// Obtiene los departamentos con el nombre de su propietario actual.
+        /// Se omitió el JOIN con la tabla Edificio al manejar un único edificio en el sistema.
         /// </summary>
         public DataTable ObtenerDepartamentos()
         {
@@ -29,81 +29,72 @@ namespace ConsorApp.Datos
                         d.id_Edificio AS IdEdificio,
                         d.piso AS Piso,
                         d.unidad AS Unidad,
-                        e.Descripcion AS NombreEdificio,
-
-                        ISNULL(u.Nombre + ' ' + u.Apellido, 'Sin Asignar')
-                            AS NombrePropietario
-
+                        ISNULL(u.Nombre + ' ' + u.Apellido, 'Sin Asignar') AS NombrePropietario
                     FROM Departamento d
-
-                    INNER JOIN Edificio e
-                        ON d.id_Edificio = e.id_edificio
-
                     LEFT JOIN Propietario p
                         ON d.id_Departamento = p.Id_Departamento
                         AND p.fechaHasta IS NULL
-
                     LEFT JOIN Usuarios u
                         ON p.Id_Usuario = u.idUsuario";
 
-                SqlDataAdapter adaptador =
-                    new SqlDataAdapter(query, conexion);
-
+                SqlDataAdapter adaptador = new SqlDataAdapter(query, conexion);
                 DataTable dt = new DataTable();
                 adaptador.Fill(dt);
-
                 return dt;
             }
         }
 
         /// <summary>
-        /// Obtiene la cantidad actual de departamentos que tiene un edificio.
+        /// Obtiene la cantidad actual de departamentos registrados.
+        /// Si se pasa idEdificio <= 0, cuenta el total sin filtrar.
         /// </summary>
-        public int ObtenerCantidadDepartamentos(int idEdificio)
+        public int ObtenerCantidadDepartamentos(int idEdificio = 0)
         {
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             {
                 conexion.Open();
 
-                string query = @"
-                    SELECT COUNT(*)
-                    FROM Departamento
-                    WHERE id_Edificio = @IdEdificio";
+                string query = idEdificio > 0
+                    ? "SELECT COUNT(*) FROM Departamento WHERE id_Edificio = @IdEdificio"
+                    : "SELECT COUNT(*) FROM Departamento";
 
-                SqlCommand comando =
-                    new SqlCommand(query, conexion);
+                SqlCommand comando = new SqlCommand(query, conexion);
 
-                comando.Parameters.AddWithValue("@IdEdificio", idEdificio);
+                if (idEdificio > 0)
+                {
+                    comando.Parameters.AddWithValue("@IdEdificio", idEdificio);
+                }
 
                 return Convert.ToInt32(comando.ExecuteScalar());
             }
         }
 
         /// <summary>
-        /// Obtiene la cantidad máxima de departamentos permitidos
-        /// para un edificio.
+        /// Obtiene la cantidad máxima de departamentos permitidos para un edificio.
+        /// Si no se especifica ID, toma el límite del primer edificio cargado en la base de datos.
         /// </summary>
-        public int ObtenerCantidadMaximaDepartamentos(int idEdificio)
+        public int ObtenerCantidadMaximaDepartamentos(int idEdificio = 0)
         {
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             {
                 conexion.Open();
 
-                string query = @"
-                    SELECT CantDepto
-                    FROM Edificio
-                    WHERE id_edificio = @IdEdificio";
+                string query = idEdificio > 0
+                    ? "SELECT CantDepto FROM Edificio WHERE id_edificio = @IdEdificio"
+                    : "SELECT TOP 1 CantDepto FROM Edificio";
 
-                SqlCommand comando =
-                    new SqlCommand(query, conexion);
+                SqlCommand comando = new SqlCommand(query, conexion);
 
-                comando.Parameters.AddWithValue("@IdEdificio", idEdificio);
+                if (idEdificio > 0)
+                {
+                    comando.Parameters.AddWithValue("@IdEdificio", idEdificio);
+                }
 
                 object resultado = comando.ExecuteScalar();
 
                 if (resultado == null)
                 {
-                    throw new Exception("No se encontró el edificio seleccionado.");
+                    throw new Exception("No se encontró la configuración del edificio.");
                 }
 
                 return Convert.ToInt32(resultado);
@@ -120,25 +111,16 @@ namespace ConsorApp.Datos
                 conexion.Open();
 
                 string query = @"
-                    INSERT INTO Departamento
-                    (id_Edificio, piso, unidad)
-                    VALUES
-                    (@Id_edificio, @Piso, @Unidad);
+                    INSERT INTO Departamento (id_Edificio, piso, unidad)
+                    VALUES (@Id_edificio, @Piso, @Unidad);
                     SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
-                SqlCommand comando =
-                    new SqlCommand(query, conexion);
+                SqlCommand comando = new SqlCommand(query, conexion);
 
-                comando.Parameters.AddWithValue(
-                    "@Id_edificio", depto.IdEdificio);
+                comando.Parameters.AddWithValue("@Id_edificio", depto.IdEdificio);
+                comando.Parameters.AddWithValue("@Piso", depto.Piso);
+                comando.Parameters.AddWithValue("@Unidad", depto.Unidad);
 
-                comando.Parameters.AddWithValue(
-                    "@Piso", depto.Piso);
-
-                comando.Parameters.AddWithValue(
-                    "@Unidad", depto.Unidad);
-
-                // Ejecutamos y capturamos el ID que se acaba de crear en la tabla
                 return Convert.ToInt32(comando.ExecuteScalar());
             }
         }
@@ -153,13 +135,10 @@ namespace ConsorApp.Datos
                 conexion.Open();
 
                 string query = @"
-                    INSERT INTO Propietario
-                    (Id_Usuario, Id_Departamento, fechaDesde, estado)
-                    VALUES
-                    (@IdUsuario, @IdDepartamento, GETDATE(), 1)";
+                    INSERT INTO Propietario (Id_Usuario, Id_Departamento, fechaDesde, estado)
+                    VALUES (@IdUsuario, @IdDepartamento, GETDATE(), 1)";
 
-                SqlCommand comando =
-                    new SqlCommand(query, conexion);
+                SqlCommand comando = new SqlCommand(query, conexion);
 
                 comando.Parameters.AddWithValue("@IdUsuario", idUsuarioPropietario);
                 comando.Parameters.AddWithValue("@IdDepartamento", idDepartamento);
@@ -184,20 +163,12 @@ namespace ConsorApp.Datos
                         unidad = @Unidad
                     WHERE id_Departamento = @IdDepartamento";
 
-                SqlCommand comando =
-                    new SqlCommand(query, conexion);
+                SqlCommand comando = new SqlCommand(query, conexion);
 
-                comando.Parameters.AddWithValue(
-                    "@IdDepartamento", depto.IdDepartamento);
-
-                comando.Parameters.AddWithValue(
-                    "@Id_edificio", depto.IdEdificio);
-
-                comando.Parameters.AddWithValue(
-                    "@Piso", depto.Piso);
-
-                comando.Parameters.AddWithValue(
-                    "@Unidad", depto.Unidad);
+                comando.Parameters.AddWithValue("@IdDepartamento", depto.IdDepartamento);
+                comando.Parameters.AddWithValue("@Id_edificio", depto.IdEdificio);
+                comando.Parameters.AddWithValue("@Piso", depto.Piso);
+                comando.Parameters.AddWithValue("@Unidad", depto.Unidad);
 
                 comando.ExecuteNonQuery();
             }

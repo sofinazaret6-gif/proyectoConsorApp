@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using ConsorApp.Datos;
 using ConsorApp.Entidades;
 
@@ -7,104 +6,69 @@ namespace ConsorApp.Negocio
 {
     public class EdificioNegocio
     {
-        private readonly EdificioDatos _datos =
-            new EdificioDatos();
+        private readonly EdificioDatos _datos = new EdificioDatos();
 
-        // Obtener todos los edificios
-        public DataTable ObtenerEdificios()
+        // Obtiene el único edificio registrado
+        public EDIFICIO ObtenerUnicoEdificio()
         {
-            return _datos.ObtenerEdificios();
+            return _datos.ObtenerUnicoEdificio();
         }
 
-        // Guardar o actualizar un edificio
+        // Guardar o actualizar
         public void GuardarEdificio(EDIFICIO edificio)
         {
-            // Validaciones generales
             ValidarEdificio(edificio);
 
-            // NUEVO EDIFICIO
+            // Si id_edificio es 0, es la primera vez (INSERT)
             if (edificio.id_edificio == 0)
             {
                 _datos.InsertarEdificio(edificio);
             }
-            // EDIFICIO EXISTENTE
+            // Si ya tiene ID, es una actualización (UPDATE)
             else
             {
                 ValidarModificacion(edificio);
-
                 _datos.ActualizarEdificio(edificio);
             }
         }
 
-        // Validaciones generales
-        private void ValidarEdificio(EDIFICIO edificio)
+        private static void ValidarEdificio(EDIFICIO edificio)
         {
             if (edificio == null)
-                throw new ArgumentNullException(
-                    nameof(edificio),
-                    "El edificio no puede ser nulo.");
+                throw new ArgumentNullException(nameof(edificio), "El edificio no puede ser nulo.");
 
-            if (string.IsNullOrWhiteSpace(
-                edificio.Descripcion))
-            {
-                throw new Exception(
-                    "El nombre o descripción del edificio es obligatorio.");
-            }
+            if (string.IsNullOrWhiteSpace(edificio.Descripcion))
+                throw new Exception("El nombre o descripción del edificio es obligatorio.");
 
-            if (string.IsNullOrWhiteSpace(
-                edificio.Ubicacion))
-            {
-                throw new Exception(
-                    "La ubicación o dirección del edificio es obligatoria.");
-            }
+            if (string.IsNullOrWhiteSpace(edificio.Ubicacion))
+                throw new Exception("La ubicación o dirección del edificio es obligatoria.");
 
             if (edificio.CantPisos <= 0)
-            {
-                throw new Exception(
-                    "La cantidad de pisos debe ser mayor a 0.");
-            }
+                throw new Exception("La cantidad de pisos debe ser mayor a 0.");
 
             if (edificio.CantDepto <= 0)
-            {
-                throw new Exception(
-                    "La cantidad de departamentos debe ser mayor a 0.");
-            }
+                throw new Exception("La cantidad de departamentos debe ser mayor a 0.");
         }
 
-        // Validaciones cuando se modifica un edificio existente
+        // utiliza '_datos' para realizar consultas a la base de datos
         private void ValidarModificacion(EDIFICIO edificio)
         {
-            // Cantidad actual de departamentos registrados
-            int cantidadDepartamentos =
-                _datos.ObtenerCantidadDepartamentos(
-                    edificio.id_edificio);
-
-            // ------------------------------------------------
-            // VALIDACIÓN DE DEPARTAMENTOS
-            // ------------------------------------------------
+            int cantidadDepartamentos = _datos.ObtenerCantidadDepartamentos(edificio.id_edificio);
 
             if (edificio.CantDepto < cantidadDepartamentos)
             {
                 throw new Exception(
-                    $"No se puede reducir la cantidad de departamentos a " +
-                    $"{edificio.CantDepto} porque actualmente hay " +
-                    $"{cantidadDepartamentos} departamentos registrados.");
+                    $"No se puede reducir la cantidad de departamentos a {edificio.CantDepto} " +
+                    $"porque actualmente hay {cantidadDepartamentos} departamentos registrados.");
             }
 
-            // ------------------------------------------------
-            // VALIDACIÓN DE PISOS
-            // ------------------------------------------------
-
-            int pisoMaximo =
-                _datos.ObtenerPisoMaximo(
-                    edificio.id_edificio);
+            int pisoMaximo = _datos.ObtenerPisoMaximo(edificio.id_edificio);
 
             if (edificio.CantPisos < pisoMaximo)
             {
                 throw new Exception(
-                    $"No se puede reducir la cantidad de pisos a " +
-                    $"{edificio.CantPisos} porque existe al menos un " +
-                    $"departamento registrado en el piso {pisoMaximo}.");
+                    $"No se puede reducir la cantidad de pisos a {edificio.CantPisos} " +
+                    $"porque existe al menos un departamento registrado en el piso {pisoMaximo}.");
             }
         }
     }

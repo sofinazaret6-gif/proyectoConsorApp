@@ -37,6 +37,7 @@ namespace consorApp.Views
                 BtnEdificio.Visibility = Visibility.Collapsed;
                 BtnExpensas.Visibility = Visibility.Collapsed;
                 BtnUsuarios.Visibility = Visibility.Collapsed;
+                BtnMiDpto.Visibility = Visibility.Collapsed;
             }
             // Propietario / Inquilino
             else if (perfil.Contains("propietario") || perfil.Contains("inquilino"))

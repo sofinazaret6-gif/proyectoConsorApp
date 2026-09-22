@@ -45,18 +45,14 @@
 
 
                 <!-- Edificio -->
-                <TextBlock Text="Edificio:"
-                           FontWeight="SemiBold"/>
 
-                <ComboBox x:Name="CmbEdificio"
-                          DisplayMemberPath="Descripcion"
-                          SelectedValuePath="IdEdificio"
-                          Margin="0,3,0,10"
-                          Height="28"/>
+                <!-- Un campo que solo muestra el edificio actual): -->
+                <Label Content="Edificio:" Target="{Binding ElementName=TxtEdificioNombre}"/>
+                <TextBox x:Name="TxtEdificioNombre" IsReadOnly="True" Background="#F0F0F0" Foreground="#555"/>
 
 
                 <!-- Piso -->
-                <TextBlock Text="Piso (Ej: 1, PB):"
+                <TextBlock Text="Piso (Ej: 1, 2):"
                            FontWeight="SemiBold"/>
 
                 <TextBox x:Name="TxtPiso"
@@ -130,44 +126,7 @@
             </Grid.RowDefinitions>
 
 
-            <!-- ================================================== -->
-            <!-- FILTRO POR EDIFICIO -->
-            <!-- ================================================== -->
-
-            <Border Grid.Row="0"
-                    Background="White"
-                    CornerRadius="8"
-                    BorderBrush="{StaticResource ColorBordeTarjeta}"
-                    BorderThickness="1"
-                    Padding="10"
-                    Margin="8,0,0,8">
-
-                <Grid>
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-
-                    <TextBlock Grid.Column="0"
-                               Text="Filtrar por edificio:"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource ColorGrisOscuro}"
-                               VerticalAlignment="Center"
-                               Margin="0,0,10,0"/>
-
-
-                    <ComboBox Grid.Column="1"
-                              x:Name="CmbFiltroEdificio"
-                              DisplayMemberPath="Descripcion"
-                              SelectedValuePath="IdEdificio"
-                              Height="28"
-                              SelectionChanged="CmbFiltroEdificio_SelectionChanged"/>
-
-                </Grid>
-
-            </Border>
+           
 
 
             <!-- ================================================== -->
@@ -251,15 +210,6 @@
                                     <Separator Margin="0,2,0,8"
                                                Background="#EEE"/>
 
-
-                                    <!-- Edificio -->
-
-                                    <TextBlock Text="{Binding NombreEdificio}"
-                                               FontWeight="SemiBold"
-                                               FontSize="11"
-                                               Foreground="{StaticResource ColorGrisOscuro}"
-                                               TextTrimming="CharacterEllipsis"
-                                               HorizontalAlignment="Center"/>
 
 
                                     <!-- Propietario -->

@@ -77,26 +77,21 @@ namespace ConsorApp.Negocio
         }
 
         /// <summary>
-        /// Aplica las reglas requeridas antes de persistir el departamento.
+        /// Aplica las reglas requeridas antes de persistir un departamento.
+        /// </summary>
+        /// <summary>
+        /// Aplica las reglas requeridas antes de persistir un departamento.
         /// </summary>
         private void ValidarDepartamento(Departamento depto)
         {
             if (depto == null)
-                throw new ArgumentNullException(
-                    nameof(depto),
-                    "El departamento no puede ser nulo.");
-
-            if (depto.IdEdificio <= 0)
-                throw new Exception(
-                    "Debe seleccionar un edificio válido.");
+                throw new ArgumentNullException(nameof(depto), "El departamento no puede ser nulo.");
 
             if (string.IsNullOrWhiteSpace(depto.Piso))
-                throw new Exception(
-                    "El número o identificación del piso es obligatorio (ej: '1', 'PB').");
+                throw new Exception("El número o nombre del piso es obligatorio.");
 
             if (string.IsNullOrWhiteSpace(depto.Unidad))
-                throw new Exception(
-                    "La unidad o número de departamento es obligatoria (ej: 'A', '101').");
+                throw new Exception("La unidad del departamento es obligatoria.");
         }
     }
 }
