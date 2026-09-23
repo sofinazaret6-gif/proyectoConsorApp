@@ -2,6 +2,7 @@
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using ConsorApp.Entidades;
 using ConsorApp.Negocio;
 
@@ -53,20 +54,21 @@ namespace consorApp.Views
         {
             try
             {
-                // Usamos UsuarioSistema y Contrasenia tal como los definieron
+                // Incluimos el campo Telefono que faltaba enviar al objeto
                 Usuario usuarioInput = new Usuario
                 {
                     IdUsuario = idUsuarioSeleccionado ?? 0,
                     Nombre = TxtNombre.Text.Trim(),
                     Apellido = TxtApellido.Text.Trim(),
                     Dni = TxtDni.Text.Trim(),
+                    Telefono = TxtTelefono.Text.Trim(),
                     Email = TxtEmail.Text.Trim(),
                     UsuarioSistema = TxtUsuarioSistema.Text.Trim(),
                     Contrasenia = TxtContrasenia.Password.Trim(),
                     IdPerfil = CmbPerfil.SelectedValue != null ? Convert.ToInt32(CmbPerfil.SelectedValue) : 0
                 };
 
-                // Ejecutamos la validación de DNI (8 dígitos) y Email (@)
+                // Ejecutamos la validación
                 _usuarioNegocio.ValidarUsuario(usuarioInput);
 
                 if (idUsuarioSeleccionado == null)
@@ -172,12 +174,11 @@ namespace consorApp.Views
 
         private void AplicarFiltroEstado()
         {
-            // Validamos que tanto la vista como el ComboBox y el DataGrid no sean nulos
             if (_vistaUsuariosCompleta == null || CmbFiltroEstado == null || DgUsuarios == null) return;
 
             if (CmbFiltroEstado.SelectedItem is ComboBoxItem itemSeleccionado)
             {
-                string filtro = itemSeleccionado.Content.ToString();
+                string filtro = itemSeleccionado.Content.ToString() ?? string.Empty;
 
                 if (filtro.Contains("Activos"))
                     _vistaUsuariosCompleta.RowFilter = "Estado = 1";
@@ -190,20 +191,31 @@ namespace consorApp.Views
             }
         }
 
-        private void SoloNumeros_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private void SoloNumeros_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
+            // Validamos que el texto a evaluar no sea nulo de forma segura
+            string textoAValidar = e.Text ?? string.Empty;
             System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
+            e.Handled = regex.IsMatch(textoAValidar);
         }
 
         private void Texto_Pasting(object sender, DataObjectPastingEventArgs e)
         {
             if (e.DataObject.GetDataPresent(DataFormats.Text))
             {
-                string textoPuntual = e.DataObject.GetData(DataFormats.Text) as string;
-                System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex("[^0-9]+");
+                // Usamos string? para prevenir advertencias de nulabilidad
+                string? textoPuntual = e.DataObject.GetData(DataFormats.Text) as string;
 
-                if (regex.IsMatch(textoPuntual))
+                if (!string.IsNullOrEmpty(textoPuntual))
+                {
+                    System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex("[^0-9]+");
+
+                    if (regex.IsMatch(textoPuntual))
+                    {
+                        e.CancelCommand();
+                    }
+                }
+                else
                 {
                     e.CancelCommand();
                 }
