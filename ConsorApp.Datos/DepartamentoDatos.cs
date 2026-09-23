@@ -16,19 +16,19 @@ namespace ConsorApp.Datos
             "Server=.\\SQLEXPRESS;Database=consorAppDb;Integrated Security=True;TrustServerCertificate=True;";
 
         /// <summary>
-        /// Obtiene los departamentos con el nombre de su propietario actual.
-        /// Se omitió el JOIN con la tabla Edificio al manejar un único edificio en el sistema.
+        /// Obtiene los departamentos con el ID y nombre de su propietario actual.
         /// </summary>
         public DataTable ObtenerDepartamentos()
         {
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             {
                 string query = @"
-                    SELECT
+                    SELECT DISTINCT
                         d.id_Departamento AS IdDepartamento,
                         d.id_Edificio AS IdEdificio,
                         d.piso AS Piso,
                         d.unidad AS Unidad,
+                        p.Id_Usuario AS IdPropietario,
                         ISNULL(u.Nombre + ' ' + u.Apellido, 'Sin Asignar') AS NombrePropietario
                     FROM Departamento d
                     LEFT JOIN Propietario p
@@ -171,6 +171,45 @@ namespace ConsorApp.Datos
                 comando.Parameters.AddWithValue("@Unidad", depto.Unidad);
 
                 comando.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Gestiona la asignación de un único propietario vigente para el departamento.
+        /// Si se pasa null, cierra todas las relaciones activas. Si se pasa un ID, actualiza o inserta el nuevo dueño.
+        /// </summary>
+        public void SincronizarPropietario(int idDepartamento, int? idUsuarioPropietario)
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            {
+                conexion.Open();
+
+                // 1. Cerramos cualquier relación activa anterior para este departamento
+                string queryCierre = @"
+            UPDATE Propietario 
+            SET fechaHasta = GETDATE(), estado = 0 
+            WHERE Id_Departamento = @IdDepartamento AND fechaHasta IS NULL";
+
+                using (SqlCommand cmdCierre = new SqlCommand(queryCierre, conexion))
+                {
+                    cmdCierre.Parameters.AddWithValue("@IdDepartamento", idDepartamento);
+                    cmdCierre.ExecuteNonQuery();
+                }
+
+                // 2. Si se especificó un nuevo propietario válido, lo insertamos como activo
+                if (idUsuarioPropietario.HasValue && idUsuarioPropietario.Value > 0)
+                {
+                    string queryInsert = @"
+                INSERT INTO Propietario (Id_Usuario, Id_Departamento, fechaDesde, estado)
+                VALUES (@IdUsuario, @IdDepartamento, GETDATE(), 1)";
+
+                    using (SqlCommand cmdInsert = new SqlCommand(queryInsert, conexion))
+                    {
+                        cmdInsert.Parameters.AddWithValue("@IdUsuario", idUsuarioPropietario.Value);
+                        cmdInsert.Parameters.AddWithValue("@IdDepartamento", idDepartamento);
+                        cmdInsert.ExecuteNonQuery();
+                    }
+                }
             }
         }
     }

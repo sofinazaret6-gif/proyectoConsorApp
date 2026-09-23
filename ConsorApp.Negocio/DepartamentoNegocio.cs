@@ -62,23 +62,20 @@ namespace ConsorApp.Negocio
         }
 
         /// <summary>
-        /// Vincula un departamento con un usuario propietario en la tabla intermedia.
+        /// Vincula un departamento con un usuario propietario en la tabla intermedia de forma opcional.
         /// </summary>
-        public void AsignarPropietarioADepartamento(int idDepartamento, int idUsuarioPropietario)
+        /// <summary>
+        /// Asigna o remueve el único propietario de un departamento.
+        /// </summary>
+        public void AsignarPropietarioADepartamento(int idDepartamento, int? idUsuarioPropietario)
         {
             if (idDepartamento <= 0)
                 throw new Exception("El ID del departamento no es válido para asignar propietario.");
 
-            if (idUsuarioPropietario <= 0)
-                throw new Exception("Debe seleccionar un propietario válido.");
-
-            // Llamamos a la capa de datos para hacer el insert en la relación Propietario
-            _datos.AsignarPropietario(idDepartamento, idUsuarioPropietario);
+            // Llamamos a datos para sincronizar (cierra el anterior y pone el nuevo, o deja vacío si es null)
+            _datos.SincronizarPropietario(idDepartamento, idUsuarioPropietario);
         }
 
-        /// <summary>
-        /// Aplica las reglas requeridas antes de persistir un departamento.
-        /// </summary>
         /// <summary>
         /// Aplica las reglas requeridas antes de persistir un departamento.
         /// </summary>
