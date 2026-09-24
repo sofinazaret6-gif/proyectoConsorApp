@@ -1,0 +1,64 @@
+﻿<Window x:Class="consorApp.Views.MiDepartamentoView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        mc:Ignorable="d" 
+        Title="Mi Departamento - ConsorApp" 
+        Height="650" Width="950"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="ColorGrisOscuro" Color="#2E363A"/>
+        <SolidColorBrush x:Key="ColorTaupeBronce" Color="#A09285"/>
+        <SolidColorBrush x:Key="ColorGrisClaro" Color="#F7F5F2"/>
+        <SolidColorBrush x:Key="ColorTextoSecundario" Color="#777777"/>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <!-- Encabezado de la Vista -->
+            <Grid Margin="0,0,0,20">
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                    <TextBlock Text="Mi Departamento" FontSize="22" FontWeight="Bold" Foreground="{StaticResource ColorGrisOscuro}"/>
+                    <TextBlock Text="Información de la propiedad, propietario registrado y estado de expensas." FontSize="13" Foreground="{StaticResource ColorTextoSecundario}" Margin="0,4,0,0"/>
+                </StackPanel>
+                <Border Background="#27AE60" CornerRadius="12" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="12,6">
+                    <TextBlock Text="Estado: Al Día" Foreground="White" FontWeight="Bold" FontSize="12"/>
+                </Border>
+            </Grid>
+
+            <!-- Tarjetas de Información Principal -->
+            <UniformGrid Columns="3" Margin="0,0,0,20">
+                <!-- Unidad Funcional -->
+                <Border Background="{StaticResource ColorGrisClaro}" CornerRadius="8" Padding="20" Margin="0,0,10,0" BorderBrush="#E5E0DA" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="UNIDAD FUNCIONAL" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ColorTextoSecundario}"/>
+                        <TextBlock Text="Piso 4 - Dpto B" FontSize="20" FontWeight="Bold" Foreground="{StaticResource ColorGrisOscuro}" Margin="0,8,0,0"/>
+                        <TextBlock Text="Torre A | Consorcio Central" FontSize="12" Foreground="#888888" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Datos del Propietario Registrado -->
+                <Border Background="{StaticResource ColorGrisClaro}" CornerRadius="8" Padding="20" Margin="5,0,5,0" BorderBrush="#E5E0DA" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="PROPIETARIO REGISTRADO" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ColorTextoSecundario}"/>
+                        <TextBlock Text="Ana Martinez" FontSize="20" FontWeight="Bold" Foreground="{StaticResource ColorGrisOscuro}" Margin="0,8,0,0"/>
+                        <TextBlock Text="DNI: 38.123.456" FontSize="12" Foreground="#555555" Margin="0,4,0,0"/>
+                        <TextBlock Text="Email: anaMartinez2@email.com" FontSize="12" Foreground="#888888" Margin="0,2,0,0"/>
+                        <TextBlock Text="Teléfono: 3794563226" FontSize="12" Foreground="#888888" Margin="0,2,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Última Expensa -->
+                <Border Background="{StaticResource ColorGrisClaro}" CornerRadius="8" Padding="20" Margin="10,0,0,0" BorderBrush="#E5E0DA" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="ÚLTIMA EXPENSA" FontSize="11" FontWeight="Bold" Foreground="{StaticResource ColorTextoSecundario}"/>
+                        <TextBlock Text="$ 45.000" FontSize="20" FontWeight="Bold" Foreground="{StaticResource ColorGrisOscuro}" Margin="0,8,0,0"/>
+                        <TextBlock Text="Vencimiento: 10/10/2026 (Pagado)" FontSize="12" Foreground="#27AE60" FontWeight="SemiBold" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

@@ -1,0 +1,95 @@
+﻿<Window x:Class="consorApp.Views.AvisosPropietarioView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        mc:Ignorable="d" 
+        Title="Avisos del Consorcio - ConsorApp" 
+        Height="650" Width="950"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="ColorGrisOscuro" Color="#2E363A"/>
+        <SolidColorBrush x:Key="ColorTaupeBronce" Color="#A09285"/>
+        <SolidColorBrush x:Key="ColorGrisClaro" Color="#F7F5F2"/>
+        <SolidColorBrush x:Key="ColorTextoSecundario" Color="#777777"/>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <!-- Encabezado -->
+            <Grid Margin="0,0,0,20">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Avisos y Comunicados" FontSize="22" FontWeight="Bold" Foreground="{StaticResource ColorGrisOscuro}"/>
+                    <TextBlock Text="Consulte los comunicados generales del consorcio y notificaciones dirigidas a su unidad." FontSize="13" Foreground="{StaticResource ColorTextoSecundario}" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Tarjeta 1: Aviso General -->
+            <Border Background="{StaticResource ColorGrisClaro}" CornerRadius="8" Padding="18" Margin="0,0,0,15" BorderBrush="#E5E0DA" BorderThickness="1">
+                <StackPanel>
+                    <Grid Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Background="#A09285" CornerRadius="4" Padding="8,3" Margin="0,0,10,0">
+                                <TextBlock Text="GENERAL" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                            </Border>
+                            <TextBlock Text="Corte programado de agua sanitaria" FontSize="16" FontWeight="Bold" Foreground="{StaticResource ColorGrisOscuro}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Text="Publicado: 22/09/2026 - 10:30 hs" FontSize="12" Foreground="{StaticResource ColorTextoSecundario}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <TextBlock Text="Estimados vecinos, les informamos que el día de mañana se realizará la limpieza anual de los tanques de agua. El suministro estará interrumpido de 08:00 a 13:00 hs. Agradecemos su comprensión." 
+                               FontSize="13" Foreground="#444444" TextWrapping="Wrap" Margin="0,5,0,10"/>
+
+                    <Separator Background="#E5E0DA" Margin="0,5"/>
+
+                    <TextBlock Text="Publicado por: Encargado de Edificio" FontSize="11" Foreground="#888888" FontStyle="Italic"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Tarjeta 2: Aviso Particular (Directo para el Departamento) -->
+            <Border Background="#FFFDF7" CornerRadius="8" Padding="18" Margin="0,0,0,15" BorderBrush="#D2B48C" BorderThickness="1.5">
+                <StackPanel>
+                    <Grid Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Background="#E67E22" CornerRadius="4" Padding="8,3" Margin="0,0,10,0">
+                                <TextBlock Text="PARTICULAR (Piso 4 Dpto B)" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                            </Border>
+                            <TextBlock Text="Encomienda recibida en Guardia" FontSize="16" FontWeight="Bold" Foreground="{StaticResource ColorGrisOscuro}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Text="Publicado: 23/09/2026 - 15:15 hs" FontSize="12" Foreground="{StaticResource ColorTextoSecundario}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <TextBlock Text="Señora Ana Martinez, ha ingresado un paquete a su nombre en la recepción del edificio (Servicio Andreani). Puede pasar a retirarlo por la guardia en cualquier momento." 
+                               FontSize="13" Foreground="#444444" TextWrapping="Wrap" Margin="0,5,0,10"/>
+
+                    <Separator Background="#E5E0DA" Margin="0,5"/>
+
+                    <TextBlock Text="Publicado por: Encargado de Edificio" FontSize="11" Foreground="#888888" FontStyle="Italic"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Tarjeta 3: Aviso General Antiguo -->
+            <Border Background="{StaticResource ColorGrisClaro}" CornerRadius="8" Padding="18" Margin="0,0,0,15" BorderBrush="#E5E0DA" BorderThickness="1">
+                <StackPanel>
+                    <Grid Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Background="#A09285" CornerRadius="4" Padding="8,3" Margin="0,0,10,0">
+                                <TextBlock Text="GENERAL" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                            </Border>
+                            <TextBlock Text="Mantenimiento preventivo de ascensores" FontSize="16" FontWeight="Bold" Foreground="{StaticResource ColorGrisOscuro}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Text="Publicado: 15/09/2026 - 09:00 hs" FontSize="12" Foreground="{StaticResource ColorTextoSecundario}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <TextBlock Text="Se informa a la comunidad que la empresa Otis estará realizando tareas de verificación y service en el ascensor principal durante toda la mañana." 
+                               FontSize="13" Foreground="#444444" TextWrapping="Wrap" Margin="0,5,0,10"/>
+
+                    <Separator Background="#E5E0DA" Margin="0,5"/>
+
+                    <TextBlock Text="Publicado por: Encargado de Edificio" FontSize="11" Foreground="#888888" FontStyle="Italic"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Window>
