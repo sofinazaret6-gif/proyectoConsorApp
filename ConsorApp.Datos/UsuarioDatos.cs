@@ -41,22 +41,23 @@ namespace ConsorApp.Datos
             }
         }
 
-        // 3. Inserta un nuevo usuario en la BD
+        // 3. Inserta un nuevo usuario en la BD usando el Stored Procedure
         public void InsertarUsuario(Usuario usuario)
         {
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             {
                 conexion.Open();
-                string query = @"INSERT INTO Usuarios (Nombre, Apellido, Dni, Email, UsuarioSistema, Contrasenia, IdPerfil, Estado, FechaAlta) 
-                                VALUES (@Nombre, @Apellido, @Dni, @Email, @UsuarioSistema, @Contrasenia, @IdPerfil, 1, GETDATE())";
 
-                SqlCommand comando = new SqlCommand(query, conexion);
-                comando.Parameters.AddWithValue("@Nombre", usuario.Nombre);
-                comando.Parameters.AddWithValue("@Apellido", usuario.Apellido);
-                comando.Parameters.AddWithValue("@Dni", usuario.Dni);
-                comando.Parameters.AddWithValue("@Email", usuario.Email);
-                comando.Parameters.AddWithValue("@UsuarioSistema", usuario.UsuarioSistema);
-                comando.Parameters.AddWithValue("@Contrasenia", usuario.Contrasenia);
+                SqlCommand comando = new SqlCommand("sp_InsertarUsuario", conexion);
+                comando.CommandType = CommandType.StoredProcedure;
+
+                comando.Parameters.AddWithValue("@Nombre", usuario.Nombre ?? (object)DBNull.Value);
+                comando.Parameters.AddWithValue("@Apellido", usuario.Apellido ?? (object)DBNull.Value);
+                comando.Parameters.AddWithValue("@Dni", usuario.Dni ?? (object)DBNull.Value);
+                comando.Parameters.AddWithValue("@Telefono", usuario.Telefono ?? (object)DBNull.Value); // ¡Ahora incluye el teléfono!
+                comando.Parameters.AddWithValue("@Email", usuario.Email ?? (object)DBNull.Value);
+                comando.Parameters.AddWithValue("@UsuarioSistema", usuario.UsuarioSistema ?? (object)DBNull.Value);
+                comando.Parameters.AddWithValue("@Contrasenia", usuario.Contrasenia ?? (object)DBNull.Value);
                 comando.Parameters.AddWithValue("@IdPerfil", usuario.IdPerfil);
 
                 comando.ExecuteNonQuery();

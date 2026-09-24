@@ -65,16 +65,45 @@ namespace ConsorApp.Negocio
             if (usuario == null)
                 throw new ArgumentNullException(nameof(usuario), "El usuario no puede ser nulo.");
 
-            if (string.IsNullOrWhiteSpace(usuario.Nombre))
-                throw new Exception("El nombre no puede estar vacío.");
-
-            if (string.IsNullOrWhiteSpace(usuario.Apellido))
-                throw new Exception("El apellido no puede estar vacío.");
-
-            // Validación DNI de 8 dígitos
-            if (string.IsNullOrWhiteSpace(usuario.Dni) || !Regex.IsMatch(usuario.Dni, @"^\d{8}$"))
+            // Validación de Nombre: Solo letras y espacios (permite acentos)
+            if (string.IsNullOrWhiteSpace(usuario.Nombre) || !Regex.IsMatch(usuario.Nombre, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"))
             {
-                throw new Exception("El DNI es inválido. Debe contener exactamente 8 dígitos numéricos.");
+                throw new Exception("El nombre no es válido. Solo debe contener letras.");
+            }
+
+            // Validación de Apellido: Solo letras y espacios (permite acentos)
+            if (string.IsNullOrWhiteSpace(usuario.Apellido) || !Regex.IsMatch(usuario.Apellido, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"))
+            {
+                throw new Exception("El apellido no es válido. Solo debe contener letras.");
+            }
+
+            // Validación de DNI: Obligatorio y estrictamente solo números (7 u 8 dígitos)
+            if (string.IsNullOrWhiteSpace(usuario.Dni) || !Regex.IsMatch(usuario.Dni, @"^\d{7,8}$"))
+            {
+                throw new Exception("El DNI es inválido. Debe contener solo números (7 u 8 dígitos).");
+            }
+
+            // VALIDACIÓN DE DNI ÚNICO EN EL SISTEMA
+            DataTable dtUsuarios = datos.ObtenerUsuarios();
+            if (dtUsuarios != null)
+            {
+                foreach (DataRow row in dtUsuarios.Rows)
+                {
+                    int idExistente = Convert.ToInt32(row["IdUsuario"]);
+                    string dniExistente = row["Dni"]?.ToString() ?? string.Empty;
+
+                    // Si el DNI coincide y el ID es diferente, significa que pertenece a otro usuario
+                    if (dniExistente == usuario.Dni && idExistente != usuario.IdUsuario)
+                    {
+                        throw new Exception("El DNI ingresado ya se encuentra registrado en el sistema para otro usuario.");
+                    }
+                }
+            }
+
+            // Validación de Teléfono: Opcional, pero si se completa, solo debe contener números
+            if (!string.IsNullOrWhiteSpace(usuario.Telefono) && !Regex.IsMatch(usuario.Telefono, @"^\d+$"))
+            {
+                throw new Exception("El teléfono solo debe contener números.");
             }
 
             // Validación de correo con @
