@@ -116,7 +116,7 @@
 
                     <!-- Botones de Gestión -->
                     <Button x:Name="BtnEdificio" Content="🏢  Datos Edificio" Style="{StaticResource EstiloBotonMenu}" Click="BtnEdificio_Click"/>
-                    <Button x:Name="BtnExpensas" Content="💰  Liquidación Expensas" Style="{StaticResource EstiloBotonMenu}"/>
+                    <Button x:Name="BtnLiquidacionExpensas"   Content="💰  Liquidación Expensas" Style="{StaticResource EstiloBotonMenu}" Click="BtnLiquidacionExpensas_Click"/>
                     <Button x:Name="BtnUsuarios" Content="👥  Gestión Usuarios" Style="{StaticResource EstiloBotonMenu}" Click="BtnUsuarios_Click"/>
                     <Button x:Name="BtnUnidades" Content="🚪  Departamentos" Style="{StaticResource EstiloBotonMenu}" Click="BtnUnidades_Click"/>
                     <Button x:Name="BtnGestionReservasAdmin" Content="📋  Control de Reservas" Style="{StaticResource EstiloBotonMenu}" Click="BtnGestionReservasAdmin_Click"/>

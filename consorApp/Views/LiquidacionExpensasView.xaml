@@ -1,0 +1,135 @@
+﻿<Window x:Class="consorApp.Views.LiquidacionExpensasView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Liquidación de Expensas y Gastos" 
+        Height="650" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5">
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Encabezado de la ventana -->
+        <TextBlock Text="Módulo de Liquidación y Gastos" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,15"/>
+
+        <TabControl Grid.Row="1" Background="White" BorderBrush="#DDD">
+
+            <!-- PESTAÑA 1: REGISTRAR GASTO / MANTENIMIENTO -->
+            <TabItem Header="Registrar Gasto / Mantenimiento" Padding="10,5">
+                <Grid Margin="15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="320"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Formulario de Registro -->
+                    <Border Grid.Column="0" Background="#FAFAFA" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="15" Margin="0,0,15,0">
+                        <StackPanel>
+                            <TextBlock Text="Nuevo Gasto del Edificio" FontSize="16" FontWeight="Bold" Margin="0,0,0,15" Foreground="#2C3E50"/>
+
+                            <Label Content="Concepto del Gasto:" FontWeight="SemiBold"/>
+                            <ComboBox x:Name="CmbConcepto" Height="28" Margin="0,0,0,10" SelectedIndex="0">
+                                <ComboBoxItem Content="Mantenimiento Limpieza"/>
+                                <ComboBoxItem Content="Servicio Eléctrico (Luz)"/>
+                                <ComboBoxItem Content="Servicio de Agua"/>
+                                <ComboBoxItem Content="Reparación Ascensor"/>
+                                <ComboBoxItem Content="Seguridad / Portería"/>
+                                <ComboBoxItem Content="Honorarios Administración"/>
+                            </ComboBox>
+
+                            <Label Content="Descripción / Detalle:" FontWeight="SemiBold"/>
+                            <TextBox x:Name="TxtDescripcion" Height="28" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
+
+                            <Label Content="Monto ($):" FontWeight="SemiBold"/>
+                            <TextBox x:Name="TxtMonto" Height="28" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
+
+                            <Label Content="Período (MM/YYYY):" FontWeight="SemiBold"/>
+                            <TextBox x:Name="TxtPeriodo" Height="28" Margin="0,0,0,10" VerticalContentAlignment="Center" Text="09/2026"/>
+
+                            <Label Content="Fecha del Gasto:" FontWeight="SemiBold"/>
+                            <DatePicker x:Name="DpFecha" Height="28" Margin="0,0,0,20"/>
+
+                            <Button x:Name="BtnGuardarGasto" Content="Registrar Gasto" Background="#2C3E50" Foreground="White" 
+                                    Height="35" FontWeight="Bold" Cursor="Hand" Click="BtnGuardarGasto_Click"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Tabla de Gastos -->
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10" VerticalAlignment="Center">
+                            <TextBlock Text="Gastos Registrados" FontSize="16" FontWeight="Bold" Foreground="#333" VerticalAlignment="Center"/>
+                            <Separator Width="20" Visibility="Hidden"/>
+                            <Label Content="Filtrar por Período:" VerticalAlignment="Center"/>
+                            <TextBox x:Name="TxtFiltroPeriodo" Width="100" Height="25" VerticalContentAlignment="Center" Text="09/2026"/>
+                            <Button x:Name="BtnFiltrar" Content="Filtrar" Width="70" Height="25" Margin="5,0,0,0" Click="BtnFiltrar_Click"/>
+                        </StackPanel>
+
+                        <DataGrid x:Name="DgGastos" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" 
+                                  CanUserAddRows="False" Background="White" GridLinesVisibility="Horizontal" HeadersVisibility="Column">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=\{0:dd/MM/yyyy\}}" Width="100"/>
+                                <DataGridTextColumn Header="Concepto" Binding="{Binding Concepto}" Width="160"/>
+                                <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="*"/>
+                                <DataGridTextColumn Header="Período" Binding="{Binding Periodo}" Width="80"/>
+                                <DataGridTextColumn Header="Monto ($)" Binding="{Binding Monto, StringFormat=$\{0:N2\}}" Width="110"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- PESTAÑA 2: LIQUIDAR EXPENSAS -->
+            <TabItem Header="Liquidar Expensas" Padding="10,5">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,20">
+                        <Label Content="Período a Liquidar:" FontSize="14" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <TextBox x:Name="TxtPeriodoLiquidar" Width="120" Height="30" FontSize="14" Text="09/2026" 
+                                 VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="10,0"/>
+                        <Button x:Name="BtnCalcular" Content="Calcular Expensas" Background="#27AE60" Foreground="White" 
+                                FontSize="13" FontWeight="Bold" Padding="15,5" Cursor="Hand" Click="BtnCalcular_Click"/>
+                    </StackPanel>
+
+                    <Border Grid.Row="1" Width="500" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                            Background="#F8F9FA" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="8" Padding="25">
+                        <StackPanel x:Name="PanelResultado">
+                            <TextBlock Text="Resumen de Liquidación de Expensas" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#1E293B" Margin="0,0,0,20"/>
+
+                            <Grid Margin="0,0,0,10">
+                                <TextBlock Text="Total Gastos del Período:" FontSize="14" Foreground="#475569"/>
+                                <TextBlock x:Name="LblTotalGastos" Text="$ 0.00" FontSize="14" FontWeight="Bold" HorizontalAlignment="Right" Foreground="#0F172A"/>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,10">
+                                <TextBlock Text="Departamentos con Propietario:" FontSize="14" Foreground="#475569"/>
+                                <TextBlock x:Name="LblDeptosPropietario" Text="0" FontSize="14" FontWeight="Bold" HorizontalAlignment="Right" Foreground="#0F172A"/>
+                            </Grid>
+
+                            <Separator Margin="0,10"/>
+
+                            <Border Background="#E8F5E9" BorderBrush="#A5D6A7" BorderThickness="1" CornerRadius="5" Padding="15" Margin="0,10,0,0">
+                                <Grid>
+                                    <TextBlock Text="Expensa por Departamento:" FontSize="15" FontWeight="Bold" Foreground="#1B5E20" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="LblExpensaIndividual" Text="$ 0.00" FontSize="18" FontWeight="Bold" Foreground="#2E7D32" HorizontalAlignment="Right"/>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
+</Window>
