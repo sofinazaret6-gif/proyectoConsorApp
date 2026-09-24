@@ -87,41 +87,43 @@
                 <StackPanel x:Name="PanelMenuNavegacion">
 
                     <TextBlock Text="GENERAL"
-           Foreground="{StaticResource ColorTextoSecundario}"
-           FontSize="11" FontWeight="Bold"
-           Margin="20,10,0,5"/>
+                               Foreground="{StaticResource ColorTextoSecundario}"
+                               FontSize="11" FontWeight="Bold"
+                               Margin="20,10,0,5"/>
 
                     <!-- Botón Mi Departamento -->
                     <Button x:Name="BtnMiDpto" 
-        Content="🏠  Mi Departamento" 
-        Style="{StaticResource EstiloBotonMenu}" 
-        Click="BtnMiDpto_Click"/>
+                            Content="🏠  Mi Departamento" 
+                            Style="{StaticResource EstiloBotonMenu}" 
+                            Click="BtnMiDpto_Click"/>
 
                     <!-- Botón Avisos con redirección condicional -->
                     <Button x:Name="BtnAvisos" 
-              Content="📢  Avisos" 
-               Style="{StaticResource EstiloBotonMenu}" 
-               Click="BtnAvisos_Click"/>
+                            Content="📢  Avisos" 
+                            Style="{StaticResource EstiloBotonMenu}" 
+                            Click="BtnAvisos_Click"/>
 
-                    <Button x:Name="BtnReclamos" Content="🛠️  Reclamos" Style="{StaticResource EstiloBotonMenu}"/>
-                    <Button x:Name="BtnReservas" Content="📅  Reservas" Style="{StaticResource EstiloBotonMenu}"/>
+                    <Button x:Name="BtnReclamos" Content="🛠️  Reclamos" Style="{StaticResource EstiloBotonMenu}" Click="BtnReclamos_Click"/>
+
+                    <!-- Botón de reservas para inquilinos/propietarios -->
+                    <Button x:Name="BtnReservas" Content="📅  Reservas" Style="{StaticResource EstiloBotonMenu}" Click="BtnReservas_Click"/>
+
                     <!-- SECCIÓN EXCLUSIVA ADMINISTRACIÓN Y ENCARGADO -->
                     <TextBlock x:Name="HeaderGestion" Text="GESTIÓN"
-           Foreground="{StaticResource ColorTextoSecundario}"
-           FontSize="11" FontWeight="Bold"
-           Margin="20,20,0,5"/>
+                               Foreground="{StaticResource ColorTextoSecundario}"
+                               FontSize="11" FontWeight="Bold"
+                               Margin="20,20,0,5"/>
 
-                    <!-- BOTÓN AGREGADO PARA DATOS EDIFICIO -->
-                    <Button x:Name="BtnEdificio" Content="🏢  Datos Edificio" 
-        Style="{StaticResource EstiloBotonMenu}" 
-        Click="BtnEdificio_Click"/>
-
+                    <!-- Botones de Gestión -->
+                    <Button x:Name="BtnEdificio" Content="🏢  Datos Edificio" Style="{StaticResource EstiloBotonMenu}" Click="BtnEdificio_Click"/>
                     <Button x:Name="BtnExpensas" Content="💰  Liquidación Expensas" Style="{StaticResource EstiloBotonMenu}"/>
                     <Button x:Name="BtnUsuarios" Content="👥  Gestión Usuarios" Style="{StaticResource EstiloBotonMenu}" Click="BtnUsuarios_Click"/>
-                    <Button x:Name="BtnUnidades"
-        Content="🚪  Departamentos"
-        Style="{StaticResource EstiloBotonMenu}"
-        Click="BtnUnidades_Click"/>
+                    <Button x:Name="BtnUnidades" Content="🚪  Departamentos" Style="{StaticResource EstiloBotonMenu}" Click="BtnUnidades_Click"/>
+                    <Button x:Name="BtnGestionReservasAdmin" Content="📋  Control de Reservas" Style="{StaticResource EstiloBotonMenu}" Click="BtnGestionReservasAdmin_Click"/>
+
+                    <!-- NUEVO BOTÓN DE CONTROL DE RECLAMOS PARA ADMINISTRADOR/ENCARGADO -->
+                    <Button x:Name="BtnGestionReclamosAdmin" Content="🛠️  Control de Reclamos" Style="{StaticResource EstiloBotonMenu}" Click="BtnGestionReclamosAdmin_Click"/>
+
                 </StackPanel>
             </ScrollViewer>
 
@@ -160,7 +162,7 @@
                 </Grid>
             </Border>
 
-            <!-- Panel de Contenido Variable (Aquí se cargarán las vistas o datos) -->
+            <!-- Panel de Contenido Variable -->
             <Grid Grid.Row="1" Margin="25">
                 <Border Background="White" CornerRadius="10" BorderBrush="#E5E0DA" BorderThickness="1" Padding="25">
                     <StackPanel x:Name="PanelContenidoDinamico" VerticalAlignment="Center" HorizontalAlignment="Center">

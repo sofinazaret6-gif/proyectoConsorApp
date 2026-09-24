@@ -1,0 +1,70 @@
+﻿<Window x:Class="ConsorApp.Views.ReservaEspaciosView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ConsorApp - Gestión de Reservas" Height="550" Width="900"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="320"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- PANEL IZQUIERDO: Formulario de la reserva -->
+        <Border Grid.Column="0" Background="White" Padding="15" CornerRadius="8" BorderBrush="#E0E0E0" BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="Nueva Reserva" FontSize="18" FontWeight="Bold" Margin="0,0,0,15" Foreground="#333333"/>
+
+                <TextBlock Text="Espacio Seleccionado:" FontWeight="SemiBold" Margin="0,0,0,3" Foreground="#555"/>
+                <TextBox x:Name="TxtEspacioSeleccionado" Height="25" IsReadOnly="True" Background="#F0F0F0" Margin="0,0,0,12"/>
+
+                <TextBlock Text="Fecha de Reserva:" FontWeight="SemiBold" Margin="0,0,0,3" Foreground="#555"/>
+                <DatePicker x:Name="DpFechaReserva" Height="25" Margin="0,0,0,12"/>
+
+                <TextBlock Text="Turno / Horario:" FontWeight="SemiBold" Margin="0,0,0,3" Foreground="#555"/>
+                <ComboBox x:Name="CmbTurnos" Height="25" Margin="0,0,0,20">
+                    <ComboBoxItem Content="Mañana (09:00 a 14:00)" />
+                    <ComboBoxItem Content="Tarde (15:00 a 20:00)" />
+                    <ComboBoxItem Content="Noche (21:00 a 02:00)" />
+                </ComboBox>
+
+                <Button x:Name="BtnLimpiar" Content="Limpiar" Height="30" Background="#CCCCCC" Foreground="#333" FontWeight="Bold" Margin="0,0,0,8" Cursor="Hand"/>
+                <Button x:Name="BtnGuardar" Content="Guardar Reserva" Height="35" Background="#8D7B68" Foreground="White" FontWeight="Bold" Cursor="Hand"/>
+            </StackPanel>
+        </Border>
+
+        <!-- PANEL DERECHO: Tarjetas de Espacios Comunes -->
+        <ScrollViewer Grid.Column="1" Margin="20,0,0,0" VerticalScrollBarVisibility="Auto">
+            <WrapPanel>
+
+                <!-- Tarjeta 1: SUM -->
+                <Border Width="170" Height="200" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Margin="0,0,15,15" Padding="12" Cursor="Hand">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <!-- Podés cambiar la ruta del ícono o imagen si la tenés -->
+                        <TextBlock Text="🏢" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                        <TextBlock Text="SUM" FontSize="16" FontWeight="Bold" Foreground="#2C3E50" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Salón de Usos Múltiples" FontSize="11" Foreground="#666" TextAlignment="Center" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Tarjeta 2: Quincho -->
+                <Border Width="170" Height="200" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Margin="0,0,15,15" Padding="12" Cursor="Hand">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="🍖" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                        <TextBlock Text="Quincho" FontSize="16" FontWeight="Bold" Foreground="#2C3E50" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Con parrilla y mesada" FontSize="11" Foreground="#666" TextAlignment="Center" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Tarjeta 3: Piscina -->
+                <Border Width="170" Height="200" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Margin="0,0,15,15" Padding="12" Cursor="Hand">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="🏊" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                        <TextBlock Text="Piscina" FontSize="16" FontWeight="Bold" Foreground="#2C3E50" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Área de pileta y solarium" FontSize="11" Foreground="#666" TextAlignment="Center" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+            </WrapPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

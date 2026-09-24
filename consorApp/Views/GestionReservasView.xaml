@@ -1,0 +1,54 @@
+﻿<Window x:Class="ConsorApp.Views.GestionReservasAdminView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ConsorApp - Administración de Reservas" Height="500" Width="850"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ENCABEZADO -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="Panel de Control de Reservas" FontSize="22" FontWeight="Bold" Foreground="#333333"/>
+            <TextBlock Text="Supervisión y control general de los espacios comunes del consorcio" FontSize="13" Foreground="#666666" Margin="0,3,0,0"/>
+        </StackPanel>
+
+        <!-- FILTROS SUPERIORES -->
+        <Border Grid.Row="1" Background="#F9F9F9" Padding="12" CornerRadius="6" BorderBrush="#E0E0E0" BorderThickness="1" Margin="0,0,0,15">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Filtrar por Espacio:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <ComboBox x:Name="CmbFiltroEspacio" Width="180" Height="25" Margin="0,0,20,0">
+                    <ComboBoxItem Content="Todos los espacios" IsSelected="True"/>
+                    <ComboBoxItem Content="SUM"/>
+                    <ComboBoxItem Content="Quincho con Parrilla"/>
+                    <ComboBoxItem Content="Piscina / Solarium"/>
+                </ComboBox>
+
+                <TextBlock Text="Fecha:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <DatePicker x:Name="DpFiltroFecha" Width="140" Height="25"/>
+            </StackPanel>
+        </Border>
+
+        <!-- TABLA / DATAGRID PRINCIPAL -->
+        <DataGrid x:Name="DgReservasAdmin" Grid.Row="2" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding IdReserva}" Width="50"/>
+                <DataGridTextColumn Header="Espacio Común" Binding="{Binding Espacio}" Width="150"/>
+                <DataGridTextColumn Header="Unidad / Depto" Binding="{Binding Unidad}" Width="100"/>
+                <DataGridTextColumn Header="Propietario / Inquilino" Binding="{Binding Responsable}" Width="170"/>
+                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="100"/>
+                <DataGridTextColumn Header="Turno" Binding="{Binding Turno}" Width="130"/>
+                <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- BOTONES INFERIORES DE ACCIÓN RÁPIDA -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button x:Name="BtnCancelarReserva" Content="Cancelar Reserva Seleccionada" Width="200" Height="32" Background="#D9534F" Foreground="White" FontWeight="Bold" Cursor="Hand"/>
+        </StackPanel>
+    </Grid>
+</Window>
