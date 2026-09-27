@@ -32,7 +32,7 @@ namespace consorApp.Views
             if (perfil.Contains("admin"))
             {
                 HeaderGestion.Visibility = Visibility.Visible;
-                BtnMiDpto.Visibility = Visibility.Visible;
+                BtnMiDpto.Visibility = Visibility.Collapsed;
                 BtnAvisos.Visibility = Visibility.Visible;
                 BtnReclamos.Visibility = Visibility.Visible;
                 BtnReservas.Visibility = Visibility.Visible; // Reservas para residentes
@@ -62,6 +62,7 @@ namespace consorApp.Views
                 BtnUsuarios.Visibility = Visibility.Collapsed;
                 BtnReclamos.Visibility = Visibility.Collapsed;
                 BtnReservas.Visibility = Visibility.Collapsed;
+                BtnMiDpto.Visibility = Visibility.Collapsed;
             }
             // 3. PROPIETARIO / INQUILINO: Ve Mi Departamento, Avisos, Reclamos y Reservas (Sección gestión oculta)
             else if (perfil.Contains("propietario") || perfil.Contains("inquilino"))

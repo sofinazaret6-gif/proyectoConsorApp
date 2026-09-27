@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         mc:Ignorable="d" 
         Title="Mi Departamento - ConsorApp" 
-        Height="650" Width="950"
+        Height="800" Width="950"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -21,7 +21,7 @@
             <Grid Margin="0,0,0,20">
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                     <TextBlock Text="Mi Departamento" FontSize="22" FontWeight="Bold" Foreground="{StaticResource ColorGrisOscuro}"/>
-                    <TextBlock Text="Información de la propiedad, propietario registrado y estado de expensas." FontSize="13" Foreground="{StaticResource ColorTextoSecundario}" Margin="0,4,0,0"/>
+                    <TextBlock Text="Información de la propiedad, propietario, expensas, reservas y estado de tus reclamos." FontSize="13" Foreground="{StaticResource ColorTextoSecundario}" Margin="0,4,0,0"/>
                 </StackPanel>
                 <Border Background="#27AE60" CornerRadius="12" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="12,6">
                     <TextBlock Text="Estado: Al Día" Foreground="White" FontWeight="Bold" FontSize="12"/>
@@ -29,7 +29,7 @@
             </Grid>
 
             <!-- Tarjetas de Información Principal -->
-            <UniformGrid Columns="3" Margin="0,0,0,20">
+            <UniformGrid Columns="3" Margin="0,0,0,25">
                 <!-- Unidad Funcional -->
                 <Border Background="{StaticResource ColorGrisClaro}" CornerRadius="8" Padding="20" Margin="0,0,10,0" BorderBrush="#E5E0DA" BorderThickness="1">
                     <StackPanel>
@@ -59,6 +59,42 @@
                     </StackPanel>
                 </Border>
             </UniformGrid>
+
+            <!-- SECCIÓN: Mis Reservas Activas -->
+            <Border Background="White" CornerRadius="8" Padding="20" BorderBrush="#E5E0DA" BorderThickness="1" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="Mis Reservas de Espacios Comunes" FontSize="16" FontWeight="Bold" Foreground="{StaticResource ColorGrisOscuro}" Margin="0,0,0,5"/>
+                    <TextBlock Text="Historial y estado actual de las reservas realizadas por esta unidad." FontSize="12" Foreground="{StaticResource ColorTextoSecundario}" Margin="0,0,0,15"/>
+
+                    <DataGrid x:Name="DgMisReservas" Height="140" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Espacio Común" Binding="{Binding Espacio}" Width="160"/>
+                            <DataGridTextColumn Header="Fecha de Reserva" Binding="{Binding Fecha}" Width="130"/>
+                            <DataGridTextColumn Header="Turno" Binding="{Binding Turno}" Width="180"/>
+                            <DataGridTextColumn Header="Estado Actual" Binding="{Binding Estado}" Width="130"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- SECCIÓN: Mis Reclamos Realizados -->
+            <Border Background="White" CornerRadius="8" Padding="20" BorderBrush="#E5E0DA" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Mis Reclamos e Incidentes" FontSize="16" FontWeight="Bold" Foreground="{StaticResource ColorGrisOscuro}" Margin="0,0,0,5"/>
+                    <TextBlock Text="Seguimiento de los reportes enviados por este departamento al administrador." FontSize="12" Foreground="{StaticResource ColorTextoSecundario}" Margin="0,0,0,15"/>
+
+                    <DataGrid x:Name="DgMisReclamos" Height="140" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Motivo" Binding="{Binding Motivo}" Width="140"/>
+                            <DataGridTextColumn Header="Ubicación / Área" Binding="{Binding Ubicacion}" Width="130"/>
+                            <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="100"/>
+                            <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="120"/>
+                            <!-- NUEVA COLUMNA DE OBSERVACIONES -->
+                            <DataGridTextColumn Header="Observaciones / Respuesta" Binding="{Binding Observacion}" Width="200"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
         </StackPanel>
     </ScrollViewer>
 </Window>
