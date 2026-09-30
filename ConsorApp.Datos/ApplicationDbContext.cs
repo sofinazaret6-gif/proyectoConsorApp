@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using ConsorApp.Entidades;
-using System;
-using System.Collections.Generic;
-
 
 namespace ConsorApp.Datos
 {
@@ -26,10 +23,13 @@ namespace ConsorApp.Datos
         public DbSet<Reclamo> Reclamos { get; set; }
         public DbSet<Aviso> Avisos { get; set; }
 
-        // 4. Tablas de Contabilidad y Gastos
+        // 4. Tablas de Contabilidad, Gastos y Expensas
         public DbSet<conceptoGasto> ConceptosGasto { get; set; }
         public DbSet<GastoEdificio> GastosEdificio { get; set; }
+        public DbSet<Expensa> Expensas { get; set; }
+        public DbSet<Detalle_Expensa> DetallesExpensa { get; set; }
 
+        public DbSet<Turno> Turnos { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
