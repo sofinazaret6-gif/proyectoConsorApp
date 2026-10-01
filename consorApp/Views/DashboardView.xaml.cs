@@ -1,6 +1,7 @@
 ﻿using ConsorApp.Views;
 using System;
 using System.Windows;
+using consorApp.Seguridad;
 
 namespace consorApp.Views
 {
@@ -161,10 +162,15 @@ namespace consorApp.Views
             ventanaAdminReclamos.ShowDialog();
         }
 
-        private void BtnCerrarSesion_Click(object sender, RoutedEventArgs e)
+        private void BtnCerrarSesion_Click(
+        object sender,
+     RoutedEventArgs e)
         {
+            SesionUsuario.CerrarSesion();
+
             LoginView login = new LoginView();
             login.Show();
+
             this.Close();
         }
     }

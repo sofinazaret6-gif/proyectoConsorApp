@@ -97,93 +97,47 @@
                            HorizontalAlignment="Center"
                            Margin="0,10,0,20"/>
 
-                <!-- AVISO 1 -->
-                <Border Background="White"
-                        CornerRadius="10"
-                        BorderBrush="#E5E0DA"
-                        BorderThickness="1"
-                        Padding="18,16"
-                        Margin="0,0,0,14">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="5"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                <!-- Lista dinámica conectada a la base de datos -->
+                <ItemsControl x:Name="ItemsAvisosRecientes">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White"
+                                    CornerRadius="10"
+                                    BorderBrush="#E5E0DA"
+                                    BorderThickness="1"
+                                    Padding="18,16"
+                                    Margin="0,0,0,14">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-                        <!-- Franja lateral de acento -->
-                        <Border Grid.Column="0" Background="{StaticResource ColorTaupeBronce}" CornerRadius="3"/>
+                                    <!-- Franja lateral de acento -->
+                                    <Border Grid.Column="0" Background="{StaticResource ColorTaupeBronce}" CornerRadius="3"/>
 
-                        <StackPanel Grid.Column="1" Margin="15,0,0,0">
-                            <TextBlock Text="Corte programado de agua"
-                                       FontSize="16"
-                                       FontWeight="Bold"
-                                       Foreground="{StaticResource ColorGrisOscuro}"/>
+                                    <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                                        <TextBlock Text="{Binding titulo}"
+                                                  FontSize="16"
+                                                  FontWeight="Bold"
+                                                  Foreground="{StaticResource ColorGrisOscuro}"/>
 
-                            <TextBlock Text="Mañana de 08:00 a 12:00 hs."
-                                       FontSize="14"
-                                       Foreground="{StaticResource ColorTextoSecundario}"
-                                       Margin="0,6,0,0"/>
-                        </StackPanel>
-                    </Grid>
-                </Border>
+                                        <TextBlock Text="{Binding mensaje}"
+                                                   FontSize="14"
+                                                   Foreground="{StaticResource ColorTextoSecundario}"
+                                                    Margin="0,6,0,0"
+                                                     TextWrapping="Wrap"/>
 
-                <!-- AVISO 2 -->
-                <Border Background="White"
-                        CornerRadius="10"
-                        BorderBrush="#E5E0DA"
-                        BorderThickness="1"
-                        Padding="18,16"
-                        Margin="0,0,0,14">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="5"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border Grid.Column="0" Background="{StaticResource ColorGrisOscuro}" CornerRadius="3"/>
-
-                        <StackPanel Grid.Column="1" Margin="15,0,0,0">
-                            <TextBlock Text="Reunión de propietarios"
-                                       FontSize="16"
-                                       FontWeight="Bold"
-                                       Foreground="{StaticResource ColorGrisOscuro}"/>
-
-                            <TextBlock Text="Viernes a las 20:00 hs."
-                                       FontSize="14"
-                                       Foreground="{StaticResource ColorTextoSecundario}"
-                                       Margin="0,6,0,0"/>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-
-                <!-- AVISO 3 -->
-                <Border Background="White"
-                        CornerRadius="10"
-                        BorderBrush="#E5E0DA"
-                        BorderThickness="1"
-                        Padding="18,16"
-                        Margin="0,0,0,14">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="5"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border Grid.Column="0" Background="{StaticResource ColorTaupeBronce}" CornerRadius="3"/>
-
-                        <StackPanel Grid.Column="1" Margin="15,0,0,0">
-                            <TextBlock Text="Mantenimiento del ascensor"
-                                       FontSize="16"
-                                       FontWeight="Bold"
-                                       Foreground="{StaticResource ColorGrisOscuro}"/>
-
-                            <TextBlock Text="El lunes permanecerá fuera de servicio."
-                                       FontSize="14"
-                                       Foreground="{StaticResource ColorTextoSecundario}"
-                                       Margin="0,6,0,0"/>
-                        </StackPanel>
-                    </Grid>
-                </Border>
+                                        <TextBlock Text="{Binding fechaPublicacion, StringFormat='Publicado el: {0:dd/MM/yyyy - HH:mm} hs'}"
+                                                   FontSize="11"
+                                                    Foreground="#999999"
+                                                       Margin="0,8,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
             </StackPanel>
 

@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Linq;
+using consorApp.Seguridad;
+
+using ConsorApp.Negocio;
 
 namespace consorApp.Views
 {
@@ -17,9 +12,71 @@ namespace consorApp.Views
     /// </summary>
     public partial class AvisosPropietarioView : Window
     {
+        private readonly AvisoNegocio _avisoNegocio;
+
         public AvisosPropietarioView()
         {
             InitializeComponent();
+
+            _avisoNegocio = new AvisoNegocio();
+
+            CargarAvisos();
+        }
+
+
+        // =========================================================
+        // CARGAR AVISOS DEL PROPIETARIO
+        // =========================================================
+
+        private void CargarAvisos()
+        {
+            try
+            {
+                // Verificamos que exista una sesión iniciada
+                if (SesionUsuario.IdUsuario <= 0)
+                {
+                    MessageBox.Show(
+                        "No se encontró un usuario con sesión iniciada.",
+                        "Sesión",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+
+                    return;
+                }
+
+
+                // Obtenemos solamente los avisos
+                // correspondientes a este usuario.
+                var avisos =
+                      _avisoNegocio
+                           .ObtenerAvisosParaPropietario(SesionUsuario.IdUsuario)
+                             .Where(a => a.estado == 1)
+                            .ToList();
+
+                // Mostramos los avisos
+                ItemsAvisos.ItemsSource = avisos;
+
+
+                // Si no hay avisos, mostramos el mensaje.
+                if (avisos.Count == 0)
+                {
+                    TxtSinAvisos.Visibility =
+                        Visibility.Visible;
+                }
+                else
+                {
+                    TxtSinAvisos.Visibility =
+                        Visibility.Collapsed;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error al cargar los avisos: {ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
     }
 }

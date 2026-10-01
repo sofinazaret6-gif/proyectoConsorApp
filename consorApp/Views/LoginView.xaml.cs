@@ -7,10 +7,12 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using consorApp.Seguridad;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ConsorApp.Negocio;
 using ConsorApp.Entidades;
+
 
 namespace consorApp.Views
 {
@@ -37,16 +39,24 @@ namespace consorApp.Views
             // Agregamos '?' a Usuario? para indicar explícitamente que el resultado puede ser nulo
             Usuario? usuarioLogueado = negocio.IniciarSesion(usuario, password);
 
+
             if (usuarioLogueado != null)
             {
-                string nombreCompleto = $"{usuarioLogueado.Nombre} {usuarioLogueado.Apellido}";
+                // Guardar la identidad del usuario autenticado.
+                SesionUsuario.IdUsuario = usuarioLogueado.IdUsuario;
+                SesionUsuario.IdPerfil = usuarioLogueado.IdPerfil;
 
-                // Leemos directamente el NombrePerfil que viene de la base de datos a través de la consulta
-                string nombrePerfil = !string.IsNullOrEmpty(usuarioLogueado.NombrePerfil)
-                    ? usuarioLogueado.NombrePerfil
-                    : "Usuario";
+                string nombreCompleto =
+                    $"{usuarioLogueado.Nombre} {usuarioLogueado.Apellido}";
 
-                DashboardView dashboard = new DashboardView(nombreCompleto, nombrePerfil);
+                string nombrePerfil =
+                    !string.IsNullOrEmpty(usuarioLogueado.NombrePerfil)
+                        ? usuarioLogueado.NombrePerfil
+                        : "Usuario";
+
+                DashboardView dashboard =
+                    new DashboardView(nombreCompleto, nombrePerfil);
+
                 dashboard.Show();
                 this.Close();
             }
