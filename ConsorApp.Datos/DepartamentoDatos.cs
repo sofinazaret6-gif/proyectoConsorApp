@@ -23,19 +23,28 @@ namespace ConsorApp.Datos
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             {
                 string query = @"
-                    SELECT DISTINCT
-                        d.id_Departamento AS IdDepartamento,
-                        d.id_Edificio AS IdEdificio,
-                        d.piso AS Piso,
-                        d.unidad AS Unidad,
-                        p.Id_Usuario AS IdPropietario,
-                        ISNULL(u.Nombre + ' ' + u.Apellido, 'Sin Asignar') AS NombrePropietario
-                    FROM Departamento d
-                    LEFT JOIN Propietario p
-                        ON d.id_Departamento = p.Id_Departamento
-                        AND p.fechaHasta IS NULL
-                    LEFT JOIN Usuarios u
-                        ON p.Id_Usuario = u.idUsuario";
+             SELECT DISTINCT
+                     d.id_Departamento AS IdDepartamento,
+                     d.id_Edificio AS IdEdificio,
+                     d.piso AS Piso,
+                     d.unidad AS Unidad,
+
+                     p.Id_Propietario AS IdPropietario,
+                     p.Id_Usuario AS IdUsuarioPropietario,
+
+                    ISNULL(
+                    u.Nombre + ' ' + u.Apellido,
+                        'Sin Asignar'
+                   ) AS NombrePropietario
+
+                     FROM Departamento d
+
+                   LEFT JOIN Propietario p
+                 ON d.id_Departamento = p.Id_Departamento
+                    AND p.fechaHasta IS NULL
+
+                  LEFT JOIN Usuarios u
+                  ON p.Id_Usuario = u.idUsuario";
 
                 SqlDataAdapter adaptador = new SqlDataAdapter(query, conexion);
                 DataTable dt = new DataTable();

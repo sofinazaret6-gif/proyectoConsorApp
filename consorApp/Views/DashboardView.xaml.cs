@@ -2,7 +2,6 @@
 using System;
 using System.Windows;
 using consorApp.Seguridad;
-
 namespace consorApp.Views
 {
     public partial class DashboardView : Window
@@ -95,7 +94,9 @@ namespace consorApp.Views
 
         private void BtnReclamos_Click(object sender, RoutedEventArgs e)
         {
-            ReclamoInquilinoView ventanaReclamo = new ReclamoInquilinoView();
+            ReclamoInquilinoView ventanaReclamo =
+                new ReclamoInquilinoView(SesionUsuario.IdUsuario);
+
             ventanaReclamo.ShowDialog();
         }
 

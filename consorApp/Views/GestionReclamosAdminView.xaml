@@ -46,6 +46,9 @@
                 <DataGridTextColumn Header="Motivo" Binding="{Binding Motivo}" Width="130"/>
                 <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="120"/>
                 <DataGridTextColumn Header="Responsable" Binding="{Binding Responsable}" Width="140"/>
+                <DataGridTextColumn Header="Departamento"
+                    Binding="{Binding Departamento}"
+                    Width="150"/>
                 <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="90"/>
                 <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="110"/>
                 <DataGridTextColumn Header="Observación Actual" Binding="{Binding Observacion}" Width="220"/>
@@ -61,10 +64,49 @@
         </Border>
 
         <!-- BOTONES INFERIORES DE ACCIÓN -->
-        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="BtnEnResolucion" Content="Marcar En Resolución" Width="160" Height="32" Background="#F0AD4E" Foreground="White" FontWeight="Bold" Margin="0,0,10,0" Cursor="Hand"/>
-            <Button x:Name="BtnMarcarResuelto" Content="Marcar como Resuelto" Width="170" Height="32" Background="#5CB85C" Foreground="White" FontWeight="Bold" Margin="0,0,10,0" Cursor="Hand"/>
-            <Button x:Name="BtnVerDetalle" Content="Ver Detalle" Width="110" Height="32" Background="#A09285" Foreground="White" FontWeight="Bold" Cursor="Hand"/>
+        <StackPanel Grid.Row="4"
+            Orientation="Horizontal"
+            HorizontalAlignment="Right">
+
+            <Button x:Name="BtnGuardarObservacion"
+            Content="Guardar Observación"
+            Width="160"
+            Height="32"
+            Background="#A09285"
+            Foreground="White"
+            FontWeight="Bold"
+            Margin="0,0,10,0"
+            Cursor="Hand"/>
+
+            <Button x:Name="BtnEnResolucion"
+            Content="Marcar En Resolución"
+            Width="160"
+            Height="32"
+            Background="#F0AD4E"
+            Foreground="White"
+            FontWeight="Bold"
+            Margin="0,0,10,0"
+            Cursor="Hand"/>
+
+            <Button x:Name="BtnMarcarResuelto"
+            Content="Marcar como Resuelto"
+            Width="170"
+            Height="32"
+            Background="#5CB85C"
+            Foreground="White"
+            FontWeight="Bold"
+            Margin="0,0,10,0"
+            Cursor="Hand"/>
+
+            <Button x:Name="BtnVerDetalle"
+            Content="Ver Detalle"
+            Width="110"
+            Height="32"
+            Background="#A09285"
+            Foreground="White"
+            FontWeight="Bold"
+            Cursor="Hand"/>
+
         </StackPanel>
     </Grid>
 </Window>
