@@ -277,9 +277,9 @@ namespace consorApp.Views
                         Convert.ToInt32(
                             seleccionado.Tag);
 
-                    idEdificio = null;
+                    // El departamento pertenece al único edificio
+                    idEdificio = _idEdificio;
                 }
-
 
                 // -------------------------------------------------
                 // REGISTRAR AVISO

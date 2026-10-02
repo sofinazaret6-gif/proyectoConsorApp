@@ -184,27 +184,65 @@
                                     </Grid.RowDefinitions>
 
 
-                                    <!-- TÍTULO Y DESTINATARIO -->
-
+                                    <!-- TÍTULO Y ESTADO -->
                                     <StackPanel Grid.Row="0"
-                                                Orientation="Horizontal">
+            Orientation="Horizontal">
 
+                                        <!-- AVISO -->
                                         <Border Background="#A09285"
-                                                CornerRadius="4"
-                                                Padding="6,2"
-                                                Margin="0,0,8,0">
+            CornerRadius="4"
+            Padding="6,2"
+            Margin="0,0,8,0">
 
                                             <TextBlock Text="AVISO"
-                                                       Foreground="White"
-                                                       FontSize="10"
-                                                       FontWeight="Bold"/>
-
+                   Foreground="White"
+                   FontSize="10"
+                   FontWeight="Bold"/>
                                         </Border>
 
+                                        <!-- TÍTULO -->
                                         <TextBlock Text="{Binding titulo}"
-                                                   FontWeight="Bold"
-                                                   FontSize="14"
-                                                   Foreground="{StaticResource ColorGrisOscuro}"/>
+               FontWeight="Bold"
+               FontSize="14"
+               Foreground="{StaticResource ColorGrisOscuro}"
+               VerticalAlignment="Center"/>
+
+                                        <!-- ESTADO -->
+                                        <Border Margin="10,0,0,0"
+            Padding="6,2"
+            CornerRadius="4"
+            Background="#E8E8E8">
+
+                                            <TextBlock FontSize="10"
+                   FontWeight="Bold"
+                   Foreground="#666666">
+
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+
+                                                        <!-- Estado normal -->
+                                                        <Setter Property="Text"
+                            Value="VIGENTE"/>
+
+                                                        <!-- Si estado = 0 -->
+                                                        <Style.Triggers>
+
+                                                            <DataTrigger Binding="{Binding estado}"
+                                     Value="0">
+
+                                                                <Setter Property="Text"
+                                    Value="ARCHIVADO"/>
+
+                                                            </DataTrigger>
+
+                                                        </Style.Triggers>
+
+                                                    </Style>
+                                                </TextBlock.Style>
+
+                                            </TextBlock>
+
+                                        </Border>
 
                                     </StackPanel>
 
@@ -229,10 +267,43 @@
                                                    Foreground="#888888"/>
 
 
-                                        <Button Content="Archivar 📁"
-                                                 ToolTip="Archivar aviso"
-                                                Click="BtnEliminar_Click"
-                                            Tag="{Binding id_Aviso}" />
+                                        <Button Click="BtnEliminar_Click"
+        Tag="{Binding id_Aviso}"
+        Padding="10,5">
+
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+
+                                                    <!-- AVISO VIGENTE -->
+                                                    <Setter Property="Content"
+                                                      Value="Archivar 📁"/>
+
+                                                    <Setter Property="ToolTip"
+                                                      Value="Archivar aviso"/>
+
+                                                    <Style.Triggers>
+
+                                                        <!-- AVISO ARCHIVADO -->
+                                                        <DataTrigger Binding="{Binding estado}"
+                                                            Value="0">
+
+                                                            <Setter Property="Content"
+                                                         Value="Archivado 📁"/>
+
+                                                            <Setter Property="ToolTip"
+                                                        Value="Este aviso ya está archivado"/>
+
+                                                            <Setter Property="IsEnabled"
+                                                        Value="False"/>
+
+                                                        </DataTrigger>
+
+                                                    </Style.Triggers>
+
+                                                </Style>
+                                            </Button.Style>
+
+                                        </Button>
 
                                     </Grid>
 

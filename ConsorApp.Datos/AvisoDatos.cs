@@ -98,40 +98,44 @@ namespace ConsorApp.Datos
             var listaAvisos = new List<Aviso>();
 
             string query = @"
-                SELECT
-                    a.id_Aviso,
-                    a.id_usuario,
-                    a.titulo,
-                    a.mensaje,
-                    a.fechaPublicacion,
-                    a.id_edificio,
-                    a.id_Departamento
+    SELECT
+        a.id_Aviso,
+        a.id_usuario,
+        a.titulo,
+        a.mensaje,
+        a.fechaPublicacion,
+        a.id_edificio,
+        a.id_Departamento
 
-                FROM Aviso a
+    FROM Aviso a
 
-                INNER JOIN Propietario p
-                    ON p.Id_Usuario = @IdUsuario
-                    AND p.fechaHasta IS NULL
-                    AND p.estado = 1
+    INNER JOIN Propietario p
+        ON p.Id_Usuario = @IdUsuario
+        AND p.fechaHasta IS NULL
+        AND p.estado = 1
 
-                INNER JOIN Departamento d
-                    ON d.id_Departamento = p.Id_Departamento
+    INNER JOIN Departamento d
+        ON d.id_Departamento = p.Id_Departamento
 
-                WHERE
-                    (
-                        -- Aviso para todo el edificio
-                        a.id_edificio = d.id_Edificio
-                        AND a.id_Departamento IS NULL
-                    )
+    WHERE
+        a.estado = 1
+        AND
+        (
+            -- Aviso para todo el edificio
+            (
+                a.id_edificio = d.id_Edificio
+                AND a.id_Departamento IS NULL
+            )
 
-                    OR
+            OR
 
-                    (
-                        -- Aviso para este departamento
-                        a.id_Departamento = p.Id_Departamento
-                    )
+            -- Aviso para este departamento
+            (
+                a.id_Departamento = p.Id_Departamento
+            )
+        )
 
-                ORDER BY a.fechaPublicacion DESC";
+    ORDER BY a.fechaPublicacion DESC";
 
 
             using (SqlConnection connection =
