@@ -4,9 +4,9 @@ namespace ConsorApp.Entidades
 {
     public class conceptoGasto
     {
-        public int IdConceptoGasto { get; set; }
-        public string NombreConcepto { get; set; } = string.Empty;
-        public string Descripcion { get; set; } = string.Empty;
+        public int id_conceptoGasto { get; set; }
+        public string nombreConcepto { get; set; } = string.Empty;
+        public string descripcion { get; set; } = string.Empty;
 
         public ICollection<GastoEdificio> GastosEdificio { get; set; } = new List<GastoEdificio>();
     }

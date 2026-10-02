@@ -1,135 +1,575 @@
 ﻿<Window x:Class="consorApp.Views.LiquidacionExpensasView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Liquidación de Expensas y Gastos" 
-        Height="650" Width="1000"
+        Title="Liquidación de Expensas"
+        Height="700"
+        Width="1100"
         WindowStartupLocation="CenterScreen"
         Background="#F5F5F5">
 
     <Grid Margin="15">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Encabezado de la ventana -->
-        <TextBlock Text="Módulo de Liquidación y Gastos" FontSize="20" FontWeight="Bold" Foreground="#333" Margin="0,0,0,15"/>
+        <!-- ENCABEZADO -->
+        <TextBlock Text="Módulo de Liquidación de Expensas"
+                   FontSize="22"
+                   FontWeight="Bold"
+                   Foreground="#333"
+                   Margin="0,0,0,15"/>
 
-        <TabControl Grid.Row="1" Background="White" BorderBrush="#DDD">
+        <TabControl Grid.Row="1"
+                    Background="White"
+                    BorderBrush="#DDD">
 
-            <!-- PESTAÑA 1: REGISTRAR GASTO / MANTENIMIENTO -->
-            <TabItem Header="Registrar Gasto / Mantenimiento" Padding="10,5">
-                <Grid Margin="15">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="320"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+            <TabItem Header="Registrar Gastos">
 
-                    <!-- Formulario de Registro -->
-                    <Border Grid.Column="0" Background="#FAFAFA" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="15" Margin="0,0,15,0">
-                        <StackPanel>
-                            <TextBlock Text="Nuevo Gasto del Edificio" FontSize="16" FontWeight="Bold" Margin="0,0,0,15" Foreground="#2C3E50"/>
+                <Grid Margin="20,0,20,0">
 
-                            <Label Content="Concepto del Gasto:" FontWeight="SemiBold"/>
-                            <ComboBox x:Name="CmbConcepto" Height="28" Margin="0,0,0,10" SelectedIndex="0">
-                                <ComboBoxItem Content="Mantenimiento Limpieza"/>
-                                <ComboBoxItem Content="Servicio Eléctrico (Luz)"/>
-                                <ComboBoxItem Content="Servicio de Agua"/>
-                                <ComboBoxItem Content="Reparación Ascensor"/>
-                                <ComboBoxItem Content="Seguridad / Portería"/>
-                                <ComboBoxItem Content="Honorarios Administración"/>
-                            </ComboBox>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="52"/>
+                        <RowDefinition Height="Auto" MinHeight="62"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
 
-                            <Label Content="Descripción / Detalle:" FontWeight="SemiBold"/>
-                            <TextBox x:Name="TxtDescripcion" Height="28" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
+                    <!-- TÍTULO -->
+                    <TextBlock Grid.Row="0"
+                   Text="Registrar gasto del edificio"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Margin="0,0,0,20"/>
 
-                            <Label Content="Monto ($):" FontWeight="SemiBold"/>
-                            <TextBox x:Name="TxtMonto" Height="28" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
+                    <!-- CONCEPTO -->
+                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="160"/>
+                        </Grid.ColumnDefinitions>
 
-                            <Label Content="Período (MM/YYYY):" FontWeight="SemiBold"/>
-                            <TextBox x:Name="TxtPeriodo" Height="28" Margin="0,0,0,10" VerticalContentAlignment="Center" Text="09/2026"/>
+                        <TextBlock Grid.Column="0"
+                       Text="Concepto:"
+                       VerticalAlignment="Center"
+                       FontWeight="SemiBold"/>
 
-                            <Label Content="Fecha del Gasto:" FontWeight="SemiBold"/>
-                            <DatePicker x:Name="DpFecha" Height="28" Margin="0,0,0,20"/>
+                        <ComboBox x:Name="CmbConceptoGasto"
+                      Grid.Column="1"
+                      Height="32"
+                      DisplayMemberPath="nombreConcepto"/>
 
-                            <Button x:Name="BtnGuardarGasto" Content="Registrar Gasto" Background="#2C3E50" Foreground="White" 
-                                    Height="35" FontWeight="Bold" Cursor="Hand" Click="BtnGuardarGasto_Click"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Tabla de Gastos -->
-                    <Grid Grid.Column="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10" VerticalAlignment="Center">
-                            <TextBlock Text="Gastos Registrados" FontSize="16" FontWeight="Bold" Foreground="#333" VerticalAlignment="Center"/>
-                            <Separator Width="20" Visibility="Hidden"/>
-                            <Label Content="Filtrar por Período:" VerticalAlignment="Center"/>
-                            <TextBox x:Name="TxtFiltroPeriodo" Width="100" Height="25" VerticalContentAlignment="Center" Text="09/2026"/>
-                            <Button x:Name="BtnFiltrar" Content="Filtrar" Width="70" Height="25" Margin="5,0,0,0" Click="BtnFiltrar_Click"/>
-                        </StackPanel>
-
-                        <DataGrid x:Name="DgGastos" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" 
-                                  CanUserAddRows="False" Background="White" GridLinesVisibility="Horizontal" HeadersVisibility="Column">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=\{0:dd/MM/yyyy\}}" Width="100"/>
-                                <DataGridTextColumn Header="Concepto" Binding="{Binding Concepto}" Width="160"/>
-                                <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="*"/>
-                                <DataGridTextColumn Header="Período" Binding="{Binding Periodo}" Width="80"/>
-                                <DataGridTextColumn Header="Monto ($)" Binding="{Binding Monto, StringFormat=$\{0:N2\}}" Width="110"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                        <Button Grid.Column="2"
+                    Content="+ Nuevo concepto"
+                    Margin="10,0,0,0"
+                    Height="32"
+                    Click="BtnNuevoConcepto_Click"/>
                     </Grid>
+
+                    <!-- DESCRIPCIÓN -->
+                    <Grid Grid.Row="2" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                       Text="Descripción:"
+                       VerticalAlignment="Top"
+                       FontWeight="SemiBold"/>
+
+                        <TextBox x:Name="TxtDescripcionGasto"
+                     Grid.Column="1"
+                     Height="60"
+                     TextWrapping="Wrap"
+                     AcceptsReturn="True"/>
+                    </Grid>
+
+                    <!-- MONTO -->
+                    <Grid Grid.Row="3" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="250"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                       Text="Monto:"
+                       VerticalAlignment="Center"
+                       FontWeight="SemiBold"/>
+
+                        <TextBox x:Name="TxtMontoGasto"
+                     Grid.Column="1"
+                     Height="32"/>
+                    </Grid>
+
+                    <!-- PERÍODO -->
+                    <Grid Grid.Row="4" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="250"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                       Text="Período:"
+                       VerticalAlignment="Center"
+                       FontWeight="SemiBold"/>
+
+                        <TextBox x:Name="TxtPeriodoGasto"
+                     Grid.Column="1"
+                     Height="32"
+                     Text="10/2026"/>
+                    </Grid>
+
+                    <!-- FECHA -->
+                    <Grid Grid.Row="5" Margin="0,0,0,20" Grid.RowSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="250"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                       Text="Fecha:"
+                       VerticalAlignment="Center"
+                       FontWeight="SemiBold"/>
+
+                        <DatePicker x:Name="DpFechaGasto"
+                        Grid.Column="1"
+                        Height="32"/>
+                    </Grid>
+
+                    <!-- BOTÓN -->
+                    <Button Grid.Row="6"
+                      Content="GUARDAR GASTO"
+                       Width="180"
+                       Padding="10,0"
+                       HorizontalAlignment="Left"
+                        Click="BtnGuardarGasto_Click" Margin="606,1,0,11"/>
+
+                    <!-- FILTRO -->
+                    <Grid Grid.Row="7" Margin="0,20,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="25*"/>
+                            <ColumnDefinition Width="227*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                       Text="Filtrar período:"
+                       VerticalAlignment="Center"
+                       FontWeight="SemiBold"/>
+
+                        <TextBox x:Name="TxtFiltroPeriodoGasto"
+                     Grid.Column="1"
+                     Height="32"/>
+
+                        <Button Grid.Column="2"
+                    Content="Filtrar"
+                    Margin="10,0,0,0"
+                    Height="32"
+                    Click="BtnFiltrarGastos_Click"/>
+                    </Grid>
+
+                    <!-- TABLA -->
+                    <DataGrid x:Name="DgGastos"
+                  Grid.Row="8"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  Margin="0,10,0,0">
+
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn Header="Fecha"
+                                    Binding="{Binding fecha, StringFormat={}{0:dd/MM/yyyy}}"
+                                    Width="110"/>
+
+                            <DataGridTextColumn Header="Concepto"
+                                    Binding="{Binding ConceptoGasto.nombreConcepto}"
+                                    Width="180"/>
+
+                            <DataGridTextColumn Header="Descripción"
+                                    Binding="{Binding descripcion}"
+                                    Width="*"/>
+
+                            <DataGridTextColumn Header="Período"
+                                    Binding="{Binding periodo}"
+                                    Width="100"/>
+
+                            <DataGridTextColumn Header="Monto"
+                                    Binding="{Binding monto, StringFormat={}{0:C2}}"
+                                    Width="120"/>
+
+                            <DataGridTextColumn Header="Estado"
+                                    Binding="{Binding estado}"
+                                    Width="100"/>
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+
                 </Grid>
+
             </TabItem>
 
-            <!-- PESTAÑA 2: LIQUIDAR EXPENSAS -->
-            <TabItem Header="Liquidar Expensas" Padding="10,5">
+            <!-- ===================================================== -->
+            <!-- PESTAÑA 1 - LIQUIDAR EXPENSAS -->
+            <!-- ===================================================== -->
+
+            <TabItem Header="Liquidar Expensas"
+                     Padding="10,5">
+
+                <Grid Margin="25">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- PERIODO -->
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,15,0,20">
+
+                        <Label Content="Período:"
+                               FontSize="14"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+
+                        <TextBox x:Name="TxtPeriodoLiquidar"
+                                 Width="120"
+                                 Height="30"
+                                 FontSize="14"
+                                 Text="09/2026"
+                                 VerticalContentAlignment="Center"
+                                 HorizontalContentAlignment="Center"
+                                 Margin="10,0"/>
+
+                        <Button x:Name="BtnCalcular"
+                                Content="Calcular"
+                                Width="120"
+                                Height="30"
+                                Background="#27AE60"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Click="BtnCalcular_Click"/>
+                    </StackPanel>
+
+
+                    <!-- DATOS PARA LA LIQUIDACIÓN -->
+                    <Border Grid.Row="1"
+                            Width="550"
+                            HorizontalAlignment="Center"
+                            Background="#F8F9FA"
+                            BorderBrush="#CBD5E1"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="25" Height="402" VerticalAlignment="Center">
+
+                        <StackPanel>
+
+                            <TextBlock Text="Datos de la Liquidación"
+                                       FontSize="17"
+                                       FontWeight="Bold"
+                                       Foreground="#1E293B"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,20"/>
+
+                            <TextBlock Text="Total de gastos del período:"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"/>
+
+                            <TextBox x:Name="TxtMontoTotalGastos"
+                                       IsReadOnly="True"
+                                           Height="32"
+                                      Background="#F0F0F0"/>
+
+                            <TextBlock Text="Fecha de vencimiento:"
+                                      FontWeight="SemiBold"
+                                      Margin="0,0,0,5"/>
+
+                            <DatePicker x:Name="DpFechaVencimiento"
+                                      Height="32"
+                                     Margin="0,0,0,15"/>
+
+                            <TextBlock Text="Cantidad de departamentos con propietario:"
+                                         FontWeight="SemiBold"
+                                          Margin="0,0,0,5"/>
+
+                            <TextBlock x:Name="LblDeptosPropietario"
+                                       Text="0"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,15"/>
+
+                            <Separator Margin="0,5,0,15"/>
+
+                            <TextBlock Text="Expensa individual:"
+                                       FontWeight="SemiBold"
+                                       Margin="0,0,0,5"/>
+
+                            <TextBlock x:Name="LblExpensaIndividual"
+                                       Text="$ 0,00"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       Foreground="#2E7D32"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,20"/>
+
+                            <Button x:Name="BtnGuardarLiquidacion"
+                                    Content="Guardar Liquidación"
+                                    Height="30"
+                                    Background="#2C3E50"
+                                    Foreground="White"
+                                    FontWeight="Bold"
+                                    Click="BtnGuardarLiquidacion_Click" RenderTransformOrigin="0.497,0.229"/>
+
+                        </StackPanel>
+
+                    </Border>
+
+
+                    <!-- TABLA DE EXPENSAS EXISTENTES -->
+                    <DataGrid x:Name="DgExpensas"
+          Grid.Row="7"
+          Margin="0,20,0,0"
+          AutoGenerateColumns="False"
+          IsReadOnly="True"
+          CanUserAddRows="False">
+
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn Header="Período"
+                            Binding="{Binding Periodo}"
+                            Width="100"/>
+
+                            <DataGridTextColumn Header="Total gastos"
+                            Binding="{Binding MontoTotalGastos, StringFormat={}{0:C2}}"
+                            Width="130"/>
+
+                            <DataGridTextColumn Header="Expensa individual"
+                            Binding="{Binding ValorExpensaIndividual, StringFormat={}{0:C2}}"
+                            Width="150"/>
+
+                            <DataGridTextColumn Header="Fecha emisión"
+                            Binding="{Binding FechaEmision, StringFormat={}{0:dd/MM/yyyy}}"
+                            Width="120"/>
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                </Grid>
+
+            </TabItem>
+
+
+            <!-- ===================================================== -->
+            <!-- PESTAÑA 2 - DETALLE DE EXPENSA -->
+            <!-- ===================================================== -->
+
+            <TabItem Header="Detalle de Expensas"
+                     Padding="10,5">
+
                 <Grid Margin="20">
+
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,20">
-                        <Label Content="Período a Liquidar:" FontSize="14" FontWeight="Bold" VerticalAlignment="Center"/>
-                        <TextBox x:Name="TxtPeriodoLiquidar" Width="120" Height="30" FontSize="14" Text="09/2026" 
-                                 VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="10,0"/>
-                        <Button x:Name="BtnCalcular" Content="Calcular Expensas" Background="#27AE60" Foreground="White" 
-                                FontSize="13" FontWeight="Bold" Padding="15,5" Cursor="Hand" Click="BtnCalcular_Click"/>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,10,0,20">
+
+                        <TextBlock Text="Período:"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"/>
+
+                        <TextBox x:Name="TxtPeriodoDetalle"
+                                 Width="120"
+                                 Height="30"
+                                 Text="09/2026"
+                                 VerticalContentAlignment="Center"
+                                 HorizontalContentAlignment="Center"
+                                 Margin="10,0"/>
+
+                        <Button x:Name="BtnBuscarDetalle"
+                                Content="Buscar"
+                                Width="100"
+                                Height="30"
+                                Click="BtnBuscarDetalle_Click"/>
+
                     </StackPanel>
 
-                    <Border Grid.Row="1" Width="500" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                            Background="#F8F9FA" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="8" Padding="25">
-                        <StackPanel x:Name="PanelResultado">
-                            <TextBlock Text="Resumen de Liquidación de Expensas" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#1E293B" Margin="0,0,0,20"/>
 
-                            <Grid Margin="0,0,0,10">
-                                <TextBlock Text="Total Gastos del Período:" FontSize="14" Foreground="#475569"/>
-                                <TextBlock x:Name="LblTotalGastos" Text="$ 0.00" FontSize="14" FontWeight="Bold" HorizontalAlignment="Right" Foreground="#0F172A"/>
-                            </Grid>
+                    <DataGrid x:Name="DgDetalles"
+                              Grid.Row="1"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              Background="White"
+                              GridLinesVisibility="Horizontal">
 
-                            <Grid Margin="0,0,0,10">
-                                <TextBlock Text="Departamentos con Propietario:" FontSize="14" Foreground="#475569"/>
-                                <TextBlock x:Name="LblDeptosPropietario" Text="0" FontSize="14" FontWeight="Bold" HorizontalAlignment="Right" Foreground="#0F172A"/>
-                            </Grid>
+                        <DataGrid.Columns>
 
-                            <Separator Margin="0,10"/>
+                            <DataGridTextColumn Header="Departamento"
+                                                Binding="{Binding Id_Departamento}"
+                                                Width="120"/>
 
-                            <Border Background="#E8F5E9" BorderBrush="#A5D6A7" BorderThickness="1" CornerRadius="5" Padding="15" Margin="0,10,0,0">
-                                <Grid>
-                                    <TextBlock Text="Expensa por Departamento:" FontSize="15" FontWeight="Bold" Foreground="#1B5E20" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="LblExpensaIndividual" Text="$ 0.00" FontSize="18" FontWeight="Bold" Foreground="#2E7D32" HorizontalAlignment="Right"/>
-                                </Grid>
-                            </Border>
-                        </StackPanel>
-                    </Border>
+                            <DataGridTextColumn Header="Monto"
+                                                Binding="{Binding MontoAPagar, StringFormat={}{0:C2}}"
+                                                Width="150"/>
+
+                            <DataGridTextColumn Header="Vencimiento"
+                                                Binding="{Binding FechaVencimiento, StringFormat={}{0:dd/MM/yyyy}}"
+                                                Width="150"/>
+
+                            <DataGridTextColumn Header="Estado"
+                                                Binding="{Binding EstadoPago}"
+                                                Width="120"/>
+
+                            <DataGridTextColumn Header="Fecha Pago"
+                                                Binding="{Binding FechaPago, StringFormat={}{0:dd/MM/yyyy}}"
+                                                Width="130"/>
+
+                            <DataGridTextColumn Header="Método"
+                                                Binding="{Binding MetodoPago}"
+                                                Width="150"/>
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+
                 </Grid>
+
+            </TabItem>
+
+
+            <!-- ===================================================== -->
+            <!-- PESTAÑA 3 - HISTORIAL DE PROPIETARIOS Y EXPENSAS -->
+            <!-- ===================================================== -->
+
+            <TabItem Header="Historial"
+                     Padding="10,5">
+
+                <Grid Margin="20">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+
+                    <!-- FILTRO -->
+                    <StackPanel Orientation="Horizontal"
+                                Margin="0,0,0,15">
+
+                        <TextBlock Text="Departamento:"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,10,0"/>
+
+                        <TextBox x:Name="TxtFiltroDepartamento"
+                                 Width="130"
+                                 Height="30"
+                                 VerticalContentAlignment="Center"/>
+
+                        <Button x:Name="BtnFiltrarHistorial"
+                                Content="Filtrar"
+                                Width="90"
+                                Height="30"
+                                Margin="10,0,0,0"
+                                Click="BtnFiltrarHistorial_Click"/>
+
+                        <Button x:Name="BtnMostrarTodoHistorial"
+                                Content="Mostrar todo"
+                                Width="100"
+                                Height="30"
+                                Margin="10,0,0,0"
+                                Click="BtnMostrarTodoHistorial_Click"/>
+
+                    </StackPanel>
+
+
+                    <!-- HISTORIAL -->
+                    <DataGrid x:Name="DgHistorial"
+                              Grid.Row="1"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              Background="White"
+                              GridLinesVisibility="Horizontal">
+
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn Header="Departamento"
+                                                Binding="{Binding IdDepartamento}"
+                                                Width="110"/>
+
+                            <DataGridTextColumn Header="Piso"
+                                                Binding="{Binding Piso}"
+                                                Width="80"/>
+
+                            <DataGridTextColumn Header="Unidad"
+                                                Binding="{Binding Unidad}"
+                                                Width="80"/>
+
+                            <DataGridTextColumn Header="Propietario"
+                                                Binding="{Binding NombrePropietario}"
+                                                Width="180"/>
+
+                            <DataGridTextColumn Header="Período"
+                                                Binding="{Binding Periodo}"
+                                                Width="100"/>
+
+                            <DataGridTextColumn Header="Monto"
+                                                Binding="{Binding MontoAPagar, StringFormat={}{0:C2}}"
+                                                Width="120"/>
+
+                            <DataGridTextColumn Header="Estado"
+                                                Binding="{Binding EstadoPago}"
+                                                Width="110"/>
+
+                            <DataGridTextColumn Header="Vencimiento"
+                                                Binding="{Binding FechaVencimiento, StringFormat={}{0:dd/MM/yyyy}}"
+                                                Width="120"/>
+
+                            <DataGridTextColumn Header="Fecha Pago"
+                                                Binding="{Binding FechaPago, StringFormat={}{0:dd/MM/yyyy}}"
+                                                Width="120"/>
+
+                            <DataGridTextColumn Header="Método"
+                                                Binding="{Binding MetodoPago}"
+                                                Width="120"/>
+
+                            <DataGridTextColumn Header="Desde propietario"
+                                                Binding="{Binding FechaDesdePropietario, StringFormat={}{0:dd/MM/yyyy}}"
+                                                Width="130"/>
+
+                            <DataGridTextColumn Header="Hasta propietario"
+                                                Binding="{Binding FechaHastaPropietario, StringFormat={}{0:dd/MM/yyyy}}"
+                                                Width="130"/>
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+
+                </Grid>
+
             </TabItem>
 
         </TabControl>
+
     </Grid>
+
 </Window>
