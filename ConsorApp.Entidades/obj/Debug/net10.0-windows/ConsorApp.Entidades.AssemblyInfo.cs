@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ConsorApp.Entidades")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+470061141c754f49e113677be63f808fbadb9889")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+40765f6ae85f17c8695aa1b146fad99a3597391d")]
 [assembly: System.Reflection.AssemblyProductAttribute("ConsorApp.Entidades")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ConsorApp.Entidades")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
