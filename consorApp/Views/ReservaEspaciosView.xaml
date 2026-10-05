@@ -21,50 +21,35 @@
                 <DatePicker x:Name="DpFechaReserva" Height="25" Margin="0,0,0,12"/>
 
                 <TextBlock Text="Turno / Horario:" FontWeight="SemiBold" Margin="0,0,0,3" Foreground="#555"/>
-                <ComboBox x:Name="CmbTurnos" Height="25" Margin="0,0,0,20">
-                    <ComboBoxItem Content="Mañana (09:00 a 14:00)" />
-                    <ComboBoxItem Content="Tarde (15:00 a 20:00)" />
-                    <ComboBoxItem Content="Noche (21:00 a 02:00)" />
-                </ComboBox>
+                <!-- ComboBox limpio y vacío listo para el enlace dinámico -->
+                <ComboBox x:Name="CmbTurnos" Height="25" Margin="0,0,0,20"/>
 
-                <Button x:Name="BtnLimpiar" Content="Limpiar" Height="30" Background="#CCCCCC" Foreground="#333" FontWeight="Bold" Margin="0,0,0,8" Cursor="Hand"/>
-                <Button x:Name="BtnGuardar" Content="Guardar Reserva" Height="35" Background="#8D7B68" Foreground="White" FontWeight="Bold" Cursor="Hand"/>
+                <Button x:Name="BtnLimpiar" Content="Limpiar" Height="30" Background="#CCCCCC" Foreground="#333" FontWeight="Bold" Margin="0,0,0,8" Cursor="Hand" Click="BtnLimpiar_Click"/>
+                <Button x:Name="BtnGuardar" Content="Guardar Reserva" Height="35" Background="#8D7B68" Foreground="White" FontWeight="Bold" Cursor="Hand" Click="BtnGuardar_Click"/>
             </StackPanel>
         </Border>
 
-        <!-- PANEL DERECHO: Tarjetas de Espacios Comunes -->
+        <!-- PANEL DERECHO: Tarjetas Dinámicas de Espacios Comunes -->
         <ScrollViewer Grid.Column="1" Margin="20,0,0,0" VerticalScrollBarVisibility="Auto">
-            <WrapPanel>
+            <ItemsControl x:Name="IcEspaciosComunes">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                <!-- Tarjeta 1: SUM -->
-                <Border Width="170" Height="200" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Margin="0,0,15,15" Padding="12" Cursor="Hand">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <!-- Podés cambiar la ruta del ícono o imagen si la tenés -->
-                        <TextBlock Text="🏢" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                        <TextBlock Text="SUM" FontSize="16" FontWeight="Bold" Foreground="#2C3E50" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Salón de Usos Múltiples" FontSize="11" Foreground="#666" TextAlignment="Center" TextWrapping="Wrap" Margin="0,5,0,0"/>
-                    </StackPanel>
-                </Border>
-
-                <!-- Tarjeta 2: Quincho -->
-                <Border Width="170" Height="200" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Margin="0,0,15,15" Padding="12" Cursor="Hand">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="🍖" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                        <TextBlock Text="Quincho" FontSize="16" FontWeight="Bold" Foreground="#2C3E50" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Con parrilla y mesada" FontSize="11" Foreground="#666" TextAlignment="Center" TextWrapping="Wrap" Margin="0,5,0,0"/>
-                    </StackPanel>
-                </Border>
-
-                <!-- Tarjeta 3: Piscina -->
-                <Border Width="170" Height="200" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Margin="0,0,15,15" Padding="12" Cursor="Hand">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="🏊" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                        <TextBlock Text="Piscina" FontSize="16" FontWeight="Bold" Foreground="#2C3E50" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Área de pileta y solarium" FontSize="11" Foreground="#666" TextAlignment="Center" TextWrapping="Wrap" Margin="0,5,0,0"/>
-                    </StackPanel>
-                </Border>
-
-            </WrapPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="170" Height="200" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="8" Margin="0,0,15,15" Padding="12" Cursor="Hand" MouseLeftButtonUp="TarjetaEspacio_Click">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="🏢" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                <TextBlock Text="{Binding Nombre}" FontSize="16" FontWeight="Bold" Foreground="#2C3E50" HorizontalAlignment="Center" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding Descripcion}" FontSize="11" Foreground="#666" TextAlignment="Center" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </ScrollViewer>
     </Grid>
 </Window>
