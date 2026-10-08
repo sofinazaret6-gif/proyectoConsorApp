@@ -60,5 +60,10 @@ namespace ConsorApp.Negocio
                     + ex.Message);
             }
         }
+
+        public List<HistorialExpensa> ObtenerHistorialPorUsuario(int idUsuario)
+        {
+            return _datos.ObtenerHistorialPorUsuario(idUsuario);
+        }
     }
 }

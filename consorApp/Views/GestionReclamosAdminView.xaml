@@ -22,12 +22,7 @@
         <Border Grid.Row="1" Background="#F9F9F9" Padding="12" CornerRadius="6" BorderBrush="#E0E0E0" BorderThickness="1" Margin="0,0,0,15">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Filtrar por Motivo:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                <ComboBox x:Name="CmbFiltroMotivo" Width="180" Height="25" Margin="0,0,20,0">
-                    <ComboBoxItem Content="Todos los motivos" IsSelected="True"/>
-                    <ComboBoxItem Content="Ruidos molestos"/>
-                    <ComboBoxItem Content="Gotera / Filtración"/>
-                    <ComboBoxItem Content="Basura fuera de horario"/>
-                </ComboBox>
+                <ComboBox x:Name="CmbFiltroMotivo" Width="200" Height="25" Margin="0,0,20,0"/>
 
                 <TextBlock Text="Estado:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0"/>
                 <ComboBox x:Name="CmbFiltroEstado" Width="140" Height="25">
@@ -36,6 +31,11 @@
                     <ComboBoxItem Content="En Resolución"/>
                     <ComboBoxItem Content="Resuelto"/>
                 </ComboBox>
+                <TextBlock Text="Mes:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="20,0,10,0"/>
+                <ComboBox x:Name="CmbFiltroMes" Width="130" Height="25"/>
+
+                <TextBlock Text="Año:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="20,0,10,0"/>
+                <ComboBox x:Name="CmbFiltroAnio" Width="80" Height="25"/>
             </StackPanel>
         </Border>
 
@@ -43,7 +43,8 @@
         <DataGrid x:Name="DgReclamosAdmin" Grid.Row="2" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single" Margin="0,0,0,15">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding IdReclamo}" Width="40"/>
-                <DataGridTextColumn Header="Motivo" Binding="{Binding Motivo}" Width="130"/>
+                <DataGridTextColumn Header="Motivo (propietario)" Binding="{Binding Motivo}" Width="150"/>
+                <DataGridTextColumn Header="Categoría" Binding="{Binding Categoria}" Width="150"/>
                 <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="120"/>
                 <DataGridTextColumn Header="Responsable" Binding="{Binding Responsable}" Width="140"/>
                 <DataGridTextColumn Header="Departamento"

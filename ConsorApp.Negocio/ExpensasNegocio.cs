@@ -195,8 +195,9 @@ namespace ConsorApp.Negocio
 
         public void RegistrarPago(
             int idDetalle,
-            DateTime fechaPago,
-            string metodoPago)
+            string estadoPago,
+            DateTime? fechaPago,
+            string? metodoPago)
         {
             if (idDetalle <= 0)
             {
@@ -204,20 +205,46 @@ namespace ConsorApp.Negocio
                     "El detalle de expensa no es válido.");
             }
 
-            if (string.IsNullOrWhiteSpace(
-                metodoPago))
+            if (estadoPago != "Pagado" && estadoPago != "Pendiente")
             {
                 throw new ArgumentException(
-                    "Debe indicar el método de pago.");
+                    "El estado de pago no es válido.");
+            }
+
+            if (estadoPago == "Pagado")
+            {
+                if (!fechaPago.HasValue)
+                {
+                    throw new ArgumentException(
+                        "Debe indicar la fecha de pago.");
+                }
+
+                if (fechaPago.Value.Date > DateTime.Today)
+                {
+                    throw new ArgumentException(
+                        "La fecha de pago no puede ser futura.");
+                }
+
+                if (string.IsNullOrWhiteSpace(metodoPago))
+                {
+                    throw new ArgumentException(
+                        "Debe indicar el método de pago.");
+                }
+            }
+            else
+            {
+                // Si vuelve a "Pendiente" se borran la fecha y el método
+                fechaPago = null;
+                metodoPago = null;
             }
 
             try
             {
                 _datos.ActualizarPago(
                     idDetalle,
-                    "Pagado",
+                    estadoPago,
                     fechaPago,
-                    metodoPago.Trim());
+                    metodoPago?.Trim());
             }
             catch (Exception ex)
             {
@@ -226,7 +253,6 @@ namespace ConsorApp.Negocio
                     + ex.Message);
             }
         }
-
         // ============================================================
         // OBTENER TOTAL DE GASTOS DE UN PERÍODO
         // ============================================================

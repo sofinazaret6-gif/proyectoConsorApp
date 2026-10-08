@@ -88,7 +88,7 @@ namespace consorApp.Views
 
         private void BtnMiDpto_Click(object sender, RoutedEventArgs e)
         {
-            MiDepartamentoView ventanaMiDpto = new MiDepartamentoView();
+            MiDepartamentoView ventanaMiDpto = new MiDepartamentoView(SesionUsuario.IdUsuario);
             ventanaMiDpto.ShowDialog();
         }
 

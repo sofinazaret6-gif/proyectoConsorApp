@@ -13,16 +13,18 @@ namespace ConsorApp.Datos
             using SqlConnection conexion = Conexion.ObtenerConexion();
 
             string sql = @"
-             SELECT
-                Id_Propietario AS IdPropietario,
-                   Id_Usuario AS IdUsuario,
-                Id_Departamento AS IdDepartamento,
-              FechaDesde,
-              FechaHasta,
-              Estado
-             FROM Propietario
-             WHERE Id_Usuario = @IdUsuario
-            AND Estado = 1";
+                SELECT
+                    Id_Propietario AS IdPropietario,
+                    Id_Usuario AS IdUsuario,
+                    Id_Departamento AS IdDepartamento,
+                    FechaDesde,
+                    FechaHasta,
+                    Estado
+                FROM Propietario
+                WHERE Id_Usuario = @IdUsuario
+                  AND Estado = 1
+                  AND FechaHasta IS NULL
+                ORDER BY FechaDesde DESC";
 
             using SqlCommand comando = new SqlCommand(sql, conexion);
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using ConsorApp.Entidades;
 using Microsoft.Data.SqlClient;
 using System;
@@ -376,21 +375,23 @@ namespace ConsorApp.Datos
         {
             List<Detalle_Expensa> lista =
                 new List<Detalle_Expensa>();
-
             string query = @"
                 SELECT
-                    Id_DetalleExpensa,
-                    Id_Expensa,
-                    Id_Departamento,
-                    MontoAPagar,
-                    FechaVencimiento,
-                    EstadoPago,
-                    FechaPago,
-                    MetodoPago
-                FROM Detalle_Expensa
-                WHERE Id_Expensa = @Id_Expensa
-                ORDER BY Id_Departamento";
-
+                      de.Id_DetalleExpensa,
+                      de.Id_Expensa,
+                      de.Id_Departamento,
+                       d.Piso,
+                      d.Unidad,
+                      de.MontoAPagar,
+                      de.FechaVencimiento,
+                      de.EstadoPago,
+                      de.FechaPago,
+                      de.MetodoPago
+                     FROM Detalle_Expensa de
+                    INNER JOIN Departamento d
+                    ON d.Id_Departamento = de.Id_Departamento
+                    WHERE de.Id_Expensa = @Id_Expensa
+                    ORDER BY d.Piso, d.Unidad";
             using (SqlConnection conexion =
                    new SqlConnection(connectionString))
             {
@@ -422,6 +423,15 @@ namespace ConsorApp.Datos
                                     Convert.ToInt32(
                                         reader["Id_Departamento"]),
 
+                                // ===== NUEVO =====
+                                Departamento = new Departamento
+                                {
+                                    IdDepartamento = Convert.ToInt32(reader["Id_Departamento"]),
+                                    Piso = reader["Piso"]?.ToString() ?? string.Empty,
+                                    Unidad = reader["Unidad"]?.ToString() ?? string.Empty
+                                },
+                                // =================
+
                                 MontoAPagar =
                                     Convert.ToDecimal(
                                         reader["MontoAPagar"]),
@@ -435,18 +445,14 @@ namespace ConsorApp.Datos
                                     ?? "Pendiente",
 
                                 FechaPago =
-                                    reader["FechaPago"] ==
-                                    DBNull.Value
+                                    reader["FechaPago"] == DBNull.Value
                                         ? null
-                                        : Convert.ToDateTime(
-                                            reader["FechaPago"]),
+                                        : Convert.ToDateTime(reader["FechaPago"]),
 
                                 MetodoPago =
-                                    reader["MetodoPago"] ==
-                                    DBNull.Value
+                                    reader["MetodoPago"] == DBNull.Value
                                         ? null
-                                        : reader["MetodoPago"]
-                                            .ToString()
+                                        : reader["MetodoPago"].ToString()
                             });
                         }
                     }

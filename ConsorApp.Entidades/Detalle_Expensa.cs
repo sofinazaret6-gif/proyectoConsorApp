@@ -18,5 +18,9 @@ namespace ConsorApp.Entidades
         // Propiedades de navegación
         public Expensa Expensa { get; set; } = null!;
         public Departamento Departamento { get; set; } = null!;
+
+        public bool EstaAtrasada =>
+    !string.Equals(EstadoPago, "Pagado", StringComparison.OrdinalIgnoreCase)
+    && FechaVencimiento.Date < DateTime.Today;
     }
 }

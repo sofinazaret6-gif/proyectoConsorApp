@@ -1,11 +1,13 @@
-﻿using System;
+﻿using ConsorApp.Entidades;
+using ConsorApp.Negocio;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
-
-
-using ConsorApp.Entidades;
-using ConsorApp.Negocio;
+using System.Windows.Controls;
 
 namespace consorApp.Views
 {
@@ -20,6 +22,7 @@ namespace consorApp.Views
             new GastoEdificioNegocio();
         private decimal _expensaCalculada = 0;
         private int _cantidadDepartamentos = 0;
+        private Expensa? _expensaActual;
 
 
         public LiquidacionExpensasView()
@@ -34,6 +37,9 @@ namespace consorApp.Views
             TxtFiltroPeriodoGasto.Text = DateTime.Now.ToString("MM/yyyy");
 
             TxtPeriodoGasto.Text = DateTime.Now.ToString("MM/yyyy");
+            string periodoActual = DateTime.Now.ToString("MM/yyyy");
+            TxtPeriodoLiquidar.Text = periodoActual;
+            TxtPeriodoDetalle.Text = periodoActual;
 
             CargarConceptosGasto();
 
@@ -74,17 +80,22 @@ namespace consorApp.Views
         {
             try
             {
-                string periodo =
-                    TxtPeriodoLiquidar.Text.Trim();
+                string? periodo = NormalizarPeriodo(TxtPeriodoLiquidar.Text);
 
-                if (string.IsNullOrWhiteSpace(periodo))
+                if (periodo == null)
+                {
+                    MessageBox.Show("Ingrese el período con formato MM/aaaa. Ejemplo: 10/2026.",
+                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                TxtPeriodoLiquidar.Text = periodo;
+
+                if (_expensaNegocio.ObtenerPorPeriodo(periodo) != null)
                 {
                     MessageBox.Show(
-                        "Ingrese el período.",
-                        "Atención",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-
+                        $"El período {periodo} ya fue liquidado. Podés verlo en la pestaña 'Detalle de Expensas'.",
+                        "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
 
@@ -99,7 +110,8 @@ namespace consorApp.Views
                 {
                     LblDeptosPropietario.Text = "0";
                     LblExpensaIndividual.Text = "$ 0,00";
-
+                    TxtMontoTotalGastos.Clear();
+                    _expensaCalculada = 0;
                     MessageBox.Show(
                         $"No existen gastos registrados para el período {periodo}.",
                         "Información",
@@ -178,17 +190,20 @@ namespace consorApp.Views
         {
             try
             {
-                string periodo =
-                    TxtPeriodoLiquidar.Text.Trim();
+                string? periodo = NormalizarPeriodo(TxtPeriodoLiquidar.Text);
 
-                if (string.IsNullOrWhiteSpace(periodo))
+                if (periodo == null)
                 {
-                    MessageBox.Show(
-                        "Ingrese el período.",
-                        "Atención",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
+                    MessageBox.Show("Ingrese el período con formato MM/aaaa. Ejemplo: 10/2026.",
+                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
 
+                // Evita liquidar dos veces el mismo período
+                if (_expensaNegocio.ObtenerPorPeriodo(periodo) != null)
+                {
+                    MessageBox.Show($"El período {periodo} ya fue liquidado.",
+                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -375,18 +390,12 @@ namespace consorApp.Views
         {
             try
             {
-                string periodo =
-                    TxtPeriodoDetalle.Text.Trim();
+                string? periodo = NormalizarPeriodo(TxtPeriodoDetalle.Text);
 
-
-                if (string.IsNullOrWhiteSpace(periodo))
+                if (periodo == null)
                 {
-                    MessageBox.Show(
-                        "Ingrese un período.",
-                        "Atención",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-
+                    MessageBox.Show("Ingrese el período con formato MM/aaaa. Ejemplo: 10/2026.",
+                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -398,6 +407,7 @@ namespace consorApp.Views
 
                 if (expensa == null)
                 {
+
                     DgDetalles.ItemsSource = null;
 
                     MessageBox.Show(
@@ -405,10 +415,10 @@ namespace consorApp.Views
                         "Información",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
-
+                    _expensaActual = null;
                     return;
                 }
-
+                _expensaActual = expensa;
 
                 List<Detalle_Expensa> detalles =
                     _expensaNegocio.ObtenerDetalles(
@@ -427,8 +437,267 @@ namespace consorApp.Views
                     MessageBoxImage.Error);
             }
         }
+        private static string? NormalizarPeriodo(string? texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto)) return null;
+
+            if (DateTime.TryParseExact(
+                    texto.Trim(),
+                    new[] { "M/yyyy", "MM/yyyy" },
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out DateTime fecha))
+            {
+                return fecha.ToString("MM/yyyy", CultureInfo.InvariantCulture);
+            }
+
+            return null;
+        }
+
+        // ============================================================
+        // EXPORTAR PDF
+        // ============================================================
+
+        private List<HistorialExpensa> ObtenerReporteDeExpensaActual()
+        {
+            return _historialNegocio.ObtenerHistorial()
+                .Where(h => h.IdExpensa == _expensaActual!.Id_Expensa)
+                .OrderBy(h => h.Piso)
+                .ThenBy(h => h.Unidad)
+                .ToList();
+        }
+
+        private static string LimpiarNombreArchivo(string nombre) =>
+            string.Concat(nombre.Split(Path.GetInvalidFileNameChars()));
+
+        private void BtnExportarPdfSeleccionado_Click(object sender, RoutedEventArgs e)
+        {
+            ExportarPdf(soloSeleccionado: true);
+        }
+
+        private void BtnExportarPdfTodos_Click(object sender, RoutedEventArgs e)
+        {
+            ExportarPdf(soloSeleccionado: false);
+        }
+
+        private void ExportarPdf(bool soloSeleccionado)
+        {
+            try
+            {
+                if (_expensaActual == null)
+                {
+                    MessageBox.Show("Primero buscá un período en esta pestaña.",
+                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                List<HistorialExpensa> reporte = ObtenerReporteDeExpensaActual();
+
+                if (soloSeleccionado)
+                {
+                    if (DgDetalles.SelectedItem is not Detalle_Expensa seleccionado)
+                    {
+                        MessageBox.Show("Seleccioná un departamento de la tabla.",
+                            "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    reporte = reporte
+                        .Where(h => h.IdDetalleExpensa == seleccionado.Id_DetalleExpensa)
+                        .ToList();
+                }
+
+                if (reporte.Count == 0)
+                {
+                    MessageBox.Show("No se encontraron datos para generar el reporte.",
+                        "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                string periodoArchivo = _expensaActual.Periodo.Replace('/', '-');
+                string nombre = soloSeleccionado
+                    ? $"Liquidacion_{periodoArchivo}_Piso{reporte[0].Piso}_Unidad{reporte[0].Unidad}.pdf"
+                    : $"Liquidacion_{periodoArchivo}_Resumen.pdf";
+
+                var dialogo = new Microsoft.Win32.SaveFileDialog
+                {
+                    Title = "Guardar liquidación en PDF",
+                    Filter = "Archivo PDF (*.pdf)|*.pdf",
+                    FileName = LimpiarNombreArchivo(nombre)
+                };
+
+                if (dialogo.ShowDialog() != true) return;
+
+                var gastos = _gastoEdificioNegocio
+                    .ObtenerGastosPorPeriodo(_expensaActual.Periodo)
+                    .ToList();
+
+                int cantidadDeptos = _expensaNegocio.ObtenerDetalles(_expensaActual.Id_Expensa).Count;
+
+                // ===== AQUÍ VA EL BLOQUE NUEVO =====
+                var servicio = new LiquidacionPdfService();
+                string? nombreEdificio = LiquidacionPdfService.ObtenerNombreEdificio();
+
+                if (soloSeleccionado)
+                {
+                    // Detalle completo de un solo departamento
+                    servicio.Generar(
+                        dialogo.FileName, _expensaActual, reporte, gastos, cantidadDeptos, nombreEdificio);
+                }
+                else
+                {
+                    // Hoja resumen con todos los departamentos
+                    servicio.GenerarResumenGeneral(
+                        dialogo.FileName, _expensaActual, reporte, gastos, nombreEdificio);
+                }
+                // ===================================
+
+                var abrir = MessageBox.Show(
+                    "El PDF se generó correctamente. ¿Querés abrirlo?",
+                    "Reporte generado", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (abrir == MessageBoxResult.Yes)
+                {
+                    Process.Start(new ProcessStartInfo(dialogo.FileName) { UseShellExecute = true });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al generar el PDF:\n{ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        // Un archivo PDF por cada departamento, guardados en una carpeta
+        private void BtnExportarIndividuales_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_expensaActual == null)
+                {
+                    MessageBox.Show("Primero buscá un período en esta pestaña.",
+                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                List<HistorialExpensa> reporte = ObtenerReporteDeExpensaActual();
+
+                if (reporte.Count == 0)
+                {
+                    MessageBox.Show("No se encontraron datos para generar el reporte.",
+                        "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Documentos\ConsorApp\Liquidaciones\10-2026\
+                string carpeta = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ConsorApp", "Liquidaciones",
+                    _expensaActual.Periodo.Replace('/', '-'));
+
+                Directory.CreateDirectory(carpeta);
+
+                var gastos = _gastoEdificioNegocio
+                    .ObtenerGastosPorPeriodo(_expensaActual.Periodo)
+                    .ToList();
+
+                int cantidadDeptos = _expensaNegocio.ObtenerDetalles(_expensaActual.Id_Expensa).Count;
+                string? nombreEdificio = LiquidacionPdfService.ObtenerNombreEdificio();   // <-- NUEVO
+                var servicio = new LiquidacionPdfService();
 
 
+                foreach (var depto in reporte)
+                {
+                    string nombre = LimpiarNombreArchivo(
+                        $"Liquidacion_{_expensaActual.Periodo.Replace('/', '-')}_Piso{depto.Piso}_Unidad{depto.Unidad}.pdf");
+
+                    servicio.Generar(
+                        Path.Combine(carpeta, nombre),
+                        _expensaActual,
+                        new List<HistorialExpensa> { depto },
+                        gastos,
+                        cantidadDeptos,
+                        nombreEdificio);                                  // <-- NUEVO
+                }
+
+                MessageBox.Show(
+                    $"Se generaron {reporte.Count} PDF en:\n{carpeta}",
+                    "Reportes generados", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                Process.Start("explorer.exe", $"\"{carpeta}\"");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al generar los PDF:\n{ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // ============================================================
+        // REGISTRAR PAGO (lo hace el encargado)
+        // ============================================================
+
+        private void DgDetalles_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DgDetalles.SelectedItem is not Detalle_Expensa detalle)
+            {
+                BtnGuardarPago.IsEnabled = false;
+                LblPagoSeleccion.Text = "Registrar pago: seleccioná un departamento de la tabla";
+                return;
+            }
+
+            BtnGuardarPago.IsEnabled = true;
+
+            LblPagoSeleccion.Text =
+                $"Registrar pago - Piso {detalle.Departamento?.Piso} Unidad {detalle.Departamento?.Unidad}";
+
+            bool pagado = string.Equals(detalle.EstadoPago, "Pagado", StringComparison.OrdinalIgnoreCase);
+
+            CmbEstadoPago.SelectedIndex = pagado ? 1 : 0;
+            DpFechaPago.SelectedDate = detalle.FechaPago ?? DateTime.Today;
+            CmbMetodoPago.Text = detalle.MetodoPago ?? string.Empty;
+        }
+
+        private void BtnGuardarPago_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_expensaActual == null || DgDetalles.SelectedItem is not Detalle_Expensa detalle)
+                {
+                    MessageBox.Show("Seleccioná un departamento de la tabla.",
+                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                string estado =
+                    (CmbEstadoPago.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Pendiente";
+
+                _expensaNegocio.RegistrarPago(
+                    detalle.Id_DetalleExpensa,
+                    estado,
+                    DpFechaPago.SelectedDate,
+                    CmbMetodoPago.Text.Trim());
+
+                MessageBox.Show("El pago fue actualizado correctamente.",
+                    "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Recargar la tabla y volver a seleccionar el mismo departamento
+                int idSeleccionado = detalle.Id_DetalleExpensa;
+
+                List<Detalle_Expensa> detalles =
+                    _expensaNegocio.ObtenerDetalles(_expensaActual.Id_Expensa);
+
+                DgDetalles.ItemsSource = detalles;
+                DgDetalles.SelectedItem =
+                    detalles.FirstOrDefault(d => d.Id_DetalleExpensa == idSeleccionado);
+
+                CargarHistorial();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message,
+                    "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
         // ============================================================
         // HISTORIAL
         // ============================================================
@@ -530,16 +799,26 @@ namespace consorApp.Views
         {
             try
             {
-                CmbConceptoGasto.ItemsSource =
-                    _conceptoGastoNegocio.ObtenerConceptos();
+                var conceptos = _conceptoGastoNegocio.ObtenerConceptos().ToList();
+
+                // Combo del formulario
+                CmbConceptoGasto.ItemsSource = conceptos;
+
+                // Combo del filtro: se agrega "Todos" al principio
+                var conceptosFiltro = new List<conceptoGasto>
+        {
+            new conceptoGasto { id_conceptoGasto = 0, nombreConcepto = "Todos los conceptos" }
+        };
+                conceptosFiltro.AddRange(conceptos);
+
+                CmbFiltroConcepto.ItemsSource = conceptosFiltro;
+                CmbFiltroConcepto.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
                     "No se pudieron cargar los conceptos de gasto.\n\n" + ex.Message,
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         private void BtnGuardarGasto_Click(object sender, RoutedEventArgs e)
@@ -569,16 +848,20 @@ namespace consorApp.Views
                     return;
                 }
 
-                string periodo = TxtPeriodoGasto.Text.Trim();
+                string? periodo = NormalizarPeriodo(TxtPeriodoGasto.Text);
 
-                if (string.IsNullOrWhiteSpace(periodo))
+                if (periodo == null)
+                {
+                    MessageBox.Show("Ingrese el período con formato MM/aaaa. Ejemplo: 10/2026.",
+                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (_expensaNegocio.ObtenerPorPeriodo(periodo) != null)
                 {
                     MessageBox.Show(
-                        "Ingrese el período del gasto. Ejemplo: 10/2026.",
-                        "Atención",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-
+                        $"El período {periodo} ya fue liquidado. No se pueden agregar más gastos a un período cerrado.",
+                        "Período liquidado", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -640,30 +923,70 @@ namespace consorApp.Views
         {
             try
             {
-                string periodo = TxtFiltroPeriodoGasto.Text.Trim();
+                // Se traen los gastos una vez y se filtra en memoria
+                IEnumerable<GastoEdificio> gastos = _gastoEdificioNegocio.ObtenerGastos();
 
-                if (string.IsNullOrWhiteSpace(periodo))
+                // Período
+                string textoPeriodo = TxtFiltroPeriodoGasto.Text.Trim();
+                if (!string.IsNullOrWhiteSpace(textoPeriodo))
                 {
-                    DgGastos.ItemsSource =
-                        _gastoEdificioNegocio.ObtenerGastos();
+                    string? periodo = NormalizarPeriodo(textoPeriodo);
+                    if (periodo == null)
+                    {
+                        MessageBox.Show("El período debe tener el formato MM/aaaa. Ejemplo: 10/2026.",
+                            "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                    gastos = gastos.Where(g => g.periodo == periodo);
+                }
 
+                // Concepto
+                if (CmbFiltroConcepto.SelectedItem is conceptoGasto concepto
+                    && concepto.id_conceptoGasto != 0)
+                {
+                    gastos = gastos.Where(g => g.Id_conceptoGasto == concepto.id_conceptoGasto);
+                }
+
+                // Rango de fechas
+                DateTime? desde = DpFiltroDesde.SelectedDate;
+                DateTime? hasta = DpFiltroHasta.SelectedDate;
+
+                if (desde.HasValue && hasta.HasValue && desde > hasta)
+                {
+                    MessageBox.Show("La fecha 'Desde' no puede ser posterior a 'Hasta'.",
+                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                DgGastos.ItemsSource =
-                    _gastoEdificioNegocio.ObtenerGastosPorPeriodo(periodo);
+                if (desde.HasValue)
+                    gastos = gastos.Where(g => g.fecha.Date >= desde.Value.Date);
+
+                if (hasta.HasValue)
+                    gastos = gastos.Where(g => g.fecha.Date <= hasta.Value.Date);
+
+                var lista = gastos.ToList();
+
+                DgGastos.ItemsSource = lista;
+                LblTotalGastos.Text = lista.Sum(g => g.monto).ToString("C2");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    "No se pudieron cargar los gastos.\n\n" + ex.Message,
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                MessageBox.Show("No se pudieron cargar los gastos.\n\n" + ex.Message,
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         private void BtnFiltrarGastos_Click(object sender, RoutedEventArgs e)
         {
+            ActualizarGrillaGastos();
+        }
+
+        private void BtnLimpiarFiltrosGastos_Click(object sender, RoutedEventArgs e)
+        {
+            TxtFiltroPeriodoGasto.Clear();
+            CmbFiltroConcepto.SelectedIndex = 0;
+            DpFiltroDesde.SelectedDate = null;
+            DpFiltroHasta.SelectedDate = null;
+
             ActualizarGrillaGastos();
         }
     }

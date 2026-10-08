@@ -13,31 +13,16 @@ namespace ConsorApp.Datos
             using SqlConnection conexion = Conexion.ObtenerConexion();
 
             string sql = @"
-                INSERT INTO Reclamo
-                (
-                    Id_UsuarioDepartamento,
-                    Motivo,
-                    Ubicacion,
-                    Descripcion,
-                    Observacion,
-                    estadoReclamo,
-                    fechaReclamo
-                )
-                VALUES
-                (
-                    @Id_UsuarioDepartamento,
-                    @Motivo,
-                    @Ubicacion,
-                    @Descripcion,
-                    @Observacion,
-                    @estadoReclamo,
-                    @fechaReclamo
-                )";
+    INSERT INTO Reclamo
+    (Id_UsuarioDepartamento, Motivo, Categoria, Ubicacion, Descripcion, Observacion, estadoReclamo, fechaReclamo)
+    VALUES
+    (@Id_UsuarioDepartamento, @Motivo, @Categoria, @Ubicacion, @Descripcion, @Observacion, @estadoReclamo, @fechaReclamo)";
 
             using SqlCommand comando = new SqlCommand(sql, conexion);
 
             comando.Parameters.AddWithValue("@Id_UsuarioDepartamento", reclamo.Id_UsuarioDepartamento);
             comando.Parameters.AddWithValue("@Motivo", reclamo.Motivo);
+            comando.Parameters.AddWithValue("@Categoria", reclamo.Categoria);
             comando.Parameters.AddWithValue("@Ubicacion", reclamo.Ubicacion);
             comando.Parameters.AddWithValue("@Descripcion", reclamo.Descripcion);
             comando.Parameters.AddWithValue("@Observacion", reclamo.Observacion);
@@ -72,6 +57,7 @@ namespace ConsorApp.Datos
         SELECT 
             r.Id_Reclamo AS IdReclamo,
             r.Motivo,
+            ISNULL(r.Categoria, 'Otro') AS Categoria,
             r.Ubicacion,
 
             ISNULL(
@@ -86,6 +72,8 @@ namespace ConsorApp.Datos
             ) AS Departamento,
 
             CONVERT(VARCHAR(10), r.fechaReclamo, 103) AS Fecha,
+            YEAR(r.fechaReclamo)  AS Anio,
+            MONTH(r.fechaReclamo) AS Mes,
             r.estadoReclamo AS Estado,
             ISNULL(r.Observacion, '') AS Observacion
 
@@ -192,5 +180,43 @@ namespace ConsorApp.Datos
                 return false;
             }
         }
+
+        public DataTable ObtenerReclamosPorPropietario(int idPropietario)
+        {
+            DataTable dt = new DataTable();
+
+            using SqlConnection conexion = Conexion.ObtenerConexion();
+
+            string sql = @"
+        SELECT
+            r.Id_Reclamo AS IdReclamo,
+            r.Motivo,
+            r.Ubicacion,
+            CONVERT(VARCHAR(10), r.fechaReclamo, 103) AS Fecha,
+            r.estadoReclamo AS Estado,
+            ISNULL(r.Observacion, '') AS Observacion
+        FROM Reclamo r
+        WHERE r.Id_UsuarioDepartamento = @IdPropietario
+        ORDER BY r.fechaReclamo DESC";
+
+            using SqlCommand comando = new SqlCommand(sql, conexion);
+            comando.Parameters.AddWithValue("@IdPropietario", idPropietario);
+
+            using SqlDataAdapter adaptador = new SqlDataAdapter(comando);
+
+            try
+            {
+                conexion.Open();
+                adaptador.Fill(dt);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(
+                    "Error al obtener los reclamos del propietario: " + ex.Message);
+            }
+
+            return dt;
+        }
+
     }
 }

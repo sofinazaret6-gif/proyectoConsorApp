@@ -35,23 +35,11 @@
                            FontWeight="SemiBold"
                            Margin="0,0,0,3"
                            Foreground="#444"/>
-
                 <ComboBox x:Name="CmbMotivoReclamo"
-                          Height="30"
-                          Margin="0,0,0,15"
-                          IsEditable="True"
-                          IsTextSearchEnabled="True">
-
-                    <ComboBoxItem Content="Ruidos molestos"/>
-                    <ComboBoxItem Content="Gotera / Filtración"/>
-                    <ComboBoxItem Content="Basura fuera de horario"/>
-                    <ComboBoxItem Content="Problema con ascensor"/>
-                    <ComboBoxItem Content="Limpieza en espacios comunes"/>
-                    <ComboBoxItem Content="Problemas de seguridad"/>
-                    <ComboBoxItem Content="Problema con agua"/>
-                    <ComboBoxItem Content="Problema eléctrico"/>
-
-                </ComboBox>
+                           Height="30"
+                           Margin="0,0,0,15"
+                           IsEditable="True"
+                           IsTextSearchEnabled="True"/>
 
 
                 <!-- UBICACIÓN -->

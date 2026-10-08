@@ -37,6 +37,7 @@ namespace ConsorApp.Negocio
             {
                 Id_UsuarioDepartamento = propietario.IdPropietario,
                 Motivo = motivo,
+                Categoria = Motivos.Clasificar(motivo, descripcion),   // <-- NUEVO
                 Ubicacion = ubicacion,
                 Descripcion = descripcion,
                 Observacion = string.Empty,
@@ -69,6 +70,11 @@ namespace ConsorApp.Negocio
                 throw new Exception("La observación no puede estar vacía.");
 
             return _reclamoDatos.ActualizarObservacion(idReclamo, observacion);
+        }
+
+        public DataTable ObtenerReclamosPorPropietario(int idPropietario)
+        {
+            return _reclamoDatos.ObtenerReclamosPorPropietario(idPropietario);
         }
     }
 }

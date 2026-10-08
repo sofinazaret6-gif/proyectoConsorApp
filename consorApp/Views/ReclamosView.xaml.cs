@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using ConsorApp.Negocio;
+using System.Linq;
 
 namespace consorApp.Views
 {
@@ -12,6 +13,7 @@ namespace consorApp.Views
         public ReclamoInquilinoView(int idUsuario)
         {
             InitializeComponent();
+            CmbMotivoReclamo.ItemsSource = Motivos.Categorias.Where(c => c != Motivos.Otro).ToList();
             _idUsuario = idUsuario;
             _reclamoNegocio = new ReclamoNegocio();
         }

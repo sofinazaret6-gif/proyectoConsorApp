@@ -18,6 +18,8 @@ namespace ConsorApp.Entidades
 
         public DateTime fechaReclamo { get; set; }
 
+        public string Categoria { get; set; } = "Otro";
+
         public Propietario? Propietario { get; set; }
     }
 }
