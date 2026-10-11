@@ -17,5 +17,17 @@ namespace ConsorApp.Negocio
         {
             return _datos.ObtenerEspaciosComunes();
         }
+
+        // --- NUEVOS MÉTODOS AGREGADOS ---
+
+        public void ActualizarEspacioComun(EspacioComun espacio)
+        {
+            _datos.ActualizarEspacioComun(espacio);
+        }
+
+        public DataTable ObtenerEspaciosComunesActivos()
+        {
+            return _datos.ObtenerEspaciosComunesActivos();
+        }
     }
 }

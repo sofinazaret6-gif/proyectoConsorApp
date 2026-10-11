@@ -50,11 +50,12 @@ namespace ConsorApp.Datos
 
                 SqlCommand comando = new SqlCommand("sp_InsertarUsuario", conexion);
                 comando.CommandType = CommandType.StoredProcedure;
+                comando.CommandTimeout = 30; // Tiempo de espera seguro
 
                 comando.Parameters.AddWithValue("@Nombre", usuario.Nombre ?? (object)DBNull.Value);
                 comando.Parameters.AddWithValue("@Apellido", usuario.Apellido ?? (object)DBNull.Value);
                 comando.Parameters.AddWithValue("@Dni", usuario.Dni ?? (object)DBNull.Value);
-                comando.Parameters.AddWithValue("@Telefono", usuario.Telefono ?? (object)DBNull.Value); // ¡Ahora incluye el teléfono!
+                comando.Parameters.AddWithValue("@Telefono", usuario.Telefono ?? (object)DBNull.Value);
                 comando.Parameters.AddWithValue("@Email", usuario.Email ?? (object)DBNull.Value);
                 comando.Parameters.AddWithValue("@UsuarioSistema", usuario.UsuarioSistema ?? (object)DBNull.Value);
                 comando.Parameters.AddWithValue("@Contrasenia", usuario.Contrasenia ?? (object)DBNull.Value);
@@ -77,6 +78,7 @@ namespace ConsorApp.Datos
                                 WHERE IdUsuario = @IdUsuario";
 
                 SqlCommand comando = new SqlCommand(query, conexion);
+                comando.CommandTimeout = 30;
                 comando.Parameters.AddWithValue("@IdUsuario", usuario.IdUsuario);
                 comando.Parameters.AddWithValue("@Nombre", usuario.Nombre);
                 comando.Parameters.AddWithValue("@Apellido", usuario.Apellido);
@@ -98,6 +100,7 @@ namespace ConsorApp.Datos
                 conexion.Open();
                 string query = "UPDATE Usuarios SET Estado = @Estado WHERE IdUsuario = @IdUsuario";
                 SqlCommand comando = new SqlCommand(query, conexion);
+                comando.CommandTimeout = 30;
                 comando.Parameters.AddWithValue("@Estado", estado);
                 comando.Parameters.AddWithValue("@IdUsuario", idUsuario);
 
@@ -118,7 +121,10 @@ namespace ConsorApp.Datos
                         WHERE u.UsuarioSistema = @Usuario AND u.Contrasenia = @Password AND u.Estado = 1";
 
                 SqlCommand comando = new SqlCommand(query, conexion);
-                // Usamos .Trim() por las dudas si se filtran espacios accidentales al escribir
+
+                // Evita que la aplicación falle por timeout ante retrasos momentáneos del motor SQL
+                comando.CommandTimeout = 30;
+
                 comando.Parameters.AddWithValue("@Usuario", usuario.Trim());
                 comando.Parameters.AddWithValue("@Password", password.Trim());
 
@@ -156,6 +162,7 @@ namespace ConsorApp.Datos
                     WHERE p.NombrePerfil = 'Propietario' AND u.Estado = 1";
 
                 SqlDataAdapter adaptador = new SqlDataAdapter(query, conexion);
+                adaptador.SelectCommand.CommandTimeout = 30;
                 DataTable dt = new DataTable();
                 adaptador.Fill(dt);
                 return dt;

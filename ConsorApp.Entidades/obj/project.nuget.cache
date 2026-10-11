@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "x+cHoyOcaYE=",
+  "dgSpecHash": "SF3RVzxkkJA=",
   "success": true,
   "projectFilePath": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\ConsorApp.Entidades\\ConsorApp.Entidades.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\azure.core\\1.50.0\\azure.core.1.50.0.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\azure.identity\\1.17.1\\azure.identity.1.17.1.nupkg.sha512",
+    "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\barcoder\\2.0.0\\barcoder.2.0.0.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\8.0.0\\microsoft.bcl.asyncinterfaces.8.0.0.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\microsoft.build.framework\\18.0.2\\microsoft.build.framework.18.0.2.nupkg.sha512",
@@ -48,6 +49,9 @@
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\microsoft.visualstudio.solutionpersistence\\1.0.52\\microsoft.visualstudio.solutionpersistence.1.0.52.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\newtonsoft.json\\13.0.4\\newtonsoft.json.13.0.4.nupkg.sha512",
+    "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\questpdf\\2026.9.1\\questpdf.2026.9.1.nupkg.sha512",
+    "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\questpdf.barcodes\\2024.10.3\\questpdf.barcodes.2024.10.3.nupkg.sha512",
+    "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\svglib\\1.0.0.3\\svglib.1.0.0.3.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\system.clientmodel\\1.8.0\\system.clientmodel.1.8.0.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\system.composition\\9.0.0\\system.composition.9.0.0.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\system.composition.attributedmodel\\9.0.0\\system.composition.attributedmodel.9.0.0.nupkg.sha512",

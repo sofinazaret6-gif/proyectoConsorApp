@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ConsorApp.Datos")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+149a41e306967e84f05ea63ef0e38447baa71a7e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0900bed2e22f6f0a2708e017672673141c23b6a5")]
 [assembly: System.Reflection.AssemblyProductAttribute("ConsorApp.Datos")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ConsorApp.Datos")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

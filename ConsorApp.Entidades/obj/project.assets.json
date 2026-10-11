@@ -38,6 +38,15 @@
           }
         }
       },
+      "Barcoder/2.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Barcoder.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Barcoder.dll": {}
+        }
+      },
       "Humanizer.Core/2.14.1": {
         "type": "package",
         "compile": {
@@ -1027,6 +1036,111 @@
           }
         }
       },
+      "QuestPDF/2026.9.1": {
+        "type": "package",
+        "compile": {
+          "lib/net10.0/QuestPDF.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/QuestPDF.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/QuestPDF.targets": {}
+        },
+        "runtimeTargets": {
+          "runtimes/linux-arm64/native/libQuestPdfSkia.so": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-arm64/native/libqpdf.so": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-musl-x64/native/libQuestPdfSkia.so": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-musl-x64/native/libqpdf.so": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/libQuestPdfSkia.so": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/linux-x64/native/libqpdf.so": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/osx-arm64/native/libQuestPdfSkia.dylib": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-arm64/native/libqpdf.dylib": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/libQuestPdfSkia.dylib": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          },
+          "runtimes/osx-x64/native/libqpdf.dylib": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          },
+          "runtimes/win-arm64/native/QuestPdfSkia.dll": {
+            "assetType": "native",
+            "rid": "win-arm64"
+          },
+          "runtimes/win-arm64/native/qpdf.dll": {
+            "assetType": "native",
+            "rid": "win-arm64"
+          },
+          "runtimes/win-x64/native/QuestPdfSkia.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x64/native/qpdf.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x86/native/QuestPdfSkia.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
+          },
+          "runtimes/win-x86/native/qpdf.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
+          }
+        }
+      },
+      "QuestPDF.Barcodes/2024.10.3": {
+        "type": "package",
+        "dependencies": {
+          "Barcoder": "2.0.0",
+          "QuestPDF": "2024.10.3",
+          "SvgLib": "1.0.0.3"
+        },
+        "compile": {
+          "lib/net8.0/QuestPDF.Barcodes.dll": {}
+        },
+        "runtime": {
+          "lib/net8.0/QuestPDF.Barcodes.dll": {}
+        }
+      },
+      "SvgLib/1.0.0.3": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/SvgLib.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/SvgLib.dll": {}
+        }
+      },
       "System.ClientModel/1.8.0": {
         "type": "package",
         "dependencies": {
@@ -1228,6 +1342,19 @@
         "lib/net8.0/Azure.Identity.xml",
         "lib/netstandard2.0/Azure.Identity.dll",
         "lib/netstandard2.0/Azure.Identity.xml"
+      ]
+    },
+    "Barcoder/2.0.0": {
+      "sha512": "c8rQk/ulh1aP1Qe41x3H3lDYE7ANJcBP9OlbdLcwaU6N1sSnQwVnEhQH12AbhONv6jTZyl+KWY7PrV6GhrlCIQ==",
+      "type": "package",
+      "path": "barcoder/2.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "barcoder.2.0.0.nupkg.sha512",
+        "barcoder.nuspec",
+        "lib/net472/Barcoder.dll",
+        "lib/netstandard2.0/Barcoder.dll"
       ]
     },
     "Humanizer.Core/2.14.1": {
@@ -3219,6 +3346,102 @@
         "packageIcon.png"
       ]
     },
+    "QuestPDF/2026.9.1": {
+      "sha512": "i2BT/v+Ui6Hg9+BZbOci/VfsyvmtY8nlQqAOmFt8iOZ4Hm9aKZZRgZZ+LfrKWYXAHRb3l1EjDcMVfjRaZTt+Cw==",
+      "type": "package",
+      "path": "questpdf/2026.9.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Contributors.md",
+        "Description.md",
+        "Documentation.xml",
+        "ExternalDependencyLicenses/emsdk.txt",
+        "ExternalDependencyLicenses/expat.txt",
+        "ExternalDependencyLicenses/freetype.txt",
+        "ExternalDependencyLicenses/harfbuzz.txt",
+        "ExternalDependencyLicenses/lato.txt",
+        "ExternalDependencyLicenses/libgrapheme.txt",
+        "ExternalDependencyLicenses/libjpeg-turbo.txt",
+        "ExternalDependencyLicenses/libpng.txt",
+        "ExternalDependencyLicenses/libwebp.txt",
+        "ExternalDependencyLicenses/ninja-build.txt",
+        "ExternalDependencyLicenses/qpdf.txt",
+        "ExternalDependencyLicenses/readme.txt",
+        "ExternalDependencyLicenses/skia.txt",
+        "ExternalDependencyLicenses/wuffs.txt",
+        "ExternalDependencyLicenses/zlib.txt",
+        "LICENSE.md",
+        "LatinWords.txt",
+        "Logo.png",
+        "MimeTypes.csv",
+        "QuestPDF.Fonts.Lato.br",
+        "QuestPDF.Fonts.Lato.gz",
+        "README.md",
+        "ReleaseNotes.txt",
+        "build/QuestPDF.targets",
+        "build/net4/QuestPDF.targets",
+        "buildTransitive/QuestPDF.targets",
+        "buildTransitive/net4/QuestPDF.targets",
+        "lib/net10.0/QuestPDF.dll",
+        "lib/net10.0/QuestPDF.xml",
+        "lib/net5.0/QuestPDF.dll",
+        "lib/net5.0/QuestPDF.xml",
+        "lib/net6.0/QuestPDF.dll",
+        "lib/net6.0/QuestPDF.xml",
+        "lib/net8.0/QuestPDF.dll",
+        "lib/net8.0/QuestPDF.xml",
+        "lib/netstandard2.0/QuestPDF.dll",
+        "lib/netstandard2.0/QuestPDF.xml",
+        "questpdf.2026.9.1.nupkg.sha512",
+        "questpdf.nuspec",
+        "runtimes/linux-arm64/native/libQuestPdfSkia.so",
+        "runtimes/linux-arm64/native/libqpdf.so",
+        "runtimes/linux-musl-x64/native/libQuestPdfSkia.so",
+        "runtimes/linux-musl-x64/native/libqpdf.so",
+        "runtimes/linux-x64/native/libQuestPdfSkia.so",
+        "runtimes/linux-x64/native/libqpdf.so",
+        "runtimes/osx-arm64/native/libQuestPdfSkia.dylib",
+        "runtimes/osx-arm64/native/libqpdf.dylib",
+        "runtimes/osx-x64/native/libQuestPdfSkia.dylib",
+        "runtimes/osx-x64/native/libqpdf.dylib",
+        "runtimes/win-arm64/native/QuestPdfSkia.dll",
+        "runtimes/win-arm64/native/qpdf.dll",
+        "runtimes/win-x64/native/QuestPdfSkia.dll",
+        "runtimes/win-x64/native/qpdf.dll",
+        "runtimes/win-x86/native/QuestPdfSkia.dll",
+        "runtimes/win-x86/native/qpdf.dll"
+      ]
+    },
+    "QuestPDF.Barcodes/2024.10.3": {
+      "sha512": "oHbXG/dOL0CTGVq5y5t6QIHC6kqcjTM3A3NaWMbRPOxMkoBXlC8IEANJJInfwFSHWJI69TBrdBzzEEE9cQP2zA==",
+      "type": "package",
+      "path": "questpdf.barcodes/2024.10.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net6.0/QuestPDF.Barcodes.dll",
+        "lib/net8.0/QuestPDF.Barcodes.dll",
+        "lib/netstandard2.0/QuestPDF.Barcodes.dll",
+        "questpdf.barcodes.2024.10.3.nupkg.sha512",
+        "questpdf.barcodes.nuspec"
+      ]
+    },
+    "SvgLib/1.0.0.3": {
+      "sha512": "9iv8uExSYC/AClCaa/e7inlA1ike6tA8Fp/33W3xABqQ1MzfRDEMTTY/LNfQOlN3fAWVkqehvO+eTDXTfUZZnA==",
+      "type": "package",
+      "path": "svglib/1.0.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net45/SvgLib.dll",
+        "lib/net472/SvgLib.dll",
+        "lib/netstandard2.0/SvgLib.dll",
+        "svglib.1.0.0.3.nupkg.sha512",
+        "svglib.nuspec"
+      ]
+    },
     "System.ClientModel/1.8.0": {
       "sha512": "AqRzhn0v29GGGLj/Z6gKq4lGNtvPHT4nHdG5PDJh9IfVjv/nYUVmX11hwwws1vDFeIAzrvmn0dPu8IjLtu6fAw==",
       "type": "package",
@@ -3461,7 +3684,9 @@
     "net10.0-windows": [
       "Microsoft.EntityFrameworkCore >= 10.0.11",
       "Microsoft.EntityFrameworkCore.SqlServer >= 10.0.11",
-      "Microsoft.EntityFrameworkCore.Tools >= 10.0.11"
+      "Microsoft.EntityFrameworkCore.Tools >= 10.0.11",
+      "QuestPDF >= 2026.9.1",
+      "QuestPDF.Barcodes >= 2024.10.3"
     ]
   },
   "packageFolders": {
@@ -3529,6 +3754,14 @@
             "suppressParent": "All",
             "target": "Package",
             "version": "[10.0.11, )"
+          },
+          "QuestPDF": {
+            "target": "Package",
+            "version": "[2026.9.1, )"
+          },
+          "QuestPDF.Barcodes": {
+            "target": "Package",
+            "version": "[2024.10.3, )"
           }
         },
         "imports": [
