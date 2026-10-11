@@ -10,16 +10,32 @@ namespace ConsorApp.Views
     {
         private readonly EspacioComunNegocio _espacioNegocio = new EspacioComunNegocio();
         private readonly ReservaEspacioNegocio _reservaNegocio = new ReservaEspacioNegocio();
+        private readonly MiDepartamentoNegocio _miDepartamentoNegocio = new MiDepartamentoNegocio(); // Agregado para buscar al propietario
 
         private int _idEspacioSeleccionado = 0;
-        private int _idPropietarioActual = 1; // ID temporal del propietario logueado
+        private int _idPropietarioActual = 0; // Lo iniciamos en 0, ya no en 1
 
-        public ReservaEspaciosView()
+        // Modificamos el constructor para que reciba el idUsuario real
+        public ReservaEspaciosView(int idUsuario)
         {
             InitializeComponent();
+
+            // Buscamos cuál es el IdPropietario real vinculado a este usuario
+            var info = _miDepartamentoNegocio.ObtenerInfo(idUsuario);
+            if (info != null && info.Propietario != null)
+            {
+                _idPropietarioActual = info.Propietario.IdPropietario;
+            }
+            else
+            {
+                MessageBox.Show("Error: No se detectó un propietario asociado a tu cuenta.", "Faltan Datos", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
             CargarEspaciosComunes();
             CargarTurnos();
         }
+
+        
 
         // Carga los espacios comunes para las tarjetas del panel derecho
         private void CargarEspaciosComunes()
@@ -143,7 +159,8 @@ namespace ConsorApp.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al guardar la reserva: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                // Quitamos el texto "Error al guardar la reserva: " para que el mensaje de bloqueo se lea natural
+                MessageBox.Show(ex.Message, "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }

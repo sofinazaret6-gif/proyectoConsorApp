@@ -49,7 +49,7 @@ namespace consorApp.Views
 
                     foreach (DataRow row in espaciosBD.Rows)
                     {
-                        // Filtramos por el edificio actual si es necesario o cargamos todos los activos
+                        // En la vista de administración cargamos TODOS (Activos e Inactivos)
                         _listaEspacios.Add(new EspacioComun
                         {
                             IdEspacioComun = Convert.ToInt32(row["IdEspacioComun"]),
@@ -102,16 +102,28 @@ namespace consorApp.Views
             TxtCapacidadEspacio.Clear();
         }
 
-        // Botón para quitar un espacio de la lista temporal o de la grilla
+        // Botón para cambiar estado o quitar un espacio
         private void BtnQuitarEspacio_Click(object sender, RoutedEventArgs e)
         {
             if (DgEspaciosComunes.SelectedItem is EspacioComun espacioSeleccionado)
             {
-                _listaEspacios.Remove(espacioSeleccionado);
+                if (espacioSeleccionado.IdEspacioComun == 0)
+                {
+                    // Es un espacio nuevo que no se guardó, lo eliminamos de la memoria
+                    _listaEspacios.Remove(espacioSeleccionado);
+                }
+                else
+                {
+                    // Si ya existe en BD, alternamos su estado
+                    espacioSeleccionado.Estado = espacioSeleccionado.Estado == "Activo" ? "Inactivo" : "Activo";
+                    DgEspaciosComunes.Items.Refresh(); // Refresca la grilla para ver el cambio
+
+                    MessageBox.Show($"El espacio ha cambiado a estado: {espacioSeleccionado.Estado}.\nPresioná 'Guardar' para aplicar los cambios en el sistema.", "Cambio de Estado", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
             else
             {
-                MessageBox.Show("Seleccione un espacio de la tabla para quitar.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Seleccione un espacio de la tabla para quitar o cambiar su estado.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -135,7 +147,6 @@ namespace consorApp.Views
                 // 1. Guardamos el edificio en la BD
                 _edificioNegocio.GuardarEdificio(edificio);
 
-                // Aseguramos obtener el ID actual del edificio
                 if (_idEdificioActual <= 0)
                 {
                     EDIFICIO edificioRecuperado = _edificioNegocio.ObtenerUnicoEdificio();
@@ -145,14 +156,18 @@ namespace consorApp.Views
                     }
                 }
 
-                // 2. Recorremos la lista y guardamos cada espacio común en la BD vinculados al edificio
+                // 2. Guardamos o actualizamos cada espacio común
                 foreach (var esp in _listaEspacios)
                 {
-                    // Si ya tienen ID porque vinieron de la BD, podemos omitirlos o reinsertarlos según prefieras; 
-                    // aquí guardamos los nuevos o actualizamos.
                     if (esp.IdEspacioComun == 0)
                     {
+                        // Nuevo espacio
                         _espacioNegocio.GuardarEspacioComun(_idEdificioActual, esp);
+                    }
+                    else
+                    {
+                        // Espacio existente (para guardar el cambio a Inactivo/Activo o modificaciones)
+                        _espacioNegocio.ActualizarEspacioComun(esp);
                     }
                 }
 

@@ -137,16 +137,17 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0"
-                               Text="Historial y estado actual de las reservas de espacios comunes realizadas por esta unidad."
-                               FontSize="12" Foreground="{StaticResource ColorTextoSecundario}" Margin="0,0,0,12"/>
+                   Text="Historial y estado actual de las reservas de espacios comunes realizadas por esta unidad."
+                   FontSize="12" Foreground="{StaticResource ColorTextoSecundario}" Margin="0,0,0,12"/>
 
-                    <DataGrid Grid.Row="1" x:Name="DgMisReservas" AutoGenerateColumns="False"
-                              CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single">
+                    <DataGrid Grid.Row="1" x:Name="DgMisReservas" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Espacio Común" Binding="{Binding Espacio}" Width="*"/>
-                            <DataGridTextColumn Header="Fecha de Reserva" Binding="{Binding Fecha}" Width="130"/>
-                            <DataGridTextColumn Header="Turno" Binding="{Binding Turno}" Width="180"/>
-                            <DataGridTextColumn Header="Estado Actual" Binding="{Binding Estado}" Width="130"/>
+                            <DataGridTextColumn Header="Espacio Común" Binding="{Binding Espacio}" Width="160"/>
+                            <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="90"/>
+                            <DataGridTextColumn Header="Turno" Binding="{Binding Turno}" Width="160"/>
+                            <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="100"/>
+                            <!-- Nueva columna para el motivo -->
+                            <DataGridTextColumn Header="Motivo Cancelación" Binding="{Binding MotivoCancelacion}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

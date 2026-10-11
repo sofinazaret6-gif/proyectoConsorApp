@@ -18,13 +18,13 @@ namespace consorApp.Views
         private readonly GastoEdificioNegocio _gastoNegocio = new GastoEdificioNegocio();
         private readonly MiDepartamentoNegocio _miDepartamentoNegocio = new MiDepartamentoNegocio();
         private readonly ReclamoNegocio _reclamoNegocio = new ReclamoNegocio();
+        private readonly ReservaEspacioNegocio _reservaNegocio = new ReservaEspacioNegocio(); // Agregado para reservas
 
         private static readonly CultureInfo Cultura = new CultureInfo("es-AR");
 
         private readonly int _idUsuario;
         private MiDepartamentoInfo? _info;
 
-        // Vuelve a recibir solo el id, igual que el resto de tus vistas
         public MiDepartamentoView(int idUsuario)
         {
             InitializeComponent();
@@ -32,10 +32,10 @@ namespace consorApp.Views
             _idUsuario = idUsuario;
 
             CargarDatosPersonales();
-            CargarDatosDepartamento();
+            CargarDatosDepartamento(); // Esto carga _info, es vital que esté antes de las reservas
             CargarMisExpensas();
             CargarMisReclamos();
-            CargarReservasEjemplo();
+            CargarMisReservasReales(); // Llamada al método real
         }
 
         // ============================================================
@@ -80,7 +80,6 @@ namespace consorApp.Views
             TxtPropietarioTelefono.Text = $"Teléfono: {ValorOPlaceholder(telefono)}";
         }
 
-        // Lee la primera columna que exista entre los nombres indicados
         private static string LeerTexto(DataRow fila, params string[] nombresColumna)
         {
             foreach (string nombre in nombresColumna)
@@ -88,7 +87,6 @@ namespace consorApp.Views
                 if (fila.Table.Columns.Contains(nombre) && fila[nombre] != DBNull.Value)
                     return fila[nombre]?.ToString()?.Trim() ?? string.Empty;
             }
-
             return string.Empty;
         }
 
@@ -105,11 +103,8 @@ namespace consorApp.Views
                     return;
                 }
 
-                TxtUnidad.Text =
-                    $"Piso {_info.Departamento.Piso} - Unidad {_info.Departamento.Unidad}";
-
-                TxtUnidadDetalle.Text =
-                    $"Propietario desde {_info.Propietario.FechaDesde:dd/MM/yyyy}";
+                TxtUnidad.Text = $"Piso {_info.Departamento.Piso} - Unidad {_info.Departamento.Unidad}";
+                TxtUnidadDetalle.Text = $"Propietario desde {_info.Propietario.FechaDesde:dd/MM/yyyy}";
             }
             catch (Exception ex)
             {
@@ -136,7 +131,6 @@ namespace consorApp.Views
                     .ToList();
 
                 DgMisExpensas.ItemsSource = expensas;
-
                 ActualizarEstadoCuenta(expensas);
             }
             catch (Exception ex)
@@ -150,7 +144,6 @@ namespace consorApp.Views
         {
             var atrasadas = expensas.Where(x => x.EstaAtrasada).ToList();
 
-            // ---- Badge del encabezado, aviso y título de la pestaña ----
             if (atrasadas.Count == 0)
             {
                 BrdEstadoCuenta.Background = new SolidColorBrush(Color.FromRgb(0x27, 0xAE, 0x60));
@@ -175,7 +168,6 @@ namespace consorApp.Views
                 TabExpensas.Header = $"Mis Expensas ({atrasadas.Count} atrasada(s))";
             }
 
-            // ---- Tarjeta "Última expensa" ----
             var ultima = expensas.FirstOrDefault();
 
             if (ultima == null)
@@ -186,8 +178,7 @@ namespace consorApp.Views
             }
 
             TxtUltimaExpensaMonto.Text = ultima.MontoAPagar.ToString("C2", Cultura);
-            TxtUltimaExpensaDetalle.Text =
-                $"Período {ultima.Periodo} · Vence {ultima.FechaVencimiento:dd/MM/yyyy} ({ultima.Situacion})";
+            TxtUltimaExpensaDetalle.Text = $"Período {ultima.Periodo} · Vence {ultima.FechaVencimiento:dd/MM/yyyy} ({ultima.Situacion})";
 
             TxtUltimaExpensaDetalle.Foreground =
                 ultima.EstaPagada ? new SolidColorBrush(Color.FromRgb(0x27, 0xAE, 0x60)) :
@@ -267,12 +258,9 @@ namespace consorApp.Views
                 DgMisReclamos.ItemsSource = dt.DefaultView;
 
                 int abiertos = dt.AsEnumerable().Count(r =>
-                    !string.Equals(r["Estado"]?.ToString(), "Resuelto",
-                        StringComparison.OrdinalIgnoreCase));
+                    !string.Equals(r["Estado"]?.ToString(), "Resuelto", StringComparison.OrdinalIgnoreCase));
 
-                TabReclamos.Header = abiertos > 0
-                    ? $"Mis Reclamos ({abiertos} abierto(s))"
-                    : "Mis Reclamos";
+                TabReclamos.Header = abiertos > 0 ? $"Mis Reclamos ({abiertos} abierto(s))" : "Mis Reclamos";
             }
             catch (Exception ex)
             {
@@ -283,33 +271,33 @@ namespace consorApp.Views
 
         private void BtnNuevoReclamo_Click(object sender, RoutedEventArgs e)
         {
-            var ventana = new ReclamoInquilinoView(_idUsuario)
-            {
-                Owner = this
-            };
-
+            var ventana = new ReclamoInquilinoView(_idUsuario) { Owner = this };
             ventana.ShowDialog();
-
-            // Al volver se actualiza la lista para ver el reclamo nuevo
             CargarMisReclamos();
         }
 
         // ============================================================
-        // MIS RESERVAS (datos de ejemplo hasta conectar la tabla real)
+        // MIS RESERVAS (Real)
         // ============================================================
 
-        private void CargarReservasEjemplo()
+        private void CargarMisReservasReales()
         {
-            DataTable dtReservas = new DataTable();
-            dtReservas.Columns.Add("Espacio", typeof(string));
-            dtReservas.Columns.Add("Fecha", typeof(string));
-            dtReservas.Columns.Add("Turno", typeof(string));
-            dtReservas.Columns.Add("Estado", typeof(string));
+            try
+            {
+                if (_info == null || _info.Propietario == null)
+                {
+                    DgMisReservas.ItemsSource = null;
+                    return;
+                }
 
-            dtReservas.Rows.Add("SUM (Salón de Usos Múltiples)", "10/10/2026", "Noche (21:00 a 02:00)", "Confirmada");
-            dtReservas.Rows.Add("Quincho con Parrilla", "18/10/2026", "Tarde (15:00 a 20:00)", "Cancelada");
-
-            DgMisReservas.ItemsSource = dtReservas.DefaultView;
+                // Busca las reservas reales. Si hay 0, la grilla simplemente quedará en blanco sin dar errores.
+                DataTable dt = _reservaNegocio.ObtenerReservasPorPropietario(_info.Propietario.IdPropietario);
+                DgMisReservas.ItemsSource = dt.DefaultView;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"No se pudieron cargar tus reservas.\n\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

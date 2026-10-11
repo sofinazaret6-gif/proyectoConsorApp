@@ -1,18 +1,22 @@
-﻿using ConsorApp.Views;
+﻿using consorApp.Seguridad;
+using ConsorApp.Entidades;
+using ConsorApp.Views;
 using System;
 using System.Windows;
-using consorApp.Seguridad;
+
 namespace consorApp.Views
 {
     public partial class DashboardView : Window
     {
         private readonly string rolUsuarioActual = string.Empty;
 
+        // 1. Restauramos el constructor vacío original que el programa necesita
         public DashboardView()
         {
             InitializeComponent();
         }
 
+        // Este constructor ahora funcionará perfecto porque el de arriba ya existe
         public DashboardView(string nombreUsuario, string nombrePerfil) : this()
         {
             TxtNombreUsuario.Text = nombreUsuario ?? "";
@@ -34,28 +38,26 @@ namespace consorApp.Views
                 HeaderGestion.Visibility = Visibility.Visible;
                 BtnMiDpto.Visibility = Visibility.Collapsed;
                 BtnAvisos.Visibility = Visibility.Visible;
-                BtnReclamos.Visibility = Visibility.Visible;
-                BtnReservas.Visibility = Visibility.Visible; // Reservas para residentes
+                BtnReclamos.Visibility = Visibility.Collapsed;
+                BtnReservas.Visibility = Visibility.Collapsed; // Reservas para residentes
 
                 BtnEdificio.Visibility = Visibility.Visible;
                 BtnLiquidacionExpensas.Visibility = Visibility.Visible;
                 BtnUsuarios.Visibility = Visibility.Visible;
                 BtnUnidades.Visibility = Visibility.Visible;
-                BtnGestionReservasAdmin.Visibility = Visibility.Visible; // Control de reservas Admin/Encargado
-                BtnGestionReclamosAdmin.Visibility = Visibility.Visible; // Control de reclamos Admin/Encargado
+                BtnGestionReservasAdmin.Visibility = Visibility.Visible;
+                BtnGestionReclamosAdmin.Visibility = Visibility.Visible;
                 return;
             }
-            // 2. ENCARGADO / OPERARIO: Ve Departamentos, Avisos, Reservas, Reclamos y Controles
+            // 2. ENCARGADO / OPERARIO
             else if (perfil.Contains("encargado") || perfil.Contains("operario"))
             {
-                // Secciones visibles
                 BtnAvisos.Visibility = Visibility.Visible;
                 HeaderGestion.Visibility = Visibility.Visible;
-                BtnUnidades.Visibility = Visibility.Visible; // Departamentos
-                BtnGestionReservasAdmin.Visibility = Visibility.Visible; // Control de reservas Admin/Encargado
-                BtnGestionReclamosAdmin.Visibility = Visibility.Visible; // Control de reclamos Admin/Encargado
+                BtnUnidades.Visibility = Visibility.Visible;
+                BtnGestionReservasAdmin.Visibility = Visibility.Visible;
+                BtnGestionReclamosAdmin.Visibility = Visibility.Visible;
 
-                // Secciones ocultas
                 BtnMiDpto.Visibility = Visibility.Collapsed;
                 BtnEdificio.Visibility = Visibility.Collapsed;
                 BtnLiquidacionExpensas.Visibility = Visibility.Collapsed;
@@ -64,16 +66,14 @@ namespace consorApp.Views
                 BtnReservas.Visibility = Visibility.Collapsed;
                 BtnMiDpto.Visibility = Visibility.Collapsed;
             }
-            // 3. PROPIETARIO / INQUILINO: Ve Mi Departamento, Avisos, Reclamos y Reservas (Sección gestión oculta)
+            // 3. PROPIETARIO / INQUILINO
             else if (perfil.Contains("propietario") || perfil.Contains("inquilino"))
             {
-                // Secciones visibles
                 BtnMiDpto.Visibility = Visibility.Visible;
                 BtnAvisos.Visibility = Visibility.Visible;
                 BtnReclamos.Visibility = Visibility.Visible;
-                BtnReservas.Visibility = Visibility.Visible; // Único botón de reservas para ellos
+                BtnReservas.Visibility = Visibility.Visible;
 
-                // Toda la sección de gestión oculta
                 HeaderGestion.Visibility = Visibility.Collapsed;
                 BtnEdificio.Visibility = Visibility.Collapsed;
                 BtnLiquidacionExpensas.Visibility = Visibility.Collapsed;
@@ -94,9 +94,7 @@ namespace consorApp.Views
 
         private void BtnReclamos_Click(object sender, RoutedEventArgs e)
         {
-            ReclamoInquilinoView ventanaReclamo =
-                new ReclamoInquilinoView(SesionUsuario.IdUsuario);
-
+            ReclamoInquilinoView ventanaReclamo = new ReclamoInquilinoView(SesionUsuario.IdUsuario);
             ventanaReclamo.ShowDialog();
         }
 
@@ -118,7 +116,8 @@ namespace consorApp.Views
 
         private void BtnReservas_Click(object sender, RoutedEventArgs e)
         {
-            ReservaEspaciosView ventanaReservas = new ReservaEspaciosView();
+            // 2. Usamos directamente SesionUsuario.IdUsuario como en los otros botones
+            ReservaEspaciosView ventanaReservas = new ReservaEspaciosView(SesionUsuario.IdUsuario);
             ventanaReservas.ShowDialog();
         }
 
@@ -142,12 +141,9 @@ namespace consorApp.Views
             ventanaDepartamentos.ShowDialog();
         }
 
-            private void BtnLiquidacionExpensas_Click(object sender, RoutedEventArgs e)
+        private void BtnLiquidacionExpensas_Click(object sender, RoutedEventArgs e)
         {
             LiquidacionExpensasView ventanaExpensas = new LiquidacionExpensasView();
-
-            // Utilizá ShowDialog() si querés que la ventana sea modal (bloquee la de atrás)
-            // o Show() si querés que sea una ventana libre flotante.
             ventanaExpensas.ShowDialog();
         }
 
@@ -163,9 +159,7 @@ namespace consorApp.Views
             ventanaAdminReclamos.ShowDialog();
         }
 
-        private void BtnCerrarSesion_Click(
-        object sender,
-     RoutedEventArgs e)
+        private void BtnCerrarSesion_Click(object sender, RoutedEventArgs e)
         {
             SesionUsuario.CerrarSesion();
 
