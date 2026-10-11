@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Data;
 using System.Windows;
+using System.Collections.Generic;
+using System.Linq;
+using ConsorApp.Entidades;
 using System.Windows.Controls;
-
 using consorApp.Seguridad;
-
 using ConsorApp.Negocio;
 
 namespace consorApp.Views
@@ -16,7 +17,12 @@ namespace consorApp.Views
 
         // ID del único edificio del sistema
         private int _idEdificio;
+        // Todos los avisos cargados (sin filtrar) y nombre de cada departamento
+        private List<AvisoItem> _todosLosAvisos = new List<AvisoItem>();
+        private readonly Dictionary<int, string> _nombresDepartamentos = new Dictionary<int, string>();
 
+        // Evita que los filtros se disparen mientras se arma la ventana
+        private bool _filtrosListos = false;
         public AvisosEncargadoView()
         {
             InitializeComponent();
@@ -25,8 +31,9 @@ namespace consorApp.Views
             _departamentoNegocio = new DepartamentoNegocio();
 
             CargarDestinatarios();
-
             CargarHistorialAvisos();
+
+            _filtrosListos = true;     // <-- NUEVO
         }
 
 
@@ -77,51 +84,31 @@ namespace consorApp.Views
                 // OPCIONES: DEPARTAMENTOS
                 // -------------------------------------------------
 
+                _nombresDepartamentos.Clear();
+
                 foreach (DataRow fila in departamentos.Rows)
                 {
-                    int idDepartamento =
-                        Convert.ToInt32(
-                            fila["IdDepartamento"]);
+                    int idDepartamento = Convert.ToInt32(fila["IdDepartamento"]);
 
-                    string piso =
-                        fila["Piso"]?.ToString() ?? "";
+                    string piso = fila["Piso"]?.ToString() ?? "";
+                    string unidad = fila["Unidad"]?.ToString() ?? "";
+                    string propietario = fila["NombrePropietario"]?.ToString() ?? "";
 
-                    string unidad =
-                        fila["Unidad"]?.ToString() ?? "";
+                    string nombreDepartamento = $"Piso {piso} - Dpto {unidad}";
 
-                    string propietario =
-                        fila["NombrePropietario"]?.ToString()
-                        ?? "";
-
-
-                    ComboBoxItem itemDepartamento =
-                        new ComboBoxItem();
-
-
-                    string textoDepartamento =
-                        $"🏠 Piso {piso} - Dpto {unidad}";
-
-
-                    // Si tiene propietario, lo mostramos
-                    if (!string.IsNullOrWhiteSpace(propietario) &&
-                        propietario != "Sin Asignar")
+                    if (!string.IsNullOrWhiteSpace(propietario) && propietario != "Sin Asignar")
                     {
-                        textoDepartamento +=
-                            $" ({propietario})";
+                        nombreDepartamento += $" ({propietario})";
                     }
 
+                    // Se guarda para mostrar el destinatario en la lista de avisos
+                    _nombresDepartamentos[idDepartamento] = nombreDepartamento;
 
-                    itemDepartamento.Content =
-                        textoDepartamento;
+                    ComboBoxItem itemDepartamento = new ComboBoxItem();
+                    itemDepartamento.Content = "🏠 " + nombreDepartamento;
+                    itemDepartamento.Tag = idDepartamento;
 
-
-                    // Guardamos el ID del departamento
-                    itemDepartamento.Tag =
-                        idDepartamento;
-
-
-                    CmbDestinatario.Items.Add(
-                        itemDepartamento);
+                    CmbDestinatario.Items.Add(itemDepartamento);
                 }
 
 
@@ -165,11 +152,13 @@ namespace consorApp.Views
         {
             try
             {
-                var listaAvisos =
-                    _avisoNegocio.ObtenerAvisos();
+                var avisos = _avisoNegocio.ObtenerAvisos();
 
-                ItemsAvisos.ItemsSource =
-                    listaAvisos;
+                _todosLosAvisos = avisos
+                    .Select(a => new AvisoItem(a, ObtenerDestino(a)))
+                    .ToList();
+
+                AplicarFiltros();
             }
             catch (Exception ex)
             {
@@ -180,6 +169,84 @@ namespace consorApp.Views
                     MessageBoxImage.Error);
             }
         }
+
+        private string ObtenerDestino(Aviso aviso)
+        {
+            if (!aviso.id_Departamento.HasValue)
+                return "Todo el edificio";
+
+            return _nombresDepartamentos.TryGetValue(aviso.id_Departamento.Value, out string? nombre)
+                ? nombre
+                : $"Departamento {aviso.id_Departamento.Value}";
+        }
+
+        // ============================================================
+        // FILTROS
+        // ============================================================
+
+        private void Filtro_Changed(object sender, RoutedEventArgs e)
+        {
+            if (!_filtrosListos) return;
+
+            AplicarFiltros();
+        }
+
+        private void BtnLimpiarFiltros_Click(object sender, RoutedEventArgs e)
+        {
+            _filtrosListos = false;
+
+            TxtBuscar.Clear();
+            CmbFiltroTipo.SelectedIndex = 0;      // Todos
+            CmbFiltroEstado.SelectedIndex = 0;    // Vigentes
+            CmbOrden.SelectedIndex = 0;           // Más recientes
+            _filtrosListos = true;
+
+            AplicarFiltros();
+        }
+
+        private void AplicarFiltros()
+        {
+            IEnumerable<AvisoItem> avisos = _todosLosAvisos;
+
+            // Búsqueda por texto (título, mensaje o destinatario)
+            string texto = TxtBuscar.Text.Trim();
+            if (texto.Length > 0)
+            {
+                avisos = avisos.Where(a =>
+                    a.Titulo.Contains(texto, StringComparison.OrdinalIgnoreCase) ||
+                    a.Mensaje.Contains(texto, StringComparison.OrdinalIgnoreCase) ||
+                    a.Destino.Contains(texto, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // Tipo: 0 = Todos, 1 = General, 2 = Individual
+            if (CmbFiltroTipo.SelectedIndex == 1)
+                avisos = avisos.Where(a => a.EsGeneral);
+            else if (CmbFiltroTipo.SelectedIndex == 2)
+                avisos = avisos.Where(a => !a.EsGeneral);
+
+            // Estado: 0 = Vigentes, 1 = Archivados, 2 = Todos
+            if (CmbFiltroEstado.SelectedIndex == 0)
+                avisos = avisos.Where(a => a.Vigente);
+            else if (CmbFiltroEstado.SelectedIndex == 1)
+                avisos = avisos.Where(a => !a.Vigente);
+
+            // Orden: 0 = más recientes primero, 1 = más antiguos primero
+            avisos = CmbOrden.SelectedIndex == 1
+                ? avisos.OrderBy(a => a.FechaPublicacion)
+                : avisos.OrderByDescending(a => a.FechaPublicacion);
+
+            var lista = avisos.ToList();
+
+            ItemsAvisos.ItemsSource = lista;
+
+            LblCantidad.Text = $"Mostrando {lista.Count} de {_todosLosAvisos.Count} avisos";
+
+            TxtSinResultados.Visibility =
+                lista.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+
+
 
 
         // =========================================================

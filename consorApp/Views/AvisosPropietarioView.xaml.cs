@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Linq;
 using consorApp.Seguridad;
+using ConsorApp.Entidades;
 
 using ConsorApp.Negocio;
 
@@ -48,10 +49,12 @@ namespace consorApp.Views
                 // Obtenemos solamente los avisos
                 // correspondientes a este usuario.
                 var avisos =
-                      _avisoNegocio
-                           .ObtenerAvisosParaPropietario(SesionUsuario.IdUsuario)
-                             .Where(a => a.estado == 1)
-                            .ToList();
+                    _avisoNegocio
+                   .ObtenerAvisosParaPropietario(SesionUsuario.IdUsuario)
+                   .Where(a => a.estado == 1)
+                   .OrderByDescending(a => a.fechaPublicacion)
+                    .Select(a => new AvisoItem(a, string.Empty))
+                    .ToList();
 
                 // Mostramos los avisos
                 ItemsAvisos.ItemsSource = avisos;

@@ -58,81 +58,115 @@
             <!-- ================================================= -->
 
             <ItemsControl x:Name="ItemsAvisos">
-
                 <ItemsControl.ItemTemplate>
-
                     <DataTemplate>
 
-                        <Border Background="{StaticResource ColorGrisClaro}"
-                    CornerRadius="8"
-                    Padding="18"
-                    Margin="0,0,0,15"
-                    BorderBrush="#E5E0DA"
-                    BorderThickness="1">
+                        <!-- Azul = aviso general / Naranja = aviso para este propietario -->
+                        <Border CornerRadius="8" Margin="0,0,0,15" BorderThickness="1">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Background" Value="#F3F8FD"/>
+                                    <Setter Property="BorderBrush" Value="#C9DCEE"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding EsGeneral}" Value="False">
+                                            <Setter Property="Background" Value="#FFF7EC"/>
+                                            <Setter Property="BorderBrush" Value="#F0D3AA"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
 
-                            <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="6"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                                <Grid Margin="0,0,0,10">
+                                <!-- Franja de color -->
+                                <Border Grid.Column="0" CornerRadius="7,0,0,7">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="#4A7FB5"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding EsGeneral}" Value="False">
+                                                    <Setter Property="Background" Value="#C9822B"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                </Border>
 
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="1" Margin="16,14,16,14">
 
-                                    <StackPanel Grid.Column="0"
-                                    Orientation="Horizontal">
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                        <Border Background="#A09285"
-                                    CornerRadius="4"
-                                    Padding="8,3"
-                                    Margin="0,0,10,0">
+                                        <WrapPanel Grid.Column="0">
 
-                                            <TextBlock Text="AVISO"
-                                           Foreground="White"
-                                           FontSize="11"
-                                           FontWeight="Bold"/>
+                                            <!-- GENERAL / PARA TI -->
+                                            <Border CornerRadius="4" Padding="8,3" Margin="0,0,8,4">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Background" Value="#4A7FB5"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding EsGeneral}" Value="False">
+                                                                <Setter Property="Background" Value="#C9822B"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="{Binding EtiquetaPropietario}"
+                                               Foreground="White" FontSize="11" FontWeight="Bold"/>
+                                            </Border>
 
-                                        </Border>
+                                            <!-- NUEVO -->
+                                            <Border Background="#27AE60" CornerRadius="4"
+                                        Padding="8,3" Margin="0,0,8,4">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding EsNuevo}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="NUEVO" Foreground="White"
+                                               FontSize="11" FontWeight="Bold"/>
+                                            </Border>
 
-                                        <TextBlock Text="{Binding titulo}"
-                                       FontSize="16"
-                                       FontWeight="Bold"
-                                       Foreground="{StaticResource ColorGrisOscuro}"
-                                       VerticalAlignment="Center"
-                                       TextWrapping="Wrap"/>
+                                            <!-- Título -->
+                                            <TextBlock Text="{Binding Titulo}"
+                                           FontSize="16" FontWeight="Bold"
+                                           Foreground="{StaticResource ColorGrisOscuro}"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="Wrap" Margin="0,0,0,4"/>
+                                        </WrapPanel>
 
-                                    </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="{Binding FechaTexto}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource ColorTextoSecundario}"
+                                       VerticalAlignment="Top" Margin="12,3,0,0"/>
+                                    </Grid>
 
-                                    <TextBlock Grid.Column="1"
-                                   Text="{Binding fechaPublicacion, StringFormat='Publicado: {0:dd/MM/yyyy - HH:mm} hs'}"
-                                   FontSize="12"
-                                   Foreground="{StaticResource ColorTextoSecundario}"
-                                   VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Mensaje}"
+                                   FontSize="13" Foreground="#444444"
+                                   TextWrapping="Wrap" Margin="0,5,0,10"/>
 
-                                </Grid>
+                                    <Separator Background="#E5E0DA" Margin="0,5"/>
 
-                                <TextBlock Text="{Binding mensaje}"
-                               FontSize="13"
-                               Foreground="#444444"
-                               TextWrapping="Wrap"
-                               Margin="0,5,0,10"/>
-
-                                <Separator Background="#E5E0DA"
-                               Margin="0,5"/>
-
-                                <TextBlock Text="Publicado por: Encargado de Edificio"
-                               FontSize="11"
-                               Foreground="#888888"
-                               FontStyle="Italic"/>
-
-                            </StackPanel>
-
+                                    <TextBlock Text="Publicado por: Encargado de Edificio"
+                                   FontSize="11" Foreground="#888888" FontStyle="Italic"/>
+                                </StackPanel>
+                            </Grid>
                         </Border>
 
                     </DataTemplate>
-
                 </ItemsControl.ItemTemplate>
-
             </ItemsControl>
 
 

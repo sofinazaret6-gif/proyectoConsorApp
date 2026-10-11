@@ -40,28 +40,57 @@
         </Border>
 
         <!-- TABLA / DATAGRID PRINCIPAL -->
-        <DataGrid x:Name="DgReclamosAdmin" Grid.Row="2" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single" Margin="0,0,0,15">
+        <DataGrid x:Name="DgReclamosAdmin" Grid.Row="2" AutoGenerateColumns="False"
+          CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single"
+          Margin="0,0,0,15"
+          SelectionChanged="DgReclamosAdmin_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding IdReclamo}" Width="40"/>
                 <DataGridTextColumn Header="Motivo (propietario)" Binding="{Binding Motivo}" Width="150"/>
                 <DataGridTextColumn Header="Categoría" Binding="{Binding Categoria}" Width="150"/>
                 <DataGridTextColumn Header="Ubicación" Binding="{Binding Ubicacion}" Width="120"/>
+
+                <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="220">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            <Setter Property="ToolTip" Value="{Binding Descripcion}"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
                 <DataGridTextColumn Header="Responsable" Binding="{Binding Responsable}" Width="140"/>
-                <DataGridTextColumn Header="Departamento"
-                    Binding="{Binding Departamento}"
-                    Width="150"/>
+                <DataGridTextColumn Header="Departamento" Binding="{Binding Departamento}" Width="150"/>
                 <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="90"/>
                 <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="110"/>
                 <DataGridTextColumn Header="Observación Actual" Binding="{Binding Observacion}" Width="220"/>
             </DataGrid.Columns>
         </DataGrid>
 
-        <!-- PANEL PARA ESCRIBIR LA OBSERVACIÓN / RESPUESTA -->
-        <Border Grid.Row="3" Background="#F7F5F2" Padding="12" CornerRadius="6" BorderBrush="#E5E0DA" BorderThickness="1" Margin="0,0,0,15">
-            <StackPanel>
-                <TextBlock Text="Observación/Respuesta:" FontWeight="SemiBold" Margin="0,0,0,5" Foreground="#2E363A"/>
-                <TextBox x:Name="TxtObservacionAdmin" Height="50" TextWrapping="Wrap" AcceptsReturn="True" Padding="5"/>
-            </StackPanel>
+        <!-- DESCRIPCIÓN (propietario) Y OBSERVACIÓN (encargado) -->
+        <Border Grid.Row="3" Background="#F7F5F2" Padding="12" CornerRadius="6"
+        BorderBrush="#E5E0DA" BorderThickness="1" Margin="0,0,0,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                    <TextBlock Text="Detalle (seleccione un reclamo):" FontWeight="SemiBold"
+                       Margin="0,0,0,5" Foreground="#2E363A"/>
+                    <TextBox x:Name="TxtDescripcionReclamo" Height="60" IsReadOnly="True"
+                     TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                     Background="#EFECE7" Padding="5"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                    <TextBlock Text="Observación/Respuesta:" FontWeight="SemiBold"
+                       Margin="0,0,0,5" Foreground="#2E363A"/>
+                    <TextBox x:Name="TxtObservacionAdmin" Height="60" TextWrapping="Wrap"
+                     AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Padding="5"/>
+                </StackPanel>
+            </Grid>
         </Border>
 
         <!-- BOTONES INFERIORES DE ACCIÓN -->

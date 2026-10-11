@@ -59,7 +59,8 @@ namespace ConsorApp.Datos
             r.Motivo,
             ISNULL(r.Categoria, 'Otro') AS Categoria,
             r.Ubicacion,
-
+            ISNULL(r.Descripcion, '') AS Descripcion,
+           
             ISNULL(
                 u.Nombre + ' ' + u.Apellido,
                 'Sin responsable'

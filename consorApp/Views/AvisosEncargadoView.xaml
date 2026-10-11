@@ -135,192 +135,270 @@
         <!-- HISTORIAL -->
         <!-- ===================================================== -->
 
-        <Grid Grid.Column="1"
-              Margin="10,0,0,0">
+        <Grid Grid.Column="1" Margin="10,0,0,0">
 
             <Grid.RowDefinitions>
-
                 <RowDefinition Height="Auto"/>
-
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-
             </Grid.RowDefinitions>
 
+            <!-- Título + contador en la misma fila -->
+            <Grid Grid.Row="0" Margin="0,0,0,8">
+                <TextBlock Text="Avisos Publicados Recientemente"
+                   FontSize="18" FontWeight="Bold"
+                   Foreground="{StaticResource ColorGrisOscuro}"/>
 
-            <TextBlock Grid.Row="0"
-                       Text="Avisos Publicados Recientemente"
-                       FontSize="20"
-                       FontWeight="Bold"
-                       Foreground="{StaticResource ColorGrisOscuro}"
-                       Margin="0,0,0,15"/>
+                <TextBlock x:Name="LblCantidad"
+                   FontSize="11" Foreground="#888888"
+                   HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+            </Grid>
 
+            <!-- ================= FILTROS (una sola línea) ================= -->
+            <Border Grid.Row="1" Background="{StaticResource ColorGrisClaro}"
+            BorderBrush="#E5E0DA" BorderThickness="1"
+            CornerRadius="6" Padding="6" Margin="0,0,0,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-            <ScrollViewer Grid.Row="1"
-                          VerticalScrollBarVisibility="Auto">
+                    <!-- Buscador con texto de ayuda adentro -->
+                    <Grid Grid.Column="0">
+                        <TextBox x:Name="TxtBuscar" Height="24"
+                         VerticalContentAlignment="Center"
+                         ToolTip="Busca en título, mensaje y destinatario"
+                         TextChanged="Filtro_Changed"/>
 
+                        <TextBlock Text="🔍 Buscar..." IsHitTestVisible="False"
+                           Foreground="#999999" FontSize="11"
+                           VerticalAlignment="Center" Margin="6,0,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=TxtBuscar}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+
+                    <ComboBox Grid.Column="1" x:Name="CmbFiltroTipo" Width="115" Height="24"
+                      Margin="6,0,0,0" SelectedIndex="0"
+                      ToolTip="Filtrar por tipo de aviso"
+                      SelectionChanged="Filtro_Changed">
+                        <ComboBoxItem Content="Todos los tipos"/>
+                        <ComboBoxItem Content="General"/>
+                        <ComboBoxItem Content="Individual"/>
+                    </ComboBox>
+
+                    <ComboBox Grid.Column="2" x:Name="CmbFiltroEstado" Width="95" Height="24"
+                      Margin="6,0,0,0" SelectedIndex="0"
+                      ToolTip="Filtrar por estado"
+                      SelectionChanged="Filtro_Changed">
+                        <ComboBoxItem Content="Vigentes"/>
+                        <ComboBoxItem Content="Archivados"/>
+                        <ComboBoxItem Content="Todos"/>
+                    </ComboBox>
+
+                    <ComboBox Grid.Column="3" x:Name="CmbOrden" Width="90" Height="24"
+                      Margin="6,0,0,0" SelectedIndex="0"
+                      ToolTip="Ordenar por fecha de publicación"
+                      SelectionChanged="Filtro_Changed">
+                        <ComboBoxItem Content="Recientes"/>
+                        <ComboBoxItem Content="Antiguos"/>
+                    </ComboBox>
+
+                    <Button Grid.Column="4" Content="✕" Width="26" Height="24"
+                    Margin="6,0,0,0" ToolTip="Limpiar filtros"
+                    Click="BtnLimpiarFiltros_Click"/>
+                </Grid>
+            </Border>
+
+           
+
+            <!-- ================= LISTA ================= -->
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
                 <ItemsControl x:Name="ItemsAvisos">
-
                     <ItemsControl.ItemTemplate>
-
                         <DataTemplate>
 
-                            <Border Background="White"
-                                    CornerRadius="6"
-                                    Padding="15"
-                                    Margin="0,0,0,10"
-                                    BorderBrush="#E5E0DA"
-                                    BorderThickness="1">
+                            <!-- Tarjeta: azul claro = general / naranja claro = individual -->
+                            <Border CornerRadius="6" Margin="0,0,0,10" BorderThickness="1">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="#F3F8FD"/>
+                                        <Setter Property="BorderBrush" Value="#C9DCEE"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding EsGeneral}" Value="False">
+                                                <Setter Property="Background" Value="#FFF7EC"/>
+                                                <Setter Property="BorderBrush" Value="#F0D3AA"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Vigente}" Value="False">
+                                                <Setter Property="Opacity" Value="0.65"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
 
                                 <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="6"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-                                    <Grid.RowDefinitions>
+                                    <!-- Franja de color a la izquierda -->
+                                    <Border Grid.Column="0" CornerRadius="5,0,0,5">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#4A7FB5"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding EsGeneral}" Value="False">
+                                                        <Setter Property="Background" Value="#C9822B"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                    </Border>
 
-                                        <RowDefinition Height="Auto"/>
+                                    <Grid Grid.Column="1" Margin="14,12,14,12">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
 
-                                        <RowDefinition Height="Auto"/>
+                                        <!-- Etiquetas y título -->
+                                        <WrapPanel Grid.Row="0">
 
-                                        <RowDefinition Height="Auto"/>
-
-                                    </Grid.RowDefinitions>
-
-
-                                    <!-- TÍTULO Y ESTADO -->
-                                    <StackPanel Grid.Row="0"
-            Orientation="Horizontal">
-
-                                        <!-- AVISO -->
-                                        <Border Background="#A09285"
-            CornerRadius="4"
-            Padding="6,2"
-            Margin="0,0,8,0">
-
-                                            <TextBlock Text="AVISO"
-                   Foreground="White"
-                   FontSize="10"
-                   FontWeight="Bold"/>
-                                        </Border>
-
-                                        <!-- TÍTULO -->
-                                        <TextBlock Text="{Binding titulo}"
-               FontWeight="Bold"
-               FontSize="14"
-               Foreground="{StaticResource ColorGrisOscuro}"
-               VerticalAlignment="Center"/>
-
-                                        <!-- ESTADO -->
-                                        <Border Margin="10,0,0,0"
-            Padding="6,2"
-            CornerRadius="4"
-            Background="#E8E8E8">
-
-                                            <TextBlock FontSize="10"
-                   FontWeight="Bold"
-                   Foreground="#666666">
-
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock">
-
-                                                        <!-- Estado normal -->
-                                                        <Setter Property="Text"
-                            Value="VIGENTE"/>
-
-                                                        <!-- Si estado = 0 -->
+                                            <!-- Tipo -->
+                                            <Border CornerRadius="4" Padding="6,2" Margin="0,0,8,4">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Background" Value="#4A7FB5"/>
                                                         <Style.Triggers>
-
-                                                            <DataTrigger Binding="{Binding estado}"
-                                     Value="0">
-
-                                                                <Setter Property="Text"
-                                    Value="ARCHIVADO"/>
-
+                                                            <DataTrigger Binding="{Binding EsGeneral}" Value="False">
+                                                                <Setter Property="Background" Value="#C9822B"/>
                                                             </DataTrigger>
-
                                                         </Style.Triggers>
-
                                                     </Style>
-                                                </TextBlock.Style>
+                                                </Border.Style>
+                                                <TextBlock Text="{Binding TipoTexto}"
+                                                   Foreground="White" FontSize="10" FontWeight="Bold"/>
+                                            </Border>
 
-                                            </TextBlock>
+                                            <!-- Nuevo -->
+                                            <Border Background="#27AE60" CornerRadius="4"
+                                            Padding="6,2" Margin="0,0,8,4">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding EsNuevo}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="NUEVO" Foreground="White"
+                                                   FontSize="10" FontWeight="Bold"/>
+                                            </Border>
 
-                                        </Border>
+                                            <!-- Título -->
+                                            <TextBlock Text="{Binding Titulo}"
+                                               FontWeight="Bold" FontSize="14"
+                                               Foreground="{StaticResource ColorGrisOscuro}"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,10,4"/>
 
-                                    </StackPanel>
+                                            <!-- Estado -->
+                                            <Border Padding="6,2" CornerRadius="4"
+                                            Background="#E8E8E8" Margin="0,0,0,4">
+                                                <TextBlock FontSize="10" FontWeight="Bold" Foreground="#666666">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="VIGENTE"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Vigente}" Value="False">
+                                                                    <Setter Property="Text" Value="ARCHIVADO"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+                                        </WrapPanel>
 
-
-                                    <!-- MENSAJE -->
-
-                                    <TextBlock Grid.Row="1"
-                                               Text="{Binding mensaje}"
-                                               FontSize="12"
-                                               Foreground="#555555"
-                                               Margin="0,6,0,8"
-                                               TextTrimming="WordEllipsis"
-                                               TextWrapping="Wrap"/>
-
-
-                                    <!-- FECHA + ELIMINAR -->
-
-                                    <Grid Grid.Row="2">
-
-                                        <TextBlock Text="{Binding fechaPublicacion, StringFormat='Publicado: {0:dd/MM/yyyy - HH:mm} hs'}"
-                                                   FontSize="11"
-                                                   Foreground="#888888"/>
-
-
-                                        <Button Click="BtnEliminar_Click"
-        Tag="{Binding id_Aviso}"
-        Padding="10,5">
-
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-
-                                                    <!-- AVISO VIGENTE -->
-                                                    <Setter Property="Content"
-                                                      Value="Archivar 📁"/>
-
-                                                    <Setter Property="ToolTip"
-                                                      Value="Archivar aviso"/>
-
+                                        <!-- Destinatario -->
+                                        <TextBlock Grid.Row="1" Text="{Binding DestinoTexto}"
+                                           FontSize="11" FontWeight="SemiBold" Margin="0,0,0,4">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#4A7FB5"/>
                                                     <Style.Triggers>
-
-                                                        <!-- AVISO ARCHIVADO -->
-                                                        <DataTrigger Binding="{Binding estado}"
-                                                            Value="0">
-
-                                                            <Setter Property="Content"
-                                                         Value="Archivado 📁"/>
-
-                                                            <Setter Property="ToolTip"
-                                                        Value="Este aviso ya está archivado"/>
-
-                                                            <Setter Property="IsEnabled"
-                                                        Value="False"/>
-
+                                                        <DataTrigger Binding="{Binding EsGeneral}" Value="False">
+                                                            <Setter Property="Foreground" Value="#C9822B"/>
                                                         </DataTrigger>
-
                                                     </Style.Triggers>
-
                                                 </Style>
-                                            </Button.Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
 
-                                        </Button>
+                                        <!-- Mensaje -->
+                                        <TextBlock Grid.Row="2" Text="{Binding Mensaje}"
+                                           FontSize="12" Foreground="#555555"
+                                           TextWrapping="Wrap" Margin="0,2,0,10"/>
 
+                                        <!-- Fecha (izquierda) y botón (derecha) en columnas separadas -->
+                                        <Grid Grid.Row="3">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="{Binding FechaTexto}"
+                                               FontSize="11" Foreground="#888888"
+                                               VerticalAlignment="Center"/>
+
+                                            <Button Grid.Column="1" Click="BtnEliminar_Click"
+                                            Tag="{Binding Id}" Padding="12,4">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Content" Value="Archivar 📁"/>
+                                                        <Setter Property="ToolTip" Value="Archivar aviso"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Vigente}" Value="False">
+                                                                <Setter Property="Content" Value="Archivado 📁"/>
+                                                                <Setter Property="ToolTip" Value="Este aviso ya está archivado"/>
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </Grid>
                                     </Grid>
-
                                 </Grid>
-
                             </Border>
 
                         </DataTemplate>
-
                     </ItemsControl.ItemTemplate>
-
                 </ItemsControl>
-
             </ScrollViewer>
 
+            <TextBlock Grid.Row="2" x:Name="TxtSinResultados"
+               Text="No hay avisos que coincidan con los filtros."
+               FontSize="13" Foreground="#888888"
+               HorizontalAlignment="Center" VerticalAlignment="Top"
+               Margin="0,40,0,0" Visibility="Collapsed"/>
         </Grid>
-
     </Grid>
-
 </Window>

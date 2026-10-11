@@ -24,6 +24,7 @@ namespace consorApp.Views
             CargarFiltroMotivos();
             CargarFiltroMeses();
             CargarReclamosReales();
+            BtnVerDetalle.Click += BtnVerDetalle_Click;     // <-- NUEVO
 
             // Los eventos se asocian al final para que no se disparen durante la carga
             CmbFiltroMotivo.SelectionChanged += Filtro_SelectionChanged;
@@ -108,7 +109,6 @@ namespace consorApp.Views
                 && item.Content?.ToString() is string estado && estado != "Todos")
                 condiciones.Add($"Estado = '{estado.Replace("'", "''")}'");
 
-            _vista.RowFilter = string.Join(" AND ", condiciones);
             if (CmbFiltroMes.SelectedIndex > 0)
                 condiciones.Add($"Mes = {CmbFiltroMes.SelectedIndex}");
 
@@ -116,6 +116,9 @@ namespace consorApp.Views
                 && anio != TodosLosAnios
                 && int.TryParse(anio, out int anioNumero))
                 condiciones.Add($"Anio = {anioNumero}");
+
+            // El filtro se aplica al final, cuando ya están todas las condiciones
+            _vista.RowFilter = string.Join(" AND ", condiciones);
         }
         private void BtnEnResolucion_Click(object sender, RoutedEventArgs e)
         {
@@ -214,6 +217,40 @@ namespace consorApp.Views
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
             }
+        }
+
+        // Muestra la descripción completa del reclamo seleccionado
+        private void DgReclamosAdmin_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DgReclamosAdmin.SelectedItem is DataRowView fila)
+                TxtDescripcionReclamo.Text = fila["Descripcion"]?.ToString() ?? string.Empty;
+            else
+                TxtDescripcionReclamo.Clear();
+        }
+
+        private void BtnVerDetalle_Click(object sender, RoutedEventArgs e)
+        {
+            if (DgReclamosAdmin.SelectedItem is not DataRowView fila)
+            {
+                MessageBox.Show("Seleccione un reclamo de la tabla.",
+                    "Selección requerida", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            string detalle =
+                $"Reclamo N° {fila["IdReclamo"]}\n\n" +
+                $"Departamento: {fila["Departamento"]}\n" +
+                $"Responsable: {fila["Responsable"]}\n" +
+                $"Fecha: {fila["Fecha"]}\n" +
+                $"Estado: {fila["Estado"]}\n\n" +
+                $"Motivo: {fila["Motivo"]}\n" +
+                $"Categoría: {fila["Categoria"]}\n" +
+                $"Ubicación: {fila["Ubicacion"]}\n\n" +
+                $"Descripción:\n{fila["Descripcion"]}\n\n" +
+                $"Observación:\n{fila["Observacion"]}";
+
+            MessageBox.Show(detalle, "Detalle del reclamo",
+                MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
     }

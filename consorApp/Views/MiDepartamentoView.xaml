@@ -80,9 +80,28 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0"
-                               Text="Liquidaciones de tu unidad por período. Podés descargar el detalle de cada una en PDF."
-                               FontSize="12" Foreground="{StaticResource ColorTextoSecundario}" Margin="0,0,0,12"/>
+                    <Grid Grid.Row="0" Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+               Text="Liquidaciones de tu unidad por período. Podés descargar el detalle de cada una en PDF."
+               FontSize="12" Foreground="{StaticResource ColorTextoSecundario}"
+               TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,15,0"/>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock x:Name="LblCantidadExpensas" FontSize="11" Foreground="#888888"
+                   VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ComboBox x:Name="CmbFiltroExpensas" Width="110" Height="26" SelectedIndex="0"
+                  SelectionChanged="FiltroExpensas_Changed">
+                                <ComboBoxItem Content="Todas"/>
+                                <ComboBoxItem Content="Recientes"/>
+                                <ComboBoxItem Content="Antiguas"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
 
                     <!-- Aviso de expensas atrasadas (solo si hay) -->
                     <Border Grid.Row="1" x:Name="BrdAvisoAtrasadas" Visibility="Collapsed" Background="#FDECEA"
@@ -136,9 +155,28 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0"
-                   Text="Historial y estado actual de las reservas de espacios comunes realizadas por esta unidad."
-                   FontSize="12" Foreground="{StaticResource ColorTextoSecundario}" Margin="0,0,0,12"/>
+                    <Grid Grid.Row="0" Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+               Text="Historial y estado actual de las reservas de espacios comunes realizadas por esta unidad."
+               FontSize="12" Foreground="{StaticResource ColorTextoSecundario}"
+               TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,15,0"/>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock x:Name="LblCantidadReservas" FontSize="11" Foreground="#888888"
+                   VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ComboBox x:Name="CmbFiltroReservas" Width="110" Height="26" SelectedIndex="0"
+                  SelectionChanged="FiltroReservas_Changed">
+                                <ComboBoxItem Content="Todas"/>
+                                <ComboBoxItem Content="Recientes"/>
+                                <ComboBoxItem Content="Antiguas"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
 
                     <DataGrid Grid.Row="1" x:Name="DgMisReservas" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single">
                         <DataGrid.Columns>
@@ -162,12 +200,32 @@
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0" Margin="0,0,0,12">
-                        <TextBlock Text="Seguimiento de los reportes enviados por este departamento al administrador."
-                                   FontSize="12" Foreground="{StaticResource ColorTextoSecundario}"
-                                   VerticalAlignment="Center"/>
-                        <Button Content="+ Nuevo reclamo" HorizontalAlignment="Right"
-                                Width="140" Height="30" Background="#A09285" Foreground="White"
-                                FontWeight="Bold" Cursor="Hand" Click="BtnNuevoReclamo_Click"/>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+               Text="Seguimiento de los reportes enviados por este departamento al administrador."
+               FontSize="12" Foreground="{StaticResource ColorTextoSecundario}"
+               TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,15,0"/>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal"
+                VerticalAlignment="Center" Margin="0,0,12,0">
+                            <TextBlock x:Name="LblCantidadReclamos" FontSize="11" Foreground="#888888"
+                   VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ComboBox x:Name="CmbFiltroReclamos" Width="110" Height="26" SelectedIndex="0"
+                  SelectionChanged="FiltroReclamos_Changed">
+                                <ComboBoxItem Content="Todas"/>
+                                <ComboBoxItem Content="Recientes"/>
+                                <ComboBoxItem Content="Antiguas"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <Button Grid.Column="2" Content="+ Nuevo reclamo"
+            Width="140" Height="30" Background="#A09285" Foreground="White"
+            FontWeight="Bold" Cursor="Hand" Click="BtnNuevoReclamo_Click"/>
                     </Grid>
 
                     <DataGrid Grid.Row="1" x:Name="DgMisReclamos" AutoGenerateColumns="False"

@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Media;
 using ConsorApp.Entidades;
 using ConsorApp.Negocio;
+using System.Windows.Controls;
 
 namespace consorApp.Views
 {
@@ -21,7 +22,15 @@ namespace consorApp.Views
         private readonly ReservaEspacioNegocio _reservaNegocio = new ReservaEspacioNegocio(); // Agregado para reservas
 
         private static readonly CultureInfo Cultura = new CultureInfo("es-AR");
+        // Una expensa, reserva o reclamo es "reciente" si es de los últimos N días en adelante
+        private const int DiasRecientes = 30;
 
+        private List<ExpensaPropietarioItem> _todasLasExpensas = new List<ExpensaPropietarioItem>();
+        private DataView? _vistaReservas;
+        private DataView? _vistaReclamos;
+
+        // Evita que los filtros se disparen mientras se arma la ventana
+        private bool _filtrosListos = false;
         private readonly int _idUsuario;
         private MiDepartamentoInfo? _info;
 
@@ -32,10 +41,19 @@ namespace consorApp.Views
             _idUsuario = idUsuario;
 
             CargarDatosPersonales();
-            CargarDatosDepartamento(); // Esto carga _info, es vital que esté antes de las reservas
+            CargarDatosDepartamento();
             CargarMisExpensas();
             CargarMisReclamos();
-            CargarMisReservasReales(); // Llamada al método real
+            CargarMisReservasReales();
+
+            // Ayuda al pasar el mouse sobre los filtros
+            string ayuda = $"Recientes: de los últimos {DiasRecientes} días en adelante.\n" +
+                           "Antiguas: anteriores a esa fecha.";
+            CmbFiltroExpensas.ToolTip = ayuda;
+            CmbFiltroReservas.ToolTip = ayuda;
+            CmbFiltroReclamos.ToolTip = ayuda;
+
+            _filtrosListos = true;     // <-- NUEVO
         }
 
         // ============================================================
@@ -124,14 +142,15 @@ namespace consorApp.Views
         {
             try
             {
-                var expensas = _historialNegocio
+                _todasLasExpensas = _historialNegocio
                     .ObtenerHistorialPorUsuario(_idUsuario)
                     .Select(h => new ExpensaPropietarioItem(h))
-                    .OrderByDescending(x => x.FechaVencimiento)
                     .ToList();
 
-                DgMisExpensas.ItemsSource = expensas;
-                ActualizarEstadoCuenta(expensas);
+                // El estado de cuenta se calcula siempre con TODAS las expensas
+                ActualizarEstadoCuenta(_todasLasExpensas.OrderByDescending(x => x.FechaVencimiento).ToList());
+
+                AplicarFiltroExpensas();
             }
             catch (Exception ex)
             {
@@ -140,6 +159,37 @@ namespace consorApp.Views
             }
         }
 
+        private void AplicarFiltroExpensas()
+        {
+            DateTime corte = DateTime.Today.AddDays(-DiasRecientes);
+
+            IEnumerable<ExpensaPropietarioItem> lista;
+
+            switch (CmbFiltroExpensas.SelectedIndex)
+            {
+                case 1:   // Recientes
+                    lista = _todasLasExpensas
+                        .Where(x => x.FechaVencimiento.Date >= corte)
+                        .OrderByDescending(x => x.FechaVencimiento);
+                    break;
+
+                case 2:   // Antiguas
+                    lista = _todasLasExpensas
+                        .Where(x => x.FechaVencimiento.Date < corte)
+                        .OrderBy(x => x.FechaVencimiento);
+                    break;
+
+                default:  // Todas
+                    lista = _todasLasExpensas
+                        .OrderByDescending(x => x.FechaVencimiento);
+                    break;
+            }
+
+            var resultado = lista.ToList();
+
+            DgMisExpensas.ItemsSource = resultado;
+            LblCantidadExpensas.Text = $"Mostrando {resultado.Count} de {_todasLasExpensas.Count}";
+        }
         private void ActualizarEstadoCuenta(List<ExpensaPropietarioItem> expensas)
         {
             var atrasadas = expensas.Where(x => x.EstaAtrasada).ToList();
@@ -247,7 +297,9 @@ namespace consorApp.Views
             {
                 if (_info == null)
                 {
+                    _vistaReclamos = null;
                     DgMisReclamos.ItemsSource = null;
+                    LblCantidadReclamos.Text = string.Empty;
                     TabReclamos.Header = "Mis Reclamos";
                     return;
                 }
@@ -255,7 +307,10 @@ namespace consorApp.Views
                 DataTable dt = _reclamoNegocio
                     .ObtenerReclamosPorPropietario(_info.Propietario.IdPropietario);
 
-                DgMisReclamos.ItemsSource = dt.DefaultView;
+                AgregarColumnaFecha(dt, "Fecha");
+
+                _vistaReclamos = dt.DefaultView;
+                AplicarFiltroReclamos();
 
                 int abiertos = dt.AsEnumerable().Count(r =>
                     !string.Equals(r["Estado"]?.ToString(), "Resuelto", StringComparison.OrdinalIgnoreCase));
@@ -286,18 +341,105 @@ namespace consorApp.Views
             {
                 if (_info == null || _info.Propietario == null)
                 {
+                    _vistaReservas = null;
                     DgMisReservas.ItemsSource = null;
+                    LblCantidadReservas.Text = string.Empty;
                     return;
                 }
 
-                // Busca las reservas reales. Si hay 0, la grilla simplemente quedará en blanco sin dar errores.
                 DataTable dt = _reservaNegocio.ObtenerReservasPorPropietario(_info.Propietario.IdPropietario);
-                DgMisReservas.ItemsSource = dt.DefaultView;
+
+                AgregarColumnaFecha(dt, "Fecha");
+
+                _vistaReservas = dt.DefaultView;
+                AplicarFiltroReservas();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"No se pudieron cargar tus reservas.\n\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"No se pudieron cargar tus reservas.\n\n{ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        // ============================================================
+        // FILTROS DE FECHA (RESERVAS Y RECLAMOS)
+        // ============================================================
+
+        // Las fechas de estas tablas llegan como texto (dd/MM/yyyy).
+        // Se agrega una columna oculta con la fecha real para poder filtrar y ordenar bien.
+        private static void AgregarColumnaFecha(DataTable dt, string columnaOrigen)
+        {
+            if (!dt.Columns.Contains("FechaOrden"))
+                dt.Columns.Add("FechaOrden", typeof(DateTime));
+
+            if (!dt.Columns.Contains(columnaOrigen))
+                return;
+
+            foreach (DataRow fila in dt.Rows)
+            {
+                object valor = fila[columnaOrigen];
+
+                if (valor is DateTime fecha)
+                    fila["FechaOrden"] = fecha;
+                else if (DateTime.TryParse(valor?.ToString(), Cultura, DateTimeStyles.None, out DateTime parseada))
+                    fila["FechaOrden"] = parseada;
+                else
+                    fila["FechaOrden"] = DBNull.Value;
+            }
+        }
+
+        private void AplicarFiltroFecha(DataView? vista, ComboBox combo, DataGrid grilla, TextBlock lblCantidad)
+        {
+            if (vista == null) return;
+
+            string corte = DateTime.Today
+                .AddDays(-DiasRecientes)
+                .ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
+
+            switch (combo.SelectedIndex)
+            {
+                case 1:   // Recientes
+                    vista.RowFilter = $"FechaOrden >= #{corte}#";
+                    vista.Sort = "FechaOrden DESC";
+                    break;
+
+                case 2:   // Antiguas
+                    vista.RowFilter = $"FechaOrden < #{corte}#";
+                    vista.Sort = "FechaOrden ASC";
+                    break;
+
+                default:  // Todas
+                    vista.RowFilter = string.Empty;
+                    vista.Sort = "FechaOrden DESC";
+                    break;
+            }
+
+            grilla.ItemsSource = vista;
+            lblCantidad.Text = $"Mostrando {vista.Count} de {vista.Table?.Rows.Count ?? 0}";
+        }
+
+        private void AplicarFiltroReservas() =>
+            AplicarFiltroFecha(_vistaReservas, CmbFiltroReservas, DgMisReservas, LblCantidadReservas);
+
+        private void AplicarFiltroReclamos() =>
+            AplicarFiltroFecha(_vistaReclamos, CmbFiltroReclamos, DgMisReclamos, LblCantidadReclamos);
+
+        private void FiltroExpensas_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            if (!_filtrosListos) return;
+            AplicarFiltroExpensas();
+        }
+
+        private void FiltroReservas_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            if (!_filtrosListos) return;
+            AplicarFiltroReservas();
+        }
+
+        private void FiltroReclamos_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            if (!_filtrosListos) return;
+            AplicarFiltroReclamos();
         }
     }
 }
