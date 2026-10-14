@@ -10,13 +10,11 @@ namespace consorApp.Views
     {
         private readonly string rolUsuarioActual = string.Empty;
 
-        // 1. Restauramos el constructor vacío original que el programa necesita
         public DashboardView()
         {
             InitializeComponent();
         }
 
-        // Este constructor ahora funcionará perfecto porque el de arriba ya existe
         public DashboardView(string nombreUsuario, string nombrePerfil) : this()
         {
             TxtNombreUsuario.Text = nombreUsuario ?? "";
@@ -42,11 +40,14 @@ namespace consorApp.Views
                 BtnReservas.Visibility = Visibility.Collapsed; // Reservas para residentes
 
                 BtnEdificio.Visibility = Visibility.Visible;
-                BtnLiquidacionExpensas.Visibility = Visibility.Visible;
+                BtnExpensas.Visibility = Visibility.Visible;
                 BtnUsuarios.Visibility = Visibility.Visible;
                 BtnUnidades.Visibility = Visibility.Visible;
                 BtnGestionReservasAdmin.Visibility = Visibility.Visible;
                 BtnGestionReclamosAdmin.Visibility = Visibility.Visible;
+
+                // NUEVO: Visible solo para administrador
+                BtnReportesAdmin.Visibility = Visibility.Visible;
                 return;
             }
             // 2. ENCARGADO / OPERARIO
@@ -60,11 +61,13 @@ namespace consorApp.Views
 
                 BtnMiDpto.Visibility = Visibility.Collapsed;
                 BtnEdificio.Visibility = Visibility.Collapsed;
-                BtnLiquidacionExpensas.Visibility = Visibility.Collapsed;
+                BtnExpensas.Visibility = Visibility.Collapsed;
                 BtnUsuarios.Visibility = Visibility.Collapsed;
                 BtnReclamos.Visibility = Visibility.Collapsed;
                 BtnReservas.Visibility = Visibility.Collapsed;
-                BtnMiDpto.Visibility = Visibility.Collapsed;
+
+                // NUEVO: Oculto para encargado
+                BtnReportesAdmin.Visibility = Visibility.Collapsed;
             }
             // 3. PROPIETARIO / INQUILINO
             else if (perfil.Contains("propietario") || perfil.Contains("inquilino"))
@@ -76,11 +79,14 @@ namespace consorApp.Views
 
                 HeaderGestion.Visibility = Visibility.Collapsed;
                 BtnEdificio.Visibility = Visibility.Collapsed;
-                BtnLiquidacionExpensas.Visibility = Visibility.Collapsed;
+                BtnExpensas.Visibility = Visibility.Collapsed;
                 BtnUsuarios.Visibility = Visibility.Collapsed;
                 BtnUnidades.Visibility = Visibility.Collapsed;
                 BtnGestionReservasAdmin.Visibility = Visibility.Collapsed;
                 BtnGestionReclamosAdmin.Visibility = Visibility.Collapsed;
+
+                // NUEVO: Oculto para propietario/inquilino
+                BtnReportesAdmin.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -116,7 +122,6 @@ namespace consorApp.Views
 
         private void BtnReservas_Click(object sender, RoutedEventArgs e)
         {
-            // 2. Usamos directamente SesionUsuario.IdUsuario como en los otros botones
             ReservaEspaciosView ventanaReservas = new ReservaEspaciosView(SesionUsuario.IdUsuario);
             ventanaReservas.ShowDialog();
         }
@@ -141,7 +146,7 @@ namespace consorApp.Views
             ventanaDepartamentos.ShowDialog();
         }
 
-        private void BtnLiquidacionExpensas_Click(object sender, RoutedEventArgs e)
+        private void BtnExpensas_Click(object sender, RoutedEventArgs e)
         {
             LiquidacionExpensasView ventanaExpensas = new LiquidacionExpensasView();
             ventanaExpensas.ShowDialog();
@@ -157,6 +162,13 @@ namespace consorApp.Views
         {
             GestionReclamosAdminView ventanaAdminReclamos = new GestionReclamosAdminView();
             ventanaAdminReclamos.ShowDialog();
+        }
+
+        // NUEVO: Método para abrir la ventana de reportes
+        private void BtnReportesAdmin_Click(object sender, RoutedEventArgs e)
+        {
+            ReportesEstadisticasView ventanaReportes = new ReportesEstadisticasView();
+            ventanaReportes.ShowDialog();
         }
 
         private void BtnCerrarSesion_Click(object sender, RoutedEventArgs e)
