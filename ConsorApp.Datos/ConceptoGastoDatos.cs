@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using ConsorApp.Entidades;
 using Microsoft.Data.SqlClient;
+using ConsorApp.Entidades;
 
 namespace ConsorApp.Datos
 {

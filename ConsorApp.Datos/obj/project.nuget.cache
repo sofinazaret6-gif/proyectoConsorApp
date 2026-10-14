@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "8iXI+8aECms=",
+  "dgSpecHash": "rSHgpZ4BZTs=",
   "success": true,
   "projectFilePath": "C:\\Users\\Dorrego Octavio\\source\\repos\\proyectoConsorApp\\ConsorApp.Datos\\ConsorApp.Datos.csproj",
   "expectedPackageFiles": [
@@ -47,6 +47,10 @@
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\newtonsoft.json\\13.0.4\\newtonsoft.json.13.0.4.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\questpdf\\2026.9.1\\questpdf.2026.9.1.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\questpdf.barcodes\\2024.10.3\\questpdf.barcodes.2024.10.3.nupkg.sha512",
+    "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+    "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+    "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+    "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\runtime.win-x86.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x86.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\svglib\\1.0.0.3\\svglib.1.0.0.3.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\system.composition\\9.0.0\\system.composition.9.0.0.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\system.composition.attributedmodel\\9.0.0\\system.composition.attributedmodel.9.0.0.nupkg.sha512",
@@ -54,6 +58,7 @@
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\system.composition.hosting\\9.0.0\\system.composition.hosting.9.0.0.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\system.composition.runtime\\9.0.0\\system.composition.runtime.9.0.0.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\system.composition.typedparts\\9.0.0\\system.composition.typedparts.9.0.0.nupkg.sha512",
+    "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\system.data.sqlclient\\4.9.1\\system.data.sqlclient.4.9.1.nupkg.sha512",
     "C:\\Users\\Dorrego Octavio\\.nuget\\packages\\system.identitymodel.tokens.jwt\\8.16.0\\system.identitymodel.tokens.jwt.8.16.0.nupkg.sha512"
   ],
   "logs": []
