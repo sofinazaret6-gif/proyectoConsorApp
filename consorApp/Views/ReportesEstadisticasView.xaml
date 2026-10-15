@@ -38,7 +38,7 @@
         </Border>
 
         <!-- KPIS -->
-        <UniformGrid Grid.Row="2" Rows="1" Columns="4" Margin="0,0,0,10">
+        <UniformGrid Grid.Row="2" Rows="1" Columns="5" Margin="0,0,0,10">
             <Border Background="#F4F1EE" CornerRadius="8" Padding="14" Margin="0,0,6,0">
                 <StackPanel>
                     <TextBlock Text="Unidades morosas" FontSize="12" Foreground="#7A7A7A"/>
@@ -60,17 +60,23 @@
                                FontWeight="Bold" Foreground="#C8871E"/>
                 </StackPanel>
             </Border>
-            <Border Background="#F4F1EE" CornerRadius="8" Padding="14" Margin="6,0,0,0">
+            <Border Background="#F4F1EE" CornerRadius="8" Padding="14" Margin="6,0,6,0">
                 <StackPanel>
                     <TextBlock Text="Reservas del período" FontSize="12" Foreground="#7A7A7A"/>
                     <TextBlock x:Name="KpiReservasMes" Text="—" FontSize="26"
                                FontWeight="Bold" Foreground="#3B7D4F"/>
                 </StackPanel>
             </Border>
+            <Border Background="#F4F1EE" CornerRadius="8" Padding="14" Margin="6,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="Gastos del período" FontSize="12" Foreground="#7A7A7A"/>
+                    <TextBlock x:Name="KpiGastos" Text="—" FontSize="26" FontWeight="Bold" Foreground="#4A7FB5"/>
+                </StackPanel>
+            </Border>
         </UniformGrid>
 
         <!-- PESTAÑAS -->
-        <TabControl Grid.Row="3" Background="White" BorderBrush="#E0E0E0">
+        <TabControl x:Name="TabReportes" Grid.Row="3" Background="White" BorderBrush="#E0E0E0">
 
             <!-- PESTAÑA 1: MOROSIDAD (Tabla + Gráfico de Torta) -->
             <TabItem Header=" 💰 Morosidad y Deudas " Padding="12,6" FontWeight="SemiBold">
@@ -86,7 +92,7 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Unidad" Binding="{Binding Unidad}" Width="70"/>
                             <DataGridTextColumn Header="Propietario" Binding="{Binding Propietario}" Width="*"/>
-                            <DataGridTextColumn Header="Deuda" Binding="{Binding Deuda, StringFormat='$#,0.00'}" Width="110"/>
+                            <DataGridTextColumn Header="Deuda" Binding="{Binding Deuda, StringFormat='$ #,0.00', ConverterCulture=es-AR}"/>
                             <DataGridTextColumn Header="Días" Binding="{Binding DiasAtraso}" Width="60"/>
                         </DataGrid.Columns>
                     </DataGrid>
@@ -98,6 +104,10 @@
                             </lvc:PieChart.ChartLegend>
                         </lvc:PieChart>
                     </Border>
+                    <TextBlock x:Name="TxtVacioMorosidad" Grid.ColumnSpan="2"
+           Text="No hay expensas impagas y vencidas en el rango seleccionado."
+           FontSize="14" Foreground="#888888" IsHitTestVisible="False"
+           HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
                 </Grid>
             </TabItem>
 
@@ -113,7 +123,7 @@
                               AutoGenerateColumns="False" CanUserAddRows="False"
                               IsReadOnly="True" Margin="0,0,10,0">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Motivo" Binding="{Binding Motivo}" Width="150"/>
+                            <DataGridTextColumn Header="Categoría" Binding="{Binding Categoria}" Width="150"/>
                             <DataGridTextColumn Header="Total" Binding="{Binding TotalReclamos}" Width="70"/>
                             <DataGridTextColumn Header="Resueltos" Binding="{Binding Resueltos}" Width="80"/>
                             <DataGridTextColumn Header="Pendientes" Binding="{Binding Pendientes}" Width="*"/>
@@ -127,6 +137,10 @@
                             </lvc:PieChart.ChartLegend>
                         </lvc:PieChart>
                     </Border>
+                    <TextBlock x:Name="TxtVacioReclamos" Grid.ColumnSpan="2"
+           Text="No hay reclamos en el período seleccionado."
+           FontSize="14" Foreground="#888888" IsHitTestVisible="False"
+           HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
                 </Grid>
             </TabItem>
 
@@ -138,14 +152,33 @@
                         <ColumnDefinition Width="4*"/>
                     </Grid.ColumnDefinitions>
 
-                    <DataGrid x:Name="DgUsoEspacios" Grid.Column="0"
-                              AutoGenerateColumns="False" CanUserAddRows="False"
-                              IsReadOnly="True" Margin="0,0,10,0">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Espacio" Binding="{Binding Espacio}" Width="*"/>
-                            <DataGridTextColumn Header="Reservas" Binding="{Binding CantidadReservas}" Width="110"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <Grid Grid.Column="0" Margin="0,0,10,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <DataGrid x:Name="DgUsoEspacios" Grid.Row="0"
+                      AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Espacio" Binding="{Binding Espacio}" Width="*"/>
+                                <DataGridTextColumn Header="Reservas" Binding="{Binding CantidadReservas}" Width="100"/>
+                                <DataGridTextColumn Header="Canceladas" Binding="{Binding ReservasCanceladas}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                            <TextBlock Text="Reservas por turno" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <DataGrid x:Name="DgFranjas" Height="110"
+                          AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Turno" Binding="{Binding Franja}" Width="*"/>
+                                    <DataGridTextColumn Header="Horario" Binding="{Binding Horario}" Width="120"/>
+                                    <DataGridTextColumn Header="Reservas" Binding="{Binding CantidadReservas}" Width="90"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Grid>
 
                     <Border Grid.Column="1" Background="#F9F9F9" CornerRadius="8" Padding="10">
                         <lvc:PieChart x:Name="GraficoUsoEspacios" LegendLocation="Bottom" InnerRadius="40">
@@ -154,15 +187,55 @@
                             </lvc:PieChart.ChartLegend>
                         </lvc:PieChart>
                     </Border>
+
+                    <TextBlock x:Name="TxtVacioEspacios" Grid.ColumnSpan="2"
+                   Text="No hay reservas en el período seleccionado."
+                   FontSize="14" Foreground="#888888" IsHitTestVisible="False"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
                 </Grid>
             </TabItem>
+            <!-- PESTAÑA 4: GASTOS POR CONCEPTO -->
+            <TabItem Header=" 🧾 Gastos por Concepto " Padding="12,6" FontWeight="SemiBold">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="6*"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid x:Name="DgGastos" Grid.Column="0"
+                  AutoGenerateColumns="False" CanUserAddRows="False"
+                  IsReadOnly="True" Margin="0,0,10,0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Ranking}" Width="40"/>
+                            <DataGridTextColumn Header="Concepto" Binding="{Binding Concepto}" Width="*"/>
+                            <DataGridTextColumn Header="Cant." Binding="{Binding CantidadGastos}" Width="55"/>
+                            <DataGridTextColumn Header="Total"
+                    Binding="{Binding TotalGastado, StringFormat='$ #,0.00', ConverterCulture=es-AR}" Width="115"/>
+                            <DataGridTextColumn Header="% del total"
+                    Binding="{Binding Porcentaje, StringFormat='{}{0:N1} %', ConverterCulture=es-AR}" Width="85"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Border Grid.Column="1" Background="#F9F9F9" CornerRadius="8" Padding="10">
+                        <lvc:PieChart x:Name="GraficoGastos" LegendLocation="Bottom" InnerRadius="40">
+                            <lvc:PieChart.ChartLegend>
+                                <lvc:DefaultLegend Foreground="#333333"/>
+                            </lvc:PieChart.ChartLegend>
+                        </lvc:PieChart>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TextBlock x:Name="TxtVacioGastos" Grid.ColumnSpan="2"
+           Text="No hay gastos registrados en el período seleccionado."
+           FontSize="14" Foreground="#888888" IsHitTestVisible="False"
+           HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
         </TabControl>
 
-        <!-- BOTÓN IMPRIMIR -->
+        <!-- BOTÓN EXPORTAR -->
         <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
-            <Button x:Name="BtnImprimirReporte" Content="📄 Generar informe PDF" Width="200"
+            <Button x:Name="BtnExportarPdf" Content="📄 Exportar PDF " Width="230"
                     Height="32" Background="#A09285" Foreground="White"
-                    FontWeight="Bold" Cursor="Hand" Click="BtnImprimirReporte_Click"/>
+                    FontWeight="Bold" Cursor="Hand" Click="BtnExportarPdf_Click"/>
         </StackPanel>
     </Grid>
 </Window>

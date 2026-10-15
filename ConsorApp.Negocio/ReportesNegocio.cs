@@ -9,10 +9,20 @@ namespace ConsorApp.Negocio
     {
         private readonly ReportesDatos _datos = new ReportesDatos();
 
-        // --- Métodos existentes, intactos ---
+        // --- Métodos existentes ---
         public DataTable ObtenerReporteMorosidad()
         {
             return _datos.ObtenerReporteMorosidad();
+        }
+
+        public DataTable ObtenerReporteMorosidad(DateTime desde, DateTime hasta)
+        {
+            return _datos.ObtenerReporteMorosidad(desde, hasta);
+        }
+
+        public DataTable ObtenerGastosPorConcepto(DateTime desde, DateTime hasta)
+        {
+            return _datos.ObtenerGastosPorConcepto(desde, hasta);
         }
 
         public DataTable ObtenerEstadisticasReclamos()
@@ -25,7 +35,7 @@ namespace ConsorApp.Negocio
             return _datos.ObtenerUsoEspaciosComunes();
         }
 
-        // --- NUEVO: resumen completo del período ---
+        // --- Resumen completo del período ---
         public ResumenReportes ObtenerResumen(DateTime desde, DateTime hasta)
         {
             if (hasta.Date < desde.Date)
@@ -35,10 +45,13 @@ namespace ConsorApp.Negocio
             {
                 Desde = desde,
                 Hasta = hasta,
-                Morosidad = _datos.ObtenerReporteMorosidad(),
+                Morosidad = _datos.ObtenerReporteMorosidad(desde, hasta),
                 Reclamos = _datos.ObtenerEstadisticasReclamos(desde, hasta),
                 Espacios = _datos.ObtenerUsoEspaciosComunes(desde, hasta),
-                Franjas = _datos.ObtenerReservasPorFranja(desde, hasta)
+                Franjas = _datos.ObtenerReservasPorFranja(desde, hasta),
+                EspacioTurno = _datos.ObtenerReservasEspacioTurno(desde, hasta),
+                Gastos = _datos.ObtenerGastosPorConcepto(desde, hasta),
+                Edificio = DatosEdificio.Desde(_datos.ObtenerDatosEdificio())
             };
         }
     }
