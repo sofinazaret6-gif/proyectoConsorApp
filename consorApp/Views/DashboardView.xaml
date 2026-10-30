@@ -122,9 +122,9 @@
                     <Button x:Name="BtnUnidades" Content="🚪  Departamentos" Style="{StaticResource EstiloBotonMenu}" Click="BtnUnidades_Click"/>
                     <Button x:Name="BtnGestionReservasAdmin" Content="📋  Control de Reservas" Style="{StaticResource EstiloBotonMenu}" Click="BtnGestionReservasAdmin_Click"/>
                     <Button x:Name="BtnGestionReclamosAdmin" Content="🛠️  Control de Reclamos" Style="{StaticResource EstiloBotonMenu}" Click="BtnGestionReclamosAdmin_Click"/>
-
                     <!-- NUEVO BOTÓN DE REPORTES (SOLO ADMIN) -->
                     <Button x:Name="BtnReportesAdmin" Content="📊  Reportes y Estadísticas" Style="{StaticResource EstiloBotonMenu}" Click="BtnReportesAdmin_Click"/>
+                    <Button x:Name="BtnRespaldos" Content="💾  Respaldos" Style="{StaticResource EstiloBotonMenu}" Click="BtnRespaldos_Click" Visibility="Collapsed"/>
                 </StackPanel>
             </ScrollViewer>
 

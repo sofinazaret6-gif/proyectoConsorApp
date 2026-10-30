@@ -1,6 +1,7 @@
 ﻿using consorApp.Seguridad;
 using ConsorApp.Entidades;
 using ConsorApp.Views;
+using ConsorApp.Vistas;
 using System;
 using System.Windows;
 
@@ -48,6 +49,8 @@ namespace consorApp.Views
 
                 // NUEVO: Visible solo para administrador
                 BtnReportesAdmin.Visibility = Visibility.Visible;
+                BtnRespaldos.Visibility = Visibility.Visible;
+
                 return;
             }
             // 2. ENCARGADO / OPERARIO
@@ -68,6 +71,7 @@ namespace consorApp.Views
 
                 // NUEVO: Oculto para encargado
                 BtnReportesAdmin.Visibility = Visibility.Collapsed;
+                BtnRespaldos.Visibility = Visibility.Collapsed;
             }
             // 3. PROPIETARIO / INQUILINO
             else if (perfil.Contains("propietario") || perfil.Contains("inquilino"))
@@ -87,6 +91,7 @@ namespace consorApp.Views
 
                 // NUEVO: Oculto para propietario/inquilino
                 BtnReportesAdmin.Visibility = Visibility.Collapsed;
+                BtnRespaldos.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -179,6 +184,11 @@ namespace consorApp.Views
             login.Show();
 
             this.Close();
+        }
+        private void BtnRespaldos_Click(object sender, RoutedEventArgs e)
+        {
+            VentanaRespaldos ventanaRespaldos = new VentanaRespaldos { Owner = this };
+            ventanaRespaldos.ShowDialog();
         }
     }
 }

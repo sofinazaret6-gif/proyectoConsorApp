@@ -1,0 +1,85 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- =====================================================================
+         PALETA DE LAS VENTANAS DE RESPALDO
+         Cambiá estos colores por los de consorApp y se actualizan las dos ventanas.
+         ===================================================================== -->
+    <SolidColorBrush x:Key="BrushPrimario"   Color="#2E363A"/>  <!-- títulos, encabezado de tabla, botón de configuración -->
+    <SolidColorBrush x:Key="BrushFondo"      Color="#F7F5F2"/>  <!-- fondo de las ventanas -->
+    <SolidColorBrush x:Key="BrushTarjeta"    Color="#FFFFFF"/>  <!-- paneles blancos -->
+    <SolidColorBrush x:Key="BrushBorde"      Color="#E2DDD5"/>
+    <SolidColorBrush x:Key="BrushTexto"      Color="#1F2937"/>
+    <SolidColorBrush x:Key="BrushTextoSuave" Color="#6B7280"/>
+    <SolidColorBrush x:Key="BrushExito"      Color="#8C7853"/>  <!-- Hacer backup / Guardar -->
+    <SolidColorBrush x:Key="BrushInfo"       Color="#2F7FC1"/>  <!-- Probar / Actualizar -->
+    <SolidColorBrush x:Key="BrushDrive"      Color="#A59285"/>   <!-- Resguardar / Google Drive -->
+    <SolidColorBrush x:Key="BrushPeligro"    Color="#C0392B"/>  <!-- Restaurar -->
+
+    <!-- Botón redondeado: el color se define en cada botón con Background -->
+    <Style x:Key="BotonAccion" TargetType="Button">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Padding" Value="16,9"/>
+        <Setter Property="Margin" Value="0,0,8,0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Borde"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Borde" Property="Opacity" Value="0.88"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Borde" Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="CampoTexto" TargetType="TextBox">
+        <Setter Property="Height" Value="34"/>
+        <Setter Property="Padding" Value="8,0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BrushBorde}"/>
+        <Setter Property="Foreground" Value="{StaticResource BrushTexto}"/>
+    </Style>
+
+    <Style x:Key="EtiquetaCampo" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource BrushTexto}"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Margin" Value="0,8,12,0"/>
+    </Style>
+
+    <Style x:Key="Pista" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11.5"/>
+        <Setter Property="Foreground" Value="{StaticResource BrushTextoSuave}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="Margin" Value="0,4,0,0"/>
+    </Style>
+
+    <!-- Tabla de respaldos -->
+    <Style x:Key="EncabezadoGrid" TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="{StaticResource BrushPrimario}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Padding" Value="12,9"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style x:Key="CeldaTexto" TargetType="TextBlock">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="12,0"/>
+        <Setter Property="Foreground" Value="{StaticResource BrushTexto}"/>
+    </Style>
+</ResourceDictionary>
