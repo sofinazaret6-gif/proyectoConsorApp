@@ -7,6 +7,7 @@ namespace ConsorApp.Negocio
     public class ReservaEspacioNegocio
     {
         private readonly TurnoReservaDatos _datos = new TurnoReservaDatos();
+        private readonly AvisoNegocio _avisoNegocio = new AvisoNegocio(); // Instanciamos la lógica de avisos
 
         // Obtiene los turnos para el ComboBox de la vista de reservas
         public DataTable ObtenerTurnos()
@@ -34,18 +35,23 @@ namespace ConsorApp.Negocio
                 throw new Exception("No se puede realizar una reserva en una fecha pasada.");
             }
 
+            // Validación: Verificar si ya existe una reserva activa para ese espacio, turno y fecha
+            if (_datos.ExisteReserva(idEspacioComun, idTurno, fechaReserva))
+            {
+                throw new Exception("El espacio común ya se encuentra reservado para este turno en la fecha seleccionada.");
+            }
+
             // Consultamos si hay un mensaje de bloqueo
             string detalleBloqueo = _datos.VerificarDetalleBloqueo(idEspacioComun, fechaReserva);
             if (detalleBloqueo != null)
             {
-                // Si hay bloqueo, cortamos la ejecución y enviamos el detalle a la vista
                 throw new Exception(detalleBloqueo);
             }
 
             _datos.RegistrarReserva(idEspacioComun, idPropietario, idTurno, fechaReserva, codigoSeguimiento);
         }
 
-        // Cancela una reserva recibiendo un motivo opcional de forma segura
+        // Cancela una reserva, la actualiza en la BD y le envía un aviso automático al propietario
         public void CancelarReserva(int idReserva, string? motivo = null)
         {
             if (idReserva <= 0)
@@ -53,10 +59,31 @@ namespace ConsorApp.Negocio
                 throw new Exception("Seleccione una reserva válida para cancelar.");
             }
 
-            // Limpiamos y normalizamos el motivo de cancelación
-            string? motivoLimpio = string.IsNullOrWhiteSpace(motivo) ? null : motivo.Trim();
+            // 1. Obtenemos los datos de la reserva antes de cancelarla (para saber a quién enviarle el aviso)
+            var datosReserva = _datos.ObtenerDatosReservaParaAviso(idReserva);
 
+            // 2. Limpiamos y normalizamos el motivo de cancelación
+            string? motivoLimpio = string.IsNullOrWhiteSpace(motivo) ? "Sin motivo especificado" : motivo.Trim();
+
+            // 3. Ejecutamos la cancelación en la base de datos
             _datos.CancelarReserva(idReserva, motivoLimpio);
+
+            // 4. Si el propietario tiene un usuario asociado, le enviamos el aviso automáticamente
+            if (datosReserva.idUsuario > 0)
+            {
+                try
+                {
+                    string tituloAviso = "Su reserva ha sido cancelada";
+                    string mensajeAviso = $"Lamentamos informarle que su reserva para '{datosReserva.nombreEspacio}' prevista para el día {datosReserva.fechaReserva:dd/MM/yyyy} ha sido cancelada.\nMotivo: {motivoLimpio}";
+
+                    // Registramos el aviso mediante la capa de negocio de avisos
+                    _avisoNegocio.RegistrarAviso(tituloAviso, mensajeAviso, datosReserva.idUsuario, 1, datosReserva.idDepartamento);
+                }
+                catch
+                {
+                    // Si ocurre un error enviando el aviso secundario, no interrumpimos la cancelación principal
+                }
+            }
         }
 
         public DataTable ObtenerReservasPorPropietario(int idPropietario)

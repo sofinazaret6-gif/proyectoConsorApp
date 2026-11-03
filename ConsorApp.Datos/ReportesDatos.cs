@@ -100,14 +100,15 @@ namespace ConsorApp.Datos
         }
 
         // --- 3. USO DE ESPACIOS FILTRADO POR PERÍODO (CON CONTEO DE CANCELADAS) ---
+        // --- 3. USO DE ESPACIOS FILTRADO POR PERÍODO (CON CONTEO DE CANCELADAS) ---
         public DataTable ObtenerUsoEspaciosComunes(DateTime desde, DateTime hasta)
         {
             const string sql = @"
                 SELECT
-                    ISNULL(e.nombre, 'Sin especificar')                                              AS Espacio,
-                    SUM(CASE WHEN ISNULL(r.estadoReserva, '') <> 'Cancelada' THEN 1 ELSE 0 END)      AS CantidadReservas,
-                    SUM(CASE WHEN r.estadoReserva = 'Cancelada' THEN 1 ELSE 0 END)                   AS ReservasCanceladas,
-                    0                                                                                AS HorasTotales
+                    ISNULL(e.nombre, 'Sin especificar')                                                     AS Espacio,
+                    SUM(CASE WHEN r.id_Reserva IS NOT NULL AND ISNULL(r.estadoReserva, '') <> 'Cancelada' THEN 1 ELSE 0 END) AS CantidadReservas,
+                    SUM(CASE WHEN r.id_Reserva IS NOT NULL AND r.estadoReserva = 'Cancelada' THEN 1 ELSE 0 END)             AS ReservasCanceladas,
+                    0                                                                                        AS HorasTotales
                 FROM espacioComun e
                 LEFT JOIN Reserva r
                        ON r.id_EspacioComun = e.id_EspacioComun

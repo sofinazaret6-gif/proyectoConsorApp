@@ -48,6 +48,30 @@ namespace ConsorApp.Datos
             }
         }
 
+        // Verifica si ya existe una reserva activa para el mismo espacio, fecha y turno
+        public bool ExisteReserva(int idEspacioComun, int idTurno, DateTime fechaReserva)
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            {
+                conexion.Open();
+                string query = @"
+            SELECT COUNT(1) 
+            FROM Reserva 
+            WHERE id_EspacioComun = @IdEspacio 
+              AND id_Turno = @IdTurno 
+              AND fechaReserva = @FechaReserva 
+              AND estadoReserva != 'Cancelada'";
+
+                SqlCommand comando = new SqlCommand(query, conexion);
+                comando.Parameters.AddWithValue("@IdEspacio", idEspacioComun);
+                comando.Parameters.AddWithValue("@IdTurno", idTurno);
+                comando.Parameters.AddWithValue("@FechaReserva", fechaReserva.Date);
+
+                int count = Convert.ToInt32(comando.ExecuteScalar());
+                return count > 0;
+            }
+        }
+
         // Obtiene las reservas para el panel de administración con LEFT JOIN seguros e incluye el motivo de cancelación
         public DataTable ObtenerReservasAdmin()
         {
@@ -100,6 +124,37 @@ namespace ConsorApp.Datos
 
                 comando.ExecuteNonQuery();
             }
+        }
+
+        public (int idUsuario, int idDepartamento, DateTime fechaReserva, string nombreEspacio) ObtenerDatosReservaParaAviso(int idReserva)
+        {
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            {
+                conexion.Open();
+                string query = @"
+            SELECT p.Id_Usuario, p.id_Departamento, r.fechaReserva, ISNULL(e.nombre, 'Espacio Común') AS Espacio
+            FROM Reserva r
+            INNER JOIN Propietario p ON r.id_Propietario = p.id_Propietario
+            LEFT JOIN espacioComun e ON r.id_EspacioComun = e.id_espacioComun
+            WHERE r.id_Reserva = @IdReserva";
+
+                using (SqlCommand comando = new SqlCommand(query, conexion))
+                {
+                    comando.Parameters.AddWithValue("@IdReserva", idReserva);
+                    using (SqlDataReader reader = comando.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int idUsuario = reader["Id_Usuario"] != DBNull.Value ? Convert.ToInt32(reader["Id_Usuario"]) : 0;
+                            int idDepartamento = reader["id_Departamento"] != DBNull.Value ? Convert.ToInt32(reader["id_Departamento"]) : 0;
+                            DateTime fecha = Convert.ToDateTime(reader["fechaReserva"]);
+                            string espacio = reader["Espacio"].ToString();
+                            return (idUsuario, idDepartamento, fecha, espacio);
+                        }
+                    }
+                }
+            }
+            return (0, 0, DateTime.Now, "");
         }
 
         // Verifica si un espacio está bloqueado y devuelve el detalle (o null si está libre)

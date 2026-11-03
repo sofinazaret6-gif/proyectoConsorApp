@@ -30,19 +30,8 @@ namespace ConsorApp.Datos
         /// <summary>Carpeta de backups por defecto de la instancia (ya tiene permisos para SQL Server).</summary>
         public string ObtenerRutaBackupPorDefecto()
         {
-            try
-            {
-                using var cn = new SqlConnection(_cadenaMaster);
-                cn.Open();
-                using var cmd = new SqlCommand(
-                    "SELECT CAST(SERVERPROPERTY('InstanceDefaultBackupPath') AS nvarchar(512));", cn);
-                object resultado = cmd.ExecuteScalar();
-                return resultado == null || resultado == DBNull.Value ? "" : Convert.ToString(resultado) ?? "";
-            }
-            catch
-            {
-                return "";
-            }
+            // Devolvemos directamente nuestra nueva carpeta personalizada con permisos
+            return @"C:\RespaldoConsorApp\";
         }
 
         public async Task CrearBackupAsync(string rutaArchivoSql)
@@ -55,10 +44,10 @@ namespace ConsorApp.Datos
                 await cn.OpenAsync();
 
                 await using var cmd = new SqlCommand(
-                    $"BACKUP DATABASE {db} TO DISK = @ruta WITH INIT, CHECKSUM, NAME = @nombre;", cn);
+              $"BACKUP DATABASE {db} TO DISK = @ruta WITH INIT, CHECKSUM, NAME = @nombre;", cn);
                 cmd.CommandTimeout = 900;
                 cmd.Parameters.AddWithValue("@ruta", rutaArchivoSql);
-                cmd.Parameters.AddWithValue("@nombre", $"{NombreBaseDatos} - Backup completo");
+                cmd.Parameters.AddWithValue("@nombre", $"{NombreBaseDatos}_BackupCompleto");
                 await cmd.ExecuteNonQueryAsync();
             }
             catch (SqlException ex) when (ex.Number == 3201)
@@ -76,7 +65,7 @@ namespace ConsorApp.Datos
                 await cn.OpenAsync();
 
                 await using var cmd = new SqlCommand(
-                    "RESTORE VERIFYONLY FROM DISK = @ruta WITH CHECKSUM;", cn);
+                    "RESTORE VERIFYONLY FROM DISK = @ruta WITH CHECKSUM;", cn); //ver o sacar 
                 cmd.CommandTimeout = 900;
                 cmd.Parameters.AddWithValue("@ruta", rutaArchivoSql);
                 await cmd.ExecuteNonQueryAsync();

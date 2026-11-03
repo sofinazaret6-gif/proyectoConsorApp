@@ -348,7 +348,86 @@ namespace ConsorApp.Datos
 
             return lista;
         }
+        public List<HistorialExpensa> ObtenerHistorialFiltrado(string filtroUnidad, DateTime? desde, DateTime? hasta)
+        {
+            var lista = new List<HistorialExpensa>();
 
+            string query = @"
+        SELECT 
+            de.Id_DetalleExpensa,
+            e.Id_Expensa,
+            d.Id_Departamento,
+            d.Piso,
+            d.Unidad,
+            p.Id_Propietario AS IdPropietario,
+            p.Id_Usuario AS IdUsuario,
+            u.Nombre + ' ' + u.Apellido AS NombrePropietario,
+            e.Periodo,
+            de.MontoAPagar,
+            de.EstadoPago,
+            de.FechaVencimiento,
+            de.FechaPago,
+            ISNULL(de.MetodoPago, '') AS MetodoPago,
+            p.FechaDesde AS FechaDesdePropietario,
+            p.FechaHasta AS FechaHastaPropietario
+        FROM Detalle_Expensa de
+        INNER JOIN Expensa e ON de.Id_Expensa = e.Id_Expensa
+        INNER JOIN Departamento d ON de.Id_Departamento = d.Id_Departamento
+        INNER JOIN Propietario p ON p.Id_Departamento = de.Id_Departamento
+        INNER JOIN Usuarios u ON p.Id_Usuario = u.idUsuario
+        WHERE 
+            p.FechaDesde <= de.FechaVencimiento
+            AND (p.FechaHasta IS NULL OR p.FechaHasta >= de.FechaVencimiento)
+            AND (@FiltroUnidad IS NULL OR d.Unidad LIKE '%' + @FiltroUnidad + '%')
+            AND (@Desde IS NULL OR de.FechaVencimiento >= @Desde)
+            AND (@Hasta IS NULL OR de.FechaVencimiento <= @Hasta)
+        ORDER BY 
+            d.Unidad, 
+            de.FechaVencimiento DESC;";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@FiltroUnidad", string.IsNullOrWhiteSpace(filtroUnidad) ? (object)DBNull.Value : filtroUnidad.Trim());
+                command.Parameters.AddWithValue("@Desde", desde.HasValue ? (object)desde.Value.Date : DBNull.Value);
+                command.Parameters.AddWithValue("@Hasta", hasta.HasValue ? (object)hasta.Value.Date.AddDays(1).AddSeconds(-1) : DBNull.Value);
+
+                try
+                {
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            lista.Add(new HistorialExpensa
+                            {
+                                IdDetalleExpensa = Convert.ToInt32(reader["Id_DetalleExpensa"]),
+                                IdExpensa = Convert.ToInt32(reader["Id_Expensa"]),
+                                IdDepartamento = Convert.ToInt32(reader["Id_Departamento"]),
+                                Piso = reader["Piso"]?.ToString() ?? string.Empty,
+                                Unidad = reader["Unidad"]?.ToString() ?? string.Empty,
+                                IdPropietario = Convert.ToInt32(reader["IdPropietario"]),
+                                IdUsuario = Convert.ToInt32(reader["IdUsuario"]),
+                                NombrePropietario = reader["NombrePropietario"]?.ToString() ?? string.Empty,
+                                Periodo = reader["Periodo"]?.ToString() ?? string.Empty,
+                                MontoAPagar = Convert.ToDecimal(reader["MontoAPagar"]),
+                                EstadoPago = reader["EstadoPago"]?.ToString() ?? string.Empty,
+                                FechaVencimiento = Convert.ToDateTime(reader["FechaVencimiento"]),
+                                FechaPago = reader["FechaPago"] != DBNull.Value ? Convert.ToDateTime(reader["FechaPago"]) : (DateTime?)null,
+                                MetodoPago = reader["MetodoPago"]?.ToString() ?? string.Empty,
+                                FechaDesdePropietario = Convert.ToDateTime(reader["FechaDesdePropietario"]),
+                                FechaHastaPropietario = reader["FechaHastaPropietario"] != DBNull.Value ? Convert.ToDateTime(reader["FechaHastaPropietario"]) : (DateTime?)null
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener el historial filtrado: " + ex.Message);
+                }
+            }
+            return lista;
+        }
         public List<HistorialExpensa> ObtenerHistorialPorUsuario(int idUsuario)
         {
             var lista = new List<HistorialExpensa>();
