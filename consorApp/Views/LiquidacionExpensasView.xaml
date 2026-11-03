@@ -366,25 +366,48 @@
                     </Grid.RowDefinitions>
 
 
-                    <!-- FILTRO -->
+                    <!-- FILTROS (Unidad y Lapso de tiempo) -->
                     <StackPanel Orientation="Horizontal"
                                 Margin="0,0,0,15" Grid.ColumnSpan="2">
 
-                        <TextBlock Text="Departamento:"
+                        <TextBlock Text="Unidad:"
                                    FontWeight="Bold"
                                    VerticalAlignment="Center"
-                                   Margin="0,0,10,0"/>
+                                   Margin="0,0,5,0"/>
 
                         <TextBox x:Name="TxtFiltroDepartamento"
-                                 Width="130"
+                                 Width="80"
                                  Height="30"
-                                 VerticalContentAlignment="Center"/>
+                                 VerticalContentAlignment="Center"
+                                 Margin="0,0,15,0"/>
+
+                        <TextBlock Text="Desde:"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,5,0"/>
+
+                        <DatePicker x:Name="DpFiltroHistorialDesde"
+                                    Width="120"
+                                    Height="30"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,15,0"/>
+
+                        <TextBlock Text="Hasta:"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,5,0"/>
+
+                        <DatePicker x:Name="DpFiltroHistorialHasta"
+                                    Width="120"
+                                    Height="30"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,15,0"/>
 
                         <Button x:Name="BtnFiltrarHistorial"
                                 Content="Filtrar"
                                 Width="90"
                                 Height="30"
-                                Margin="10,0,0,0"
+                                Margin="5,0,0,0"
                                 Click="BtnFiltrarHistorial_Click"/>
 
                         <Button x:Name="BtnMostrarTodoHistorial"

@@ -1,4 +1,5 @@
-﻿using ConsorApp.Entidades;
+﻿using ConsorApp.Datos;
+using ConsorApp.Entidades;
 using ConsorApp.Negocio;
 using System;
 using System.Collections.Generic;
@@ -179,6 +180,7 @@ namespace consorApp.Views
                     MessageBoxImage.Error);
             }
         }
+
 
         // ============================================================
         // GUARDAR LIQUIDACIÓN
@@ -534,23 +536,19 @@ namespace consorApp.Views
 
                 int cantidadDeptos = _expensaNegocio.ObtenerDetalles(_expensaActual.Id_Expensa).Count;
 
-                // ===== AQUÍ VA EL BLOQUE NUEVO =====
                 var servicio = new LiquidacionPdfService();
                 string? nombreEdificio = LiquidacionPdfService.ObtenerNombreEdificio();
 
                 if (soloSeleccionado)
                 {
-                    // Detalle completo de un solo departamento
                     servicio.Generar(
                         dialogo.FileName, _expensaActual, reporte, gastos, cantidadDeptos, nombreEdificio);
                 }
                 else
                 {
-                    // Hoja resumen con todos los departamentos
                     servicio.GenerarResumenGeneral(
                         dialogo.FileName, _expensaActual, reporte, gastos, nombreEdificio);
                 }
-                // ===================================
 
                 var abrir = MessageBox.Show(
                     "El PDF se generó correctamente. ¿Querés abrirlo?",
@@ -567,7 +565,7 @@ namespace consorApp.Views
                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        // Un archivo PDF por cada departamento, guardados en una carpeta
+
         private void BtnExportarIndividuales_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -588,7 +586,6 @@ namespace consorApp.Views
                     return;
                 }
 
-                // Documentos\ConsorApp\Liquidaciones\10-2026\
                 string carpeta = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     "ConsorApp", "Liquidaciones",
@@ -601,7 +598,7 @@ namespace consorApp.Views
                     .ToList();
 
                 int cantidadDeptos = _expensaNegocio.ObtenerDetalles(_expensaActual.Id_Expensa).Count;
-                string? nombreEdificio = LiquidacionPdfService.ObtenerNombreEdificio();   // <-- NUEVO
+                string? nombreEdificio = LiquidacionPdfService.ObtenerNombreEdificio();
                 var servicio = new LiquidacionPdfService();
 
 
@@ -616,7 +613,7 @@ namespace consorApp.Views
                         new List<HistorialExpensa> { depto },
                         gastos,
                         cantidadDeptos,
-                        nombreEdificio);                                  // <-- NUEVO
+                        nombreEdificio);
                 }
 
                 MessageBox.Show(
@@ -680,7 +677,6 @@ namespace consorApp.Views
                 MessageBox.Show("El pago fue actualizado correctamente.",
                     "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // Recargar la tabla y volver a seleccionar el mismo departamento
                 int idSeleccionado = detalle.Id_DetalleExpensa;
 
                 List<Detalle_Expensa> detalles =
@@ -698,8 +694,9 @@ namespace consorApp.Views
                     "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+
         // ============================================================
-        // HISTORIAL
+        // HISTORIAL (Filtrado por Unidad y Fechas)
         // ============================================================
 
         private void CargarHistorial()
@@ -721,7 +718,8 @@ namespace consorApp.Views
                     MessageBoxImage.Error);
             }
         }
-          private int ObtenerIdEdificio()
+
+        private int ObtenerIdEdificio()
         {
             EdificioNegocio edificioNegocio = new EdificioNegocio();
 
@@ -735,45 +733,16 @@ namespace consorApp.Views
             return edificio.id_edificio;
         }
 
-        private void BtnFiltrarHistorial_Click(
-            object sender,
-            RoutedEventArgs e)
+        private void BtnFiltrarHistorial_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                string texto =
-                    TxtFiltroDepartamento.Text.Trim();
+                string unidad = TxtFiltroDepartamento.Text.Trim();
+                DateTime? desde = DpFiltroHistorialDesde.SelectedDate;
+                DateTime? hasta = DpFiltroHistorialHasta.SelectedDate;
 
-
-                if (string.IsNullOrWhiteSpace(texto))
-                {
-                    CargarHistorial();
-                    return;
-                }
-
-
-                if (!int.TryParse(
-                    texto,
-                    out int idDepartamento))
-                {
-                    MessageBox.Show(
-                        "Ingrese un ID de departamento válido.",
-                        "Atención",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-
-                    return;
-                }
-
-
-                List<HistorialExpensa> historial =
-                    _historialNegocio
-                        .ObtenerHistorialPorDepartamento(
-                            idDepartamento);
-
-
-                DgHistorial.ItemsSource =
-                    historial;
+                var datos = new HistorialExpensaDatos();
+                DgHistorial.ItemsSource = datos.ObtenerHistorialFiltrado(unidad, desde, hasta);
             }
             catch (Exception ex)
             {
@@ -785,15 +754,18 @@ namespace consorApp.Views
             }
         }
 
-
-        private void BtnMostrarTodoHistorial_Click(
-            object sender,
-            RoutedEventArgs e)
+        private void BtnMostrarTodoHistorial_Click(object sender, RoutedEventArgs e)
         {
             TxtFiltroDepartamento.Clear();
+            DpFiltroHistorialDesde.SelectedDate = null;
+            DpFiltroHistorialHasta.SelectedDate = null;
 
             CargarHistorial();
         }
+
+        // ============================================================
+        // GASTOS
+        // ============================================================
 
         private void CargarConceptosGasto()
         {
@@ -801,14 +773,12 @@ namespace consorApp.Views
             {
                 var conceptos = _conceptoGastoNegocio.ObtenerConceptos().ToList();
 
-                // Combo del formulario
                 CmbConceptoGasto.ItemsSource = conceptos;
 
-                // Combo del filtro: se agrega "Todos" al principio
                 var conceptosFiltro = new List<conceptoGasto>
-        {
-            new conceptoGasto { id_conceptoGasto = 0, nombreConcepto = "Todos los conceptos" }
-        };
+                {
+                    new conceptoGasto { id_conceptoGasto = 0, nombreConcepto = "Todos los conceptos" }
+                };
                 conceptosFiltro.AddRange(conceptos);
 
                 CmbFiltroConcepto.ItemsSource = conceptosFiltro;
@@ -821,6 +791,7 @@ namespace consorApp.Views
                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
         private void BtnGuardarGasto_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -868,8 +839,6 @@ namespace consorApp.Views
                 conceptoGasto concepto =
                     (conceptoGasto)CmbConceptoGasto.SelectedItem;
 
-                // Como el sistema trabaja con un solo edificio,
-                // tomamos el edificio existente.
                 int idEdificio = ObtenerIdEdificio();
 
                 GastoEdificio gasto = new GastoEdificio
@@ -905,6 +874,7 @@ namespace consorApp.Views
                     MessageBoxImage.Error);
             }
         }
+
         private void BtnNuevoConcepto_Click(object sender, RoutedEventArgs e)
         {
             NuevoConceptoGastoView ventana =
@@ -919,14 +889,13 @@ namespace consorApp.Views
                 CargarConceptosGasto();
             }
         }
+
         private void ActualizarGrillaGastos()
         {
             try
             {
-                // Se traen los gastos una vez y se filtra en memoria
                 IEnumerable<GastoEdificio> gastos = _gastoEdificioNegocio.ObtenerGastos();
 
-                // Período
                 string textoPeriodo = TxtFiltroPeriodoGasto.Text.Trim();
                 if (!string.IsNullOrWhiteSpace(textoPeriodo))
                 {
@@ -940,14 +909,12 @@ namespace consorApp.Views
                     gastos = gastos.Where(g => g.periodo == periodo);
                 }
 
-                // Concepto
                 if (CmbFiltroConcepto.SelectedItem is conceptoGasto concepto
                     && concepto.id_conceptoGasto != 0)
                 {
                     gastos = gastos.Where(g => g.Id_conceptoGasto == concepto.id_conceptoGasto);
                 }
 
-                // Rango de fechas
                 DateTime? desde = DpFiltroDesde.SelectedDate;
                 DateTime? hasta = DpFiltroHasta.SelectedDate;
 
@@ -975,6 +942,7 @@ namespace consorApp.Views
                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
         private void BtnFiltrarGastos_Click(object sender, RoutedEventArgs e)
         {
             ActualizarGrillaGastos();

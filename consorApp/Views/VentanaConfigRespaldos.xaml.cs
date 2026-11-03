@@ -24,52 +24,11 @@ namespace ConsorApp.Vistas
                 TxtBaseDatos.Text = cfg.BaseDatos;
                 TxtRutaServidor.Text = cfg.RutaServidor;
                 TxtRutaCompartida.Text = cfg.RutaCompartida;
-
-                TxtUltimaSubida.Text = string.IsNullOrWhiteSpace(cfg.UltimoArchivoSubido)
-                    ? "Todavía no se subió ningún respaldo."
-                    : $"Último archivo resguardado: {cfg.UltimoArchivoSubido} ({cfg.UltimaSubidaFecha:dd/MM/yyyy HH:mm})";
             }
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.Message, "Configuración de respaldos",
                     MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            ActualizarEstadoDrive();
-        }
-
-        private void ActualizarEstadoDrive()
-        {
-            bool conectado = _servicio.DriveConectado;
-            BtnDrive.Content = conectado ? "Desconectar Google Drive" : "Conectar con Google Drive";
-            TxtEstadoDrive.Text = conectado ? "✔ Conectado con Google Drive en esta PC." : "No conectado.";
-        }
-
-        private async void BtnDrive_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (_servicio.DriveConectado)
-                {
-                    var r = MessageBox.Show(this, "¿Desconectar Google Drive en esta PC?", "Google Drive",
-                        MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (r == MessageBoxResult.Yes) _servicio.DesconectarDrive();
-                }
-                else
-                {
-                    BtnDrive.IsEnabled = false;
-                    TxtEstadoDrive.Text = "Esperando la autorización en el navegador...";
-                    await _servicio.ConectarDriveAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.Message, "Google Drive", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                BtnDrive.IsEnabled = true;
-                ActualizarEstadoDrive();
             }
         }
 

@@ -41,7 +41,7 @@
                         Content="Configuración"
                         Style="{StaticResource BotonAccion}"
                         Background="{StaticResource BrushPrimario}"
-                        Click="BtnConfig_Click"/>
+                        Click="BtnConfig_Click" Width="115"/>
                 <WrapPanel DockPanel.Dock="Left">
                     <Button x:Name="BtnHacer" Content="Hacer backup"
                             Style="{StaticResource BotonAccion}"
@@ -51,10 +51,6 @@
                             Style="{StaticResource BotonAccion}"
                             Background="{StaticResource BrushInfo}"
                             Click="BtnProbar_Click"/>
-                    <Button x:Name="BtnResguardar" Content="Resguardar en Drive"
-                            Style="{StaticResource BotonAccion}"
-                            Background="{StaticResource BrushDrive}"
-                            Click="BtnResguardar_Click"/>
                     <Button x:Name="BtnRestaurar" Content="Restaurar"
                             Style="{StaticResource BotonAccion}"
                             Background="{StaticResource BrushPeligro}"

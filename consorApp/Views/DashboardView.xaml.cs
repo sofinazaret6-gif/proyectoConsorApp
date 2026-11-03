@@ -1,5 +1,6 @@
 ﻿using consorApp.Seguridad;
 using ConsorApp.Entidades;
+using ConsorApp.Negocio; // <-- 1. Asegúrate de tener este using para acceder a las clases de negocio
 using ConsorApp.Views;
 using ConsorApp.Vistas;
 using System;
@@ -10,10 +11,14 @@ namespace consorApp.Views
     public partial class DashboardView : Window
     {
         private readonly string rolUsuarioActual = string.Empty;
+        private readonly AvisoNegocio _avisoNegocio = new AvisoNegocio(); // Instancia para consultar avisos
 
         public DashboardView()
         {
             InitializeComponent();
+
+            // Opcional: Verificar avisos al cargar la ventana
+            Loaded += (s, e) => VerificarNotificacionesPendientes();
         }
 
         public DashboardView(string nombreUsuario, string nombrePerfil) : this()
@@ -23,6 +28,32 @@ namespace consorApp.Views
             rolUsuarioActual = nombrePerfil ?? string.Empty;
 
             AplicarPermisosPorPerfil(nombrePerfil ?? "");
+        }
+
+        // Método para verificar y mostrar u ocultar el puntito rojo de avisos pendientes
+        public void VerificarNotificacionesPendientes()
+        {
+            try
+            {
+                // Verificamos si el usuario actual tiene avisos en su bandeja
+                var avisos = _avisoNegocio.ObtenerAvisosParaPropietario(SesionUsuario.IdUsuario);
+
+                // Si la lista tiene elementos, mostramos el punto rojo (puedes ajustar esta condición si manejas un campo de "Leído")
+                bool tieneAvisos = avisos != null && avisos.Count > 0;
+
+                BadgeAvisosMenu.Visibility = tieneAvisos ? Visibility.Visible : Visibility.Collapsed;
+            }
+            catch
+            {
+                // Si ocurre algún error consultando los avisos, ocultamos el indicador por seguridad
+                BadgeAvisosMenu.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        // Método para mostrar u ocultar el puntito rojo manualmente si lo necesitas desde otra parte
+        public void ActualizarContadorAvisos(bool tieneAvisosNoLeidos)
+        {
+            BadgeAvisosMenu.Visibility = tieneAvisosNoLeidos ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void AplicarPermisosPorPerfil(string nombrePerfil)
@@ -38,7 +69,7 @@ namespace consorApp.Views
                 BtnMiDpto.Visibility = Visibility.Collapsed;
                 BtnAvisos.Visibility = Visibility.Visible;
                 BtnReclamos.Visibility = Visibility.Collapsed;
-                BtnReservas.Visibility = Visibility.Collapsed; // Reservas para residentes
+                BtnReservas.Visibility = Visibility.Collapsed;
 
                 BtnEdificio.Visibility = Visibility.Visible;
                 BtnExpensas.Visibility = Visibility.Visible;
@@ -47,10 +78,8 @@ namespace consorApp.Views
                 BtnGestionReservasAdmin.Visibility = Visibility.Visible;
                 BtnGestionReclamosAdmin.Visibility = Visibility.Visible;
 
-                // NUEVO: Visible solo para administrador
                 BtnReportesAdmin.Visibility = Visibility.Visible;
                 BtnRespaldos.Visibility = Visibility.Visible;
-
                 return;
             }
             // 2. ENCARGADO / OPERARIO
@@ -69,7 +98,6 @@ namespace consorApp.Views
                 BtnReclamos.Visibility = Visibility.Collapsed;
                 BtnReservas.Visibility = Visibility.Collapsed;
 
-                // NUEVO: Oculto para encargado
                 BtnReportesAdmin.Visibility = Visibility.Collapsed;
                 BtnRespaldos.Visibility = Visibility.Collapsed;
             }
@@ -89,7 +117,6 @@ namespace consorApp.Views
                 BtnGestionReservasAdmin.Visibility = Visibility.Collapsed;
                 BtnGestionReclamosAdmin.Visibility = Visibility.Collapsed;
 
-                // NUEVO: Oculto para propietario/inquilino
                 BtnReportesAdmin.Visibility = Visibility.Collapsed;
                 BtnRespaldos.Visibility = Visibility.Collapsed;
             }
@@ -123,6 +150,9 @@ namespace consorApp.Views
                 AvisosPropietarioView ventanaAvisosPropietario = new AvisosPropietarioView();
                 ventanaAvisosPropietario.ShowDialog();
             }
+
+            // Al cerrar la ventana de avisos, ocultamos el punto rojo para que no quede encendido
+            BadgeAvisosMenu.Visibility = Visibility.Collapsed;
         }
 
         private void BtnReservas_Click(object sender, RoutedEventArgs e)
@@ -169,7 +199,6 @@ namespace consorApp.Views
             ventanaAdminReclamos.ShowDialog();
         }
 
-        // NUEVO: Método para abrir la ventana de reportes
         private void BtnReportesAdmin_Click(object sender, RoutedEventArgs e)
         {
             ReportesEstadisticasView ventanaReportes = new ReportesEstadisticasView();
@@ -185,6 +214,7 @@ namespace consorApp.Views
 
             this.Close();
         }
+
         private void BtnRespaldos_Click(object sender, RoutedEventArgs e)
         {
             VentanaRespaldos ventanaRespaldos = new VentanaRespaldos { Owner = this };

@@ -97,11 +97,23 @@
                             Style="{StaticResource EstiloBotonMenu}" 
                             Click="BtnMiDpto_Click"/>
 
-                    <!-- Botón Avisos con redirección condicional -->
+                    <!-- Botón Avisos con punto rojo de notificación -->
                     <Button x:Name="BtnAvisos" 
-                            Content="📢  Avisos" 
-                            Style="{StaticResource EstiloBotonMenu}" 
-                            Click="BtnAvisos_Click"/>
+        Style="{StaticResource EstiloBotonMenu}" 
+        Click="BtnAvisos_Click"
+        Padding="20,0,15,0">
+                        <Grid Width="180">
+                            <TextBlock Text="📢   Avisos" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+
+                            <!-- Puntito rojo de notificación (sin número) -->
+                            <Ellipse x:Name="BadgeAvisosMenu" 
+                 Width="10" Height="10" 
+                 Fill="#E74C3C" 
+                 HorizontalAlignment="Right" VerticalAlignment="Center" 
+                 Margin="0,0,10,0"
+                 Visibility="Collapsed"/>
+                        </Grid>
+                    </Button>
 
                     <Button x:Name="BtnReclamos" Content="🛠️  Reclamos" Style="{StaticResource EstiloBotonMenu}" Click="BtnReclamos_Click"/>
 

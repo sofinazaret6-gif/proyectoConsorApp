@@ -45,18 +45,6 @@ namespace ConsorApp.Vistas
             });
         }
 
-        private async void BtnResguardar_Click(object sender, RoutedEventArgs e)
-        {
-            var archivo = ArchivoSeleccionado;
-            if (archivo == null) return;
-
-            await EjecutarAsync("Subiendo a Google Drive (puede tardar)...", async () =>
-            {
-                string nombre = await _servicio.ResguardarEnDriveAsync(archivo);
-                return $"Subido a Google Drive: {nombre}";
-            });
-        }
-
         private async void BtnRestaurar_Click(object sender, RoutedEventArgs e)
         {
             var archivo = ArchivoSeleccionado;
@@ -153,7 +141,6 @@ namespace ConsorApp.Vistas
             BtnActualizar.IsEnabled = !_ocupado;
             BtnConfig.IsEnabled = !_ocupado;
             BtnProbar.IsEnabled = !_ocupado && haySeleccion;
-            BtnResguardar.IsEnabled = !_ocupado && haySeleccion;
             BtnRestaurar.IsEnabled = !_ocupado && haySeleccion;
         }
     }
