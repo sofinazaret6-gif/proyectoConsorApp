@@ -50,13 +50,26 @@ namespace ConsorApp.Vistas
             var archivo = ArchivoSeleccionado;
             if (archivo == null) return;
 
+            // Paso 1: advertencia + recomendación de hacer un backup antes
             var respuesta = MessageBox.Show(this,
                 $"Vas a REEMPLAZAR todos los datos actuales por los del respaldo:\n\n{archivo.Nombre}\n\n" +
-                "Los cambios hechos después de esa fecha se perderán. ¿Querés continuar?",
+                "Se aconseja realizar un backup de los datos actuales antes de restaurar, " +
+                "para evitar la pérdida de información. Si querés hacerlo, elegí \"No\", " +
+                "usá \"Hacer backup\" y después volvé a seleccionar este respaldo.\n\n" +
+                "¿Estás seguro de que querés continuar con la restauración?",
                 "Restaurar respaldo", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
 
             if (respuesta != MessageBoxResult.Yes) return;
 
+            // Paso 2: contraseña del administrador actual
+            var confirmacion = new Views.VentanaConfirmarContrasenia { Owner = this };
+            if (confirmacion.ShowDialog() != true)
+            {
+                TxtEstado.Text = "Restauración cancelada: no se confirmó la contraseña.";
+                return;
+            }
+
+            // Paso 3: restaurar
             await EjecutarAsync("Restaurando la base de datos...", async () =>
             {
                 await _servicio.RestaurarAsync(archivo);

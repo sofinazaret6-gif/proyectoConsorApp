@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ConsorApp.Entidades;
 using ConsorApp.Negocio;
+using System.Collections.Generic;
 
 namespace consorApp.Views
 {
@@ -27,7 +28,7 @@ namespace consorApp.Views
             {
                 DataTable dt = _usuarioNegocio.ObtenerUsuarios();
                 _vistaUsuariosCompleta = dt.DefaultView;
-                AplicarFiltroEstado();
+                AplicarFiltros();
             }
             catch (Exception ex)
             {
@@ -43,6 +44,18 @@ namespace consorApp.Views
                 CmbPerfil.ItemsSource = dt.DefaultView;
                 CmbPerfil.DisplayMemberPath = "NombrePerfil";
                 CmbPerfil.SelectedValuePath = "IdPerfil";
+
+                // Filtro por perfil: copia de la tabla con la opción "Todos" al principio
+                DataTable dtFiltro = dt.Copy();
+                DataRow todos = dtFiltro.NewRow();
+                todos["IdPerfil"] = 0;
+                todos["NombrePerfil"] = "Todos";
+                dtFiltro.Rows.InsertAt(todos, 0);
+
+                CmbFiltroPerfil.ItemsSource = dtFiltro.DefaultView;
+                CmbFiltroPerfil.DisplayMemberPath = "NombrePerfil";
+                CmbFiltroPerfil.SelectedValuePath = "IdPerfil";
+                CmbFiltroPerfil.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -167,28 +180,43 @@ namespace consorApp.Views
             }
         }
 
+
         private void CmbFiltroEstado_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            AplicarFiltroEstado();
+            AplicarFiltros();
         }
-
-        private void AplicarFiltroEstado()
+        private void CmbFiltroPerfil_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (_vistaUsuariosCompleta == null || CmbFiltroEstado == null || DgUsuarios == null) return;
+            AplicarFiltros();
+        }
+        private void AplicarFiltros()
+        {
+            if (_vistaUsuariosCompleta?.Table == null || CmbFiltroEstado == null ||
+                CmbFiltroPerfil == null || DgUsuarios == null) return;
 
-            if (CmbFiltroEstado.SelectedItem is ComboBoxItem itemSeleccionado)
+            var condiciones = new List<string>();
+
+            // Estado
+            if (CmbFiltroEstado.SelectedItem is ComboBoxItem itemEstado)
             {
-                string filtro = itemSeleccionado.Content.ToString() ?? string.Empty;
+                string filtro = itemEstado.Content?.ToString() ?? string.Empty;
 
                 if (filtro.Contains("Activos"))
-                    _vistaUsuariosCompleta.RowFilter = "Estado = 1";
+                    condiciones.Add("Estado = 1");
                 else if (filtro.Contains("Inactivos"))
-                    _vistaUsuariosCompleta.RowFilter = "Estado = 0";
-                else
-                    _vistaUsuariosCompleta.RowFilter = string.Empty;
-
-                DgUsuarios.ItemsSource = _vistaUsuariosCompleta;
+                    condiciones.Add("Estado = 0");
             }
+
+            // Perfil (0 = "Todos")
+            if (CmbFiltroPerfil.SelectedValue != null)
+            {
+                int idPerfil = Convert.ToInt32(CmbFiltroPerfil.SelectedValue);
+                if (idPerfil != 0)
+                    condiciones.Add($"IdPerfil = {idPerfil}");
+            }
+
+            _vistaUsuariosCompleta.RowFilter = string.Join(" AND ", condiciones);
+            DgUsuarios.ItemsSource = _vistaUsuariosCompleta;
         }
 
         private void SoloNumeros_PreviewTextInput(object sender, TextCompositionEventArgs e)

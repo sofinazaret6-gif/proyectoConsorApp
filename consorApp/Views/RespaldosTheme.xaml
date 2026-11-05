@@ -13,7 +13,6 @@
     <SolidColorBrush x:Key="BrushTextoSuave" Color="#6B7280"/>
     <SolidColorBrush x:Key="BrushExito"      Color="#8C7853"/>  <!-- Hacer backup / Guardar -->
     <SolidColorBrush x:Key="BrushInfo"       Color="#2F7FC1"/>  <!-- Probar / Actualizar -->
-    <SolidColorBrush x:Key="BrushDrive"      Color="#A59285"/>   <!-- Resguardar / Google Drive -->
     <SolidColorBrush x:Key="BrushPeligro"    Color="#C0392B"/>  <!-- Restaurar -->
 
     <!-- Botón redondeado: el color se define en cada botón con Background -->

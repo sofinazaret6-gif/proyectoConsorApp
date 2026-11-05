@@ -45,6 +45,7 @@ namespace consorApp.Views
                 // Guardar la identidad del usuario autenticado.
                 SesionUsuario.IdUsuario = usuarioLogueado.IdUsuario;
                 SesionUsuario.IdPerfil = usuarioLogueado.IdPerfil;
+                SesionUsuario.UsuarioSistema = usuarioLogueado.UsuarioSistema;
 
                 string nombreCompleto =
                     $"{usuarioLogueado.Nombre} {usuarioLogueado.Apellido}";

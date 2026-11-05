@@ -9,14 +9,13 @@ using ConsorApp.Entidades;
 namespace ConsorApp.Negocio
 {
     /// <summary>
-    /// Lógica de respaldos: crear, verificar, listar, subir a Drive y restaurar.
+    /// Lógica de respaldos: crear, verificar, listar, y restaurar.
     /// Las ventanas solo hablan con esta clase.
     /// </summary>
     public class RespaldoService
     {
         private readonly ConfiguracionRespaldoRepositorio _config = new ConfiguracionRespaldoRepositorio();
         private readonly RespaldoSqlRepositorio _sql = new RespaldoSqlRepositorio();
-        private readonly GoogleDriveRepositorio _drive = new GoogleDriveRepositorio();
 
         // ---------- Configuración ----------
 
@@ -39,14 +38,6 @@ namespace ConsorApp.Negocio
             cfg.RutaCompartida = (rutaCompartida ?? "").Trim();
             _config.Guardar(cfg);
         }
-
-        // ---------- Google Drive ----------
-
-        public bool DriveConectado => _drive.EstaConectado;
-
-        public Task ConectarDriveAsync() => _drive.ConectarAsync();
-
-        public void DesconectarDrive() => _drive.Desconectar();
 
         // ---------- Respaldos ----------
 
@@ -99,21 +90,6 @@ namespace ConsorApp.Negocio
             await _sql.VerificarBackupAsync(Path.Combine(cfg.RutaServidor.Trim(), archivo.Nombre));
         }
 
-        /// <summary>Sube el archivo a Google Drive y guarda cuándo se hizo.</summary>
-        public async Task<string> ResguardarEnDriveAsync(ArchivoRespaldo archivo)
-        {
-            var cfg = ObtenerConfiguracion();
-            ValidarRutas(cfg);
-
-            string rutaLocal = Path.Combine(CarpetaVisible(cfg), archivo.Nombre);
-            string nombreSubido = await _drive.SubirAsync(rutaLocal);
-
-            cfg.UltimoArchivoSubido = nombreSubido;
-            cfg.UltimaSubidaFecha = DateTime.Now;
-            _config.Guardar(cfg);
-
-            return nombreSubido;
-        }
 
         public async Task RestaurarAsync(ArchivoRespaldo archivo)
         {

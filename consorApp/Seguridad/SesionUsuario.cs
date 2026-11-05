@@ -5,6 +5,7 @@ namespace consorApp.Seguridad
     {
         public static int IdUsuario { get; set; }
         public static int IdPerfil { get; set; }
+        public static string UsuarioSistema { get; set; } = "";     // NUEVO
 
         public static bool PuedePublicarAvisos =>
             IdPerfil == 1 || IdPerfil == 2;
@@ -13,6 +14,7 @@ namespace consorApp.Seguridad
         {
             IdUsuario = 0;
             IdPerfil = 0;
+            UsuarioSistema = "";                                      // NUEVO
         }
     }
 }

@@ -52,6 +52,24 @@ namespace ConsorApp.Negocio
         }
 
         /// <summary>
+        /// Confirma la identidad del administrador con sesión iniciada: la contraseña
+        /// debe corresponder exactamente a ese usuario.
+        /// </summary>
+        public void ValidarContraseniaActual(string usuarioSistema, string password, int idUsuarioActual)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+                throw new Exception("Ingresá tu contraseña.");
+
+            Usuario? usuario = datos.ValidarCredenciales(usuarioSistema, password);
+
+            if (usuario == null || usuario.IdUsuario != idUsuarioActual)
+                throw new Exception("Contraseña incorrecta.");
+
+            if (usuario.IdPerfil != 1)   // 1 = Administrador
+                throw new Exception("Solo un administrador puede restaurar un respaldo.");
+        }
+
+        /// <summary>
         /// Obtiene una lista con los usuarios que tienen rol de propietario.
         /// </summary>
         public DataTable ObtenerPropietarios()
