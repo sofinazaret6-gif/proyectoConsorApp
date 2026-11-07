@@ -72,10 +72,11 @@ namespace ConsorApp.Datos
             {
                 conexion.Open();
                 string query = @"UPDATE Usuarios 
-                                SET Nombre = @Nombre, Apellido = @Apellido, Dni = @Dni, 
-                                    Email = @Email, UsuarioSistema = @UsuarioSistema, 
-                                    Contrasenia = @Contrasenia, IdPerfil = @IdPerfil 
-                                WHERE IdUsuario = @IdUsuario";
+                        SET Nombre = @Nombre, Apellido = @Apellido, Dni = @Dni, 
+                            Telefono = @Telefono,
+                            Email = @Email, UsuarioSistema = @UsuarioSistema, 
+                            Contrasenia = @Contrasenia, IdPerfil = @IdPerfil
+                        WHERE IdUsuario = @IdUsuario";
 
                 SqlCommand comando = new SqlCommand(query, conexion);
                 comando.CommandTimeout = 30;
@@ -83,6 +84,7 @@ namespace ConsorApp.Datos
                 comando.Parameters.AddWithValue("@Nombre", usuario.Nombre);
                 comando.Parameters.AddWithValue("@Apellido", usuario.Apellido);
                 comando.Parameters.AddWithValue("@Dni", usuario.Dni);
+                comando.Parameters.AddWithValue("@Telefono", string.IsNullOrWhiteSpace(usuario.Telefono) ? (object)DBNull.Value : usuario.Telefono);
                 comando.Parameters.AddWithValue("@Email", usuario.Email);
                 comando.Parameters.AddWithValue("@UsuarioSistema", usuario.UsuarioSistema);
                 comando.Parameters.AddWithValue("@Contrasenia", usuario.Contrasenia);

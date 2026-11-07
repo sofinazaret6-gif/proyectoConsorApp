@@ -163,6 +163,28 @@
                     <TextBlock x:Name="TxtTituloSeccion" Text="Panel Principal" FontSize="18" FontWeight="Bold" Foreground="{StaticResource ColorGrisOscuro}"/>
 
                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                        <!-- Botón de ayuda: solo visible para el Administrador -->
+                        <Button x:Name="BtnAyuda"
+            Content="?"
+            Width="32" Height="32"
+            Margin="0,0,15,0"
+            FontSize="16" FontWeight="Bold"
+            Foreground="White"
+            Background="{StaticResource ColorTaupeBronce}"
+            BorderThickness="0"
+            Cursor="Hand"
+            ToolTip="Ayuda: abrir el manual de usuario"
+            VerticalAlignment="Center"
+            Visibility="Collapsed"
+            Click="BtnAyuda_Click">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="16">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
                         <StackPanel VerticalAlignment="Center" Margin="0,0,10,0">
                             <TextBlock x:Name="TxtNombreUsuario" Text="Nombre Usuario" FontWeight="SemiBold" HorizontalAlignment="Right" Foreground="{StaticResource ColorGrisOscuro}"/>
                             <TextBlock x:Name="TxtRolUsuario" Text="Rol / Perfil" FontSize="11" Foreground="#888888" HorizontalAlignment="Right"/>

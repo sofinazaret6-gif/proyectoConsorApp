@@ -30,4 +30,14 @@
     <ProjectReference Include="..\ConsorApp.Negocio\ConsorApp.Negocio.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Ayuda\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Ayuda\MANUAL_DE_USUARIO.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -28,7 +28,7 @@
             <TextBlock Text="Respaldos de base de datos"
                        FontSize="22" FontWeight="Bold"
                        Foreground="{StaticResource BrushPrimario}"/>
-            <TextBlock Text="Genera, verifica y resguarda copias de seguridad de la base de datos del consorcio"
+            <TextBlock Text="Genera y verifica copias de seguridad de la base de datos del consorcio"
                        Foreground="{StaticResource BrushTextoSuave}" Margin="0,2,0,0"/>
         </StackPanel>
 

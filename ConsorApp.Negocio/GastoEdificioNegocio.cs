@@ -63,12 +63,5 @@ namespace ConsorApp.Negocio
             _datos.InsertarGasto(gasto);
         }
 
-        public void AnularGasto(int idGasto)
-        {
-            if (idGasto <= 0)
-                throw new Exception("El gasto seleccionado no es válido.");
-
-            _datos.AnularGasto(idGasto);
-        }
     }
 }

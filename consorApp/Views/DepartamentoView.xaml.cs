@@ -127,18 +127,14 @@ namespace consorApp.Views
                 TxtPiso.Text = row["Piso"].ToString();
                 TxtUnidad.Text = row["Unidad"].ToString();
 
-                // Intentamos buscar si la fila tiene el IdPropietario asociado
-                if (row.Row.Table.Columns.Contains("IdPropietario") && row["IdPropietario"] != DBNull.Value)
+                // El desplegable trabaja con IdUsuario, no con el Id de la tabla Propietario
+                if (row.Row.Table.Columns.Contains("IdUsuarioPropietario") && row["IdUsuarioPropietario"] != DBNull.Value)
                 {
-                    CmbPropietario.SelectedValue = row["IdPropietario"];
-                }
-                else if (row.Row.Table.Columns.Contains("IdUsuarioPropietario") && row["IdUsuarioPropietario"] != DBNull.Value)
-                {
-                    CmbPropietario.SelectedValue = row["IdUsuarioPropietario"];
+                    CmbPropietario.SelectedValue = Convert.ToInt32(row["IdUsuarioPropietario"]);
                 }
                 else
                 {
-                    // Si no tiene propietario, seleccionamos el ítem vacío (índice 0)
+                    // Sin propietario: seleccionamos el ítem vacío (índice 0)
                     CmbPropietario.SelectedIndex = 0;
                 }
             }

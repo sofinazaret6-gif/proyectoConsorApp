@@ -4,6 +4,8 @@ using ConsorApp.Negocio; // <-- 1. Asegúrate de tener este using para acceder a
 using ConsorApp.Views;
 using ConsorApp.Vistas;
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 
 namespace consorApp.Views
@@ -80,6 +82,7 @@ namespace consorApp.Views
 
                 BtnReportesAdmin.Visibility = Visibility.Visible;
                 BtnRespaldos.Visibility = Visibility.Visible;
+                BtnAyuda.Visibility = Visibility.Visible;
                 return;
             }
             // 2. ENCARGADO / OPERARIO
@@ -219,6 +222,29 @@ namespace consorApp.Views
         {
             VentanaRespaldos ventanaRespaldos = new VentanaRespaldos { Owner = this };
             ventanaRespaldos.ShowDialog();
+        }
+
+        private void BtnAyuda_Click(object sender, RoutedEventArgs e)
+        {
+            string ruta = Path.Combine(AppContext.BaseDirectory, "Ayuda", "MANUAL_DE_USUARIO.pdf");
+
+            if (!File.Exists(ruta))
+            {
+                MessageBox.Show("No se encontró el manual de usuario en:\n" + ruta,
+                                "Ayuda", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                // UseShellExecute = true abre el PDF con el lector predeterminado de Windows
+                Process.Start(new ProcessStartInfo(ruta) { UseShellExecute = true });
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("No se pudo abrir el manual. Verificá que haya un lector de PDF instalado.",
+                                "Ayuda", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
