@@ -28,6 +28,8 @@ namespace ConsorApp.Vistas
         {
             await EjecutarAsync("Creando y verificando el respaldo...", async () =>
             {
+                /*await espera mientras se realiza el backup, espera que termine la operación.
+                 Cuando termina, guarda el resultado en la variable nombre.*/
                 string nombre = await _servicio.HacerBackupAsync();
                 return $"Respaldo creado y verificado: {nombre}";
             });

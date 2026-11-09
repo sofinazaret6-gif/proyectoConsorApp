@@ -14,6 +14,10 @@ namespace consorApp.Views
 {
     public partial class LiquidacionExpensasView : Window
     {
+        // ============================================================
+        // 1. CAMPOS Y CONSTRUCTOR
+        // ============================================================
+
         private readonly ExpensasNegocio _expensaNegocio;
         private readonly HistorialExpensaNegocio _historialNegocio;
         private readonly ConceptoGastoNegocio _conceptoGastoNegocio =
@@ -52,7 +56,245 @@ namespace consorApp.Views
 
 
         // ============================================================
-        // EXPENSAS
+        // 2. MÉTODOS AUXILIARES
+        // ============================================================
+
+        // Acepta "9/2026" o "09/2026" y siempre devuelve "09/2026".
+        // Devuelve null si el texto no es un período válido.
+        private static string? NormalizarPeriodo(string? texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto)) return null;
+
+            if (DateTime.TryParseExact(
+                    texto.Trim(),
+                    new[] { "M/yyyy", "MM/yyyy" },
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out DateTime fecha))
+            {
+                return fecha.ToString("MM/yyyy", CultureInfo.InvariantCulture);
+            }
+
+            return null;
+        }
+
+        // Saca los caracteres inválidos para nombres de archivo.
+        private static string LimpiarNombreArchivo(string nombre) =>
+            string.Concat(nombre.Split(Path.GetInvalidFileNameChars()));
+
+
+        // ============================================================
+        // 3. REGISTRAR GASTOS
+        // ============================================================
+
+        private void CargarConceptosGasto()
+        {
+            try
+            {
+                var conceptos = _conceptoGastoNegocio.ObtenerConceptos().ToList();
+
+                CmbConceptoGasto.ItemsSource = conceptos;
+
+                var conceptosFiltro = new List<conceptoGasto>
+                {
+                    new conceptoGasto { id_conceptoGasto = 0, nombreConcepto = "Todos los conceptos" }
+                };
+                conceptosFiltro.AddRange(conceptos);
+
+                CmbFiltroConcepto.ItemsSource = conceptosFiltro;
+                CmbFiltroConcepto.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "No se pudieron cargar los conceptos de gasto.\n\n" + ex.Message,
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private int ObtenerIdEdificio()
+        {
+            EdificioNegocio edificioNegocio = new EdificioNegocio();
+
+            EDIFICIO edificio = edificioNegocio.ObtenerUnicoEdificio();
+
+            if (edificio == null || edificio.id_edificio <= 0)
+            {
+                throw new Exception("No hay un edificio registrado en la base de datos.");
+            }
+
+            return edificio.id_edificio;
+        }
+
+        private void BtnGuardarGasto_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (CmbConceptoGasto.SelectedItem == null)
+                {
+                    MessageBox.Show(
+                        "Seleccione un concepto de gasto.",
+                        "Atención",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+
+                    return;
+                }
+
+                if (!decimal.TryParse(TxtMontoGasto.Text.Trim(), out decimal monto)
+                    || monto <= 0)
+                {
+                    MessageBox.Show(
+                        "Ingrese un monto válido y mayor a cero.",
+                        "Atención",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+
+                    return;
+                }
+
+                string? periodo = NormalizarPeriodo(TxtPeriodoGasto.Text);
+
+                if (periodo == null)
+                {
+                    MessageBox.Show("Ingrese el período con formato MM/aaaa. Ejemplo: 10/2026.",
+                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (_expensaNegocio.ObtenerPorPeriodo(periodo) != null)
+                {
+                    MessageBox.Show(
+                        $"El período {periodo} ya fue liquidado. No se pueden agregar más gastos a un período cerrado.",
+                        "Período liquidado", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                conceptoGasto concepto =
+                    (conceptoGasto)CmbConceptoGasto.SelectedItem;
+
+                int idEdificio = ObtenerIdEdificio();
+
+                GastoEdificio gasto = new GastoEdificio
+                {
+                    id_Edificio = idEdificio,
+                    Id_conceptoGasto = concepto.id_conceptoGasto,
+                    descripcion = TxtDescripcionGasto.Text.Trim(),
+                    monto = monto,
+                    periodo = periodo,
+                    fecha = DpFechaGasto.SelectedDate ?? DateTime.Now,
+                    estado = "ACTIVO"
+                };
+
+                _gastoEdificioNegocio.GuardarGasto(gasto);
+
+                MessageBox.Show(
+                    "El gasto fue registrado correctamente.",
+                    "Éxito",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                TxtDescripcionGasto.Clear();
+                TxtMontoGasto.Clear();
+
+                ActualizarGrillaGastos();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private void BtnNuevoConcepto_Click(object sender, RoutedEventArgs e)
+        {
+            NuevoConceptoGastoView ventana =
+                new NuevoConceptoGastoView();
+
+            ventana.Owner = this;
+
+            bool? resultado = ventana.ShowDialog();
+
+            if (resultado == true)
+            {
+                CargarConceptosGasto();
+            }
+        }
+
+        private void ActualizarGrillaGastos()
+        {
+            try
+            {
+                IEnumerable<GastoEdificio> gastos = _gastoEdificioNegocio.ObtenerGastos();
+
+                string textoPeriodo = TxtFiltroPeriodoGasto.Text.Trim();
+                if (!string.IsNullOrWhiteSpace(textoPeriodo))
+                {
+                    string? periodo = NormalizarPeriodo(textoPeriodo);
+                    if (periodo == null)
+                    {
+                        MessageBox.Show("El período debe tener el formato MM/aaaa. Ejemplo: 10/2026.",
+                            "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                    gastos = gastos.Where(g => g.periodo == periodo);
+                }
+
+                if (CmbFiltroConcepto.SelectedItem is conceptoGasto concepto
+                    && concepto.id_conceptoGasto != 0)
+                {
+                    gastos = gastos.Where(g => g.Id_conceptoGasto == concepto.id_conceptoGasto);
+                }
+
+                DateTime? desde = DpFiltroDesde.SelectedDate;
+                DateTime? hasta = DpFiltroHasta.SelectedDate;
+
+                if (desde.HasValue && hasta.HasValue && desde > hasta)
+                {
+                    MessageBox.Show("La fecha 'Desde' no puede ser posterior a 'Hasta'.",
+                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (desde.HasValue)
+                    gastos = gastos.Where(g => g.fecha.Date >= desde.Value.Date);
+
+                if (hasta.HasValue)
+                    gastos = gastos.Where(g => g.fecha.Date <= hasta.Value.Date);
+
+                var lista = gastos.ToList();
+
+                DgGastos.ItemsSource = lista;
+                LblTotalGastos.Text = lista.Sum(g => g.monto).ToString("C2");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudieron cargar los gastos.\n\n" + ex.Message,
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void BtnFiltrarGastos_Click(object sender, RoutedEventArgs e)
+        {
+            ActualizarGrillaGastos();
+        }
+
+        private void BtnLimpiarFiltrosGastos_Click(object sender, RoutedEventArgs e)
+        {
+            TxtFiltroPeriodoGasto.Clear();
+            CmbFiltroConcepto.SelectedIndex = 0;
+            DpFiltroDesde.SelectedDate = null;
+            DpFiltroHasta.SelectedDate = null;
+
+            ActualizarGrillaGastos();
+        }
+
+
+        // ============================================================
+        // 4. LIQUIDAR EXPENSAS
         // ============================================================
 
         private void CargarExpensas()
@@ -74,10 +316,13 @@ namespace consorApp.Views
             }
         }
 
+        // ------------------------------------------------------------
+        // Calcular (vista previa: NO guarda nada)
+        // ------------------------------------------------------------
 
         private void BtnCalcular_Click(
-      object sender,
-      RoutedEventArgs e)
+            object sender,
+            RoutedEventArgs e)
         {
             try
             {
@@ -181,14 +426,13 @@ namespace consorApp.Views
             }
         }
 
-
-        // ============================================================
-        // GUARDAR LIQUIDACIÓN
-        // ============================================================
+        // ------------------------------------------------------------
+        // Guardar liquidación (recalcula desde la base)
+        // ------------------------------------------------------------
 
         private void BtnGuardarLiquidacion_Click(
-      object sender,
-      RoutedEventArgs e)
+            object sender,
+            RoutedEventArgs e)
         {
             try
             {
@@ -382,8 +626,9 @@ namespace consorApp.Views
             }
         }
 
+
         // ============================================================
-        // DETALLE DE EXPENSA
+        // 5. DETALLE DE EXPENSA
         // ============================================================
 
         private void BtnBuscarDetalle_Click(
@@ -439,25 +684,77 @@ namespace consorApp.Views
                     MessageBoxImage.Error);
             }
         }
-        private static string? NormalizarPeriodo(string? texto)
-        {
-            if (string.IsNullOrWhiteSpace(texto)) return null;
 
-            if (DateTime.TryParseExact(
-                    texto.Trim(),
-                    new[] { "M/yyyy", "MM/yyyy" },
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.None,
-                    out DateTime fecha))
-            {
-                return fecha.ToString("MM/yyyy", CultureInfo.InvariantCulture);
-            }
-
-            return null;
-        }
 
         // ============================================================
-        // EXPORTAR PDF
+        // 6. REGISTRAR PAGO (lo hace el encargado)
+        // ============================================================
+
+        private void DgDetalles_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DgDetalles.SelectedItem is not Detalle_Expensa detalle)
+            {
+                BtnGuardarPago.IsEnabled = false;
+                LblPagoSeleccion.Text = "Registrar pago: seleccioná un departamento de la tabla";
+                return;
+            }
+
+            BtnGuardarPago.IsEnabled = true;
+
+            LblPagoSeleccion.Text =
+                $"Registrar pago - Piso {detalle.Departamento?.Piso} Unidad {detalle.Departamento?.Unidad}";
+
+            bool pagado = string.Equals(detalle.EstadoPago, "Pagado", StringComparison.OrdinalIgnoreCase);
+
+            CmbEstadoPago.SelectedIndex = pagado ? 1 : 0;
+            DpFechaPago.SelectedDate = detalle.FechaPago ?? DateTime.Today;
+            CmbMetodoPago.Text = detalle.MetodoPago ?? string.Empty;
+        }
+
+        private void BtnGuardarPago_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_expensaActual == null || DgDetalles.SelectedItem is not Detalle_Expensa detalle)
+                {
+                    MessageBox.Show("Seleccioná un departamento de la tabla.",
+                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                string estado =
+                    (CmbEstadoPago.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Pendiente";
+
+                _expensaNegocio.RegistrarPago(
+                    detalle.Id_DetalleExpensa,
+                    estado,
+                    DpFechaPago.SelectedDate,
+                    CmbMetodoPago.Text.Trim());
+
+                MessageBox.Show("El pago fue actualizado correctamente.",
+                    "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                int idSeleccionado = detalle.Id_DetalleExpensa;
+
+                List<Detalle_Expensa> detalles =
+                    _expensaNegocio.ObtenerDetalles(_expensaActual.Id_Expensa);
+
+                DgDetalles.ItemsSource = detalles;
+                DgDetalles.SelectedItem =
+                    detalles.FirstOrDefault(d => d.Id_DetalleExpensa == idSeleccionado);
+
+                CargarHistorial();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message,
+                    "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+
+        // ============================================================
+        // 7. EXPORTAR PDF
         // ============================================================
 
         private List<HistorialExpensa> ObtenerReporteDeExpensaActual()
@@ -468,9 +765,6 @@ namespace consorApp.Views
                 .ThenBy(h => h.Unidad)
                 .ToList();
         }
-
-        private static string LimpiarNombreArchivo(string nombre) =>
-            string.Concat(nombre.Split(Path.GetInvalidFileNameChars()));
 
         private void BtnExportarPdfSeleccionado_Click(object sender, RoutedEventArgs e)
         {
@@ -629,74 +923,9 @@ namespace consorApp.Views
             }
         }
 
-        // ============================================================
-        // REGISTRAR PAGO (lo hace el encargado)
-        // ============================================================
-
-        private void DgDetalles_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (DgDetalles.SelectedItem is not Detalle_Expensa detalle)
-            {
-                BtnGuardarPago.IsEnabled = false;
-                LblPagoSeleccion.Text = "Registrar pago: seleccioná un departamento de la tabla";
-                return;
-            }
-
-            BtnGuardarPago.IsEnabled = true;
-
-            LblPagoSeleccion.Text =
-                $"Registrar pago - Piso {detalle.Departamento?.Piso} Unidad {detalle.Departamento?.Unidad}";
-
-            bool pagado = string.Equals(detalle.EstadoPago, "Pagado", StringComparison.OrdinalIgnoreCase);
-
-            CmbEstadoPago.SelectedIndex = pagado ? 1 : 0;
-            DpFechaPago.SelectedDate = detalle.FechaPago ?? DateTime.Today;
-            CmbMetodoPago.Text = detalle.MetodoPago ?? string.Empty;
-        }
-
-        private void BtnGuardarPago_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (_expensaActual == null || DgDetalles.SelectedItem is not Detalle_Expensa detalle)
-                {
-                    MessageBox.Show("Seleccioná un departamento de la tabla.",
-                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                string estado =
-                    (CmbEstadoPago.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Pendiente";
-
-                _expensaNegocio.RegistrarPago(
-                    detalle.Id_DetalleExpensa,
-                    estado,
-                    DpFechaPago.SelectedDate,
-                    CmbMetodoPago.Text.Trim());
-
-                MessageBox.Show("El pago fue actualizado correctamente.",
-                    "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                int idSeleccionado = detalle.Id_DetalleExpensa;
-
-                List<Detalle_Expensa> detalles =
-                    _expensaNegocio.ObtenerDetalles(_expensaActual.Id_Expensa);
-
-                DgDetalles.ItemsSource = detalles;
-                DgDetalles.SelectedItem =
-                    detalles.FirstOrDefault(d => d.Id_DetalleExpensa == idSeleccionado);
-
-                CargarHistorial();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message,
-                    "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
 
         // ============================================================
-        // HISTORIAL (Filtrado por Unidad y Fechas)
+        // 8. HISTORIAL (filtrado por unidad y fechas)
         // ============================================================
 
         private void CargarHistorial()
@@ -717,20 +946,6 @@ namespace consorApp.Views
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
-        }
-
-        private int ObtenerIdEdificio()
-        {
-            EdificioNegocio edificioNegocio = new EdificioNegocio();
-
-            EDIFICIO edificio = edificioNegocio.ObtenerUnicoEdificio();
-
-            if (edificio == null || edificio.id_edificio <= 0)
-            {
-                throw new Exception("No hay un edificio registrado en la base de datos.");
-            }
-
-            return edificio.id_edificio;
         }
 
         private void BtnFiltrarHistorial_Click(object sender, RoutedEventArgs e)
@@ -761,201 +976,6 @@ namespace consorApp.Views
             DpFiltroHistorialHasta.SelectedDate = null;
 
             CargarHistorial();
-        }
-
-        // ============================================================
-        // GASTOS
-        // ============================================================
-
-        private void CargarConceptosGasto()
-        {
-            try
-            {
-                var conceptos = _conceptoGastoNegocio.ObtenerConceptos().ToList();
-
-                CmbConceptoGasto.ItemsSource = conceptos;
-
-                var conceptosFiltro = new List<conceptoGasto>
-                {
-                    new conceptoGasto { id_conceptoGasto = 0, nombreConcepto = "Todos los conceptos" }
-                };
-                conceptosFiltro.AddRange(conceptos);
-
-                CmbFiltroConcepto.ItemsSource = conceptosFiltro;
-                CmbFiltroConcepto.SelectedIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    "No se pudieron cargar los conceptos de gasto.\n\n" + ex.Message,
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void BtnGuardarGasto_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (CmbConceptoGasto.SelectedItem == null)
-                {
-                    MessageBox.Show(
-                        "Seleccione un concepto de gasto.",
-                        "Atención",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-
-                    return;
-                }
-
-                if (!decimal.TryParse(TxtMontoGasto.Text.Trim(), out decimal monto)
-                    || monto <= 0)
-                {
-                    MessageBox.Show(
-                        "Ingrese un monto válido y mayor a cero.",
-                        "Atención",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-
-                    return;
-                }
-
-                string? periodo = NormalizarPeriodo(TxtPeriodoGasto.Text);
-
-                if (periodo == null)
-                {
-                    MessageBox.Show("Ingrese el período con formato MM/aaaa. Ejemplo: 10/2026.",
-                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                if (_expensaNegocio.ObtenerPorPeriodo(periodo) != null)
-                {
-                    MessageBox.Show(
-                        $"El período {periodo} ya fue liquidado. No se pueden agregar más gastos a un período cerrado.",
-                        "Período liquidado", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                conceptoGasto concepto =
-                    (conceptoGasto)CmbConceptoGasto.SelectedItem;
-
-                int idEdificio = ObtenerIdEdificio();
-
-                GastoEdificio gasto = new GastoEdificio
-                {
-                    id_Edificio = idEdificio,
-                    Id_conceptoGasto = concepto.id_conceptoGasto,
-                    descripcion = TxtDescripcionGasto.Text.Trim(),
-                    monto = monto,
-                    periodo = periodo,
-                    fecha = DpFechaGasto.SelectedDate ?? DateTime.Now,
-                    estado = "ACTIVO"
-                };
-
-                _gastoEdificioNegocio.GuardarGasto(gasto);
-
-                MessageBox.Show(
-                    "El gasto fue registrado correctamente.",
-                    "Éxito",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-
-                TxtDescripcionGasto.Clear();
-                TxtMontoGasto.Clear();
-
-                ActualizarGrillaGastos();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    ex.Message,
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
-        }
-
-        private void BtnNuevoConcepto_Click(object sender, RoutedEventArgs e)
-        {
-            NuevoConceptoGastoView ventana =
-                new NuevoConceptoGastoView();
-
-            ventana.Owner = this;
-
-            bool? resultado = ventana.ShowDialog();
-
-            if (resultado == true)
-            {
-                CargarConceptosGasto();
-            }
-        }
-
-        private void ActualizarGrillaGastos()
-        {
-            try
-            {
-                IEnumerable<GastoEdificio> gastos = _gastoEdificioNegocio.ObtenerGastos();
-
-                string textoPeriodo = TxtFiltroPeriodoGasto.Text.Trim();
-                if (!string.IsNullOrWhiteSpace(textoPeriodo))
-                {
-                    string? periodo = NormalizarPeriodo(textoPeriodo);
-                    if (periodo == null)
-                    {
-                        MessageBox.Show("El período debe tener el formato MM/aaaa. Ejemplo: 10/2026.",
-                            "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-                    gastos = gastos.Where(g => g.periodo == periodo);
-                }
-
-                if (CmbFiltroConcepto.SelectedItem is conceptoGasto concepto
-                    && concepto.id_conceptoGasto != 0)
-                {
-                    gastos = gastos.Where(g => g.Id_conceptoGasto == concepto.id_conceptoGasto);
-                }
-
-                DateTime? desde = DpFiltroDesde.SelectedDate;
-                DateTime? hasta = DpFiltroHasta.SelectedDate;
-
-                if (desde.HasValue && hasta.HasValue && desde > hasta)
-                {
-                    MessageBox.Show("La fecha 'Desde' no puede ser posterior a 'Hasta'.",
-                        "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                if (desde.HasValue)
-                    gastos = gastos.Where(g => g.fecha.Date >= desde.Value.Date);
-
-                if (hasta.HasValue)
-                    gastos = gastos.Where(g => g.fecha.Date <= hasta.Value.Date);
-
-                var lista = gastos.ToList();
-
-                DgGastos.ItemsSource = lista;
-                LblTotalGastos.Text = lista.Sum(g => g.monto).ToString("C2");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("No se pudieron cargar los gastos.\n\n" + ex.Message,
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void BtnFiltrarGastos_Click(object sender, RoutedEventArgs e)
-        {
-            ActualizarGrillaGastos();
-        }
-
-        private void BtnLimpiarFiltrosGastos_Click(object sender, RoutedEventArgs e)
-        {
-            TxtFiltroPeriodoGasto.Clear();
-            CmbFiltroConcepto.SelectedIndex = 0;
-            DpFiltroDesde.SelectedDate = null;
-            DpFiltroHasta.SelectedDate = null;
-
-            ActualizarGrillaGastos();
         }
     }
 }
