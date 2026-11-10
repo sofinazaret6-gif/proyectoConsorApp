@@ -140,13 +140,19 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <!-- Pie del Menú (Cerrar Sesión) -->
+
+            <!-- Pie del Menú (Manual de Usuario y Cerrar Sesión) -->
             <Border Grid.Row="2" BorderBrush="#3D474C" BorderThickness="0,1,0,0">
-                <Button x:Name="BtnCerrarSesion"
-                        Content="🚪  Cerrar Sesión"
-                        Style="{StaticResource EstiloBotonSalir}"
-                        VerticalAlignment="Center"
-                        Click="BtnCerrarSesion_Click"/>
+                <StackPanel VerticalAlignment="Center">
+                    <Button x:Name="BtnManualUsuario"
+                            Content="📖  Manual de Usuario"
+                            Style="{StaticResource EstiloBotonMenu}"
+                            Click="BtnManualUsuario_Click"/>
+                    <Button x:Name="BtnCerrarSesion"
+                            Content="🚪  Cerrar Sesión"
+                            Style="{StaticResource EstiloBotonSalir}"
+                            Click="BtnCerrarSesion_Click"/>
+                </StackPanel>
             </Border>
         </Grid>
 

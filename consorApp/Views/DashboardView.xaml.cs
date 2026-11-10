@@ -83,6 +83,7 @@ namespace consorApp.Views
                 BtnReportesAdmin.Visibility = Visibility.Visible;
                 BtnRespaldos.Visibility = Visibility.Visible;
                 BtnAyuda.Visibility = Visibility.Visible;
+                BtnManualUsuario.Visibility = Visibility.Collapsed;
                 return;
             }
             // 2. ENCARGADO / OPERARIO
@@ -103,6 +104,7 @@ namespace consorApp.Views
 
                 BtnReportesAdmin.Visibility = Visibility.Collapsed;
                 BtnRespaldos.Visibility = Visibility.Collapsed;
+                BtnManualUsuario.Visibility = Visibility.Collapsed;
             }
             // 3. PROPIETARIO / INQUILINO
             else if (perfil.Contains("propietario") || perfil.Contains("inquilino"))
@@ -122,6 +124,7 @@ namespace consorApp.Views
 
                 BtnReportesAdmin.Visibility = Visibility.Collapsed;
                 BtnRespaldos.Visibility = Visibility.Collapsed;
+                BtnManualUsuario.Visibility = Visibility.Visible;
             }
         }
 
@@ -222,6 +225,39 @@ namespace consorApp.Views
         {
             VentanaRespaldos ventanaRespaldos = new VentanaRespaldos { Owner = this };
             ventanaRespaldos.ShowDialog();
+        }
+        private void BtnManualUsuario_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string basePath = AppDomain.CurrentDomain.BaseDirectory;
+
+                // Apunta al nuevo manual específico para propietarios e inquilinos dentro de la carpeta Ayuda
+                string pdfPath = Path.Combine(basePath, "Ayuda", "MANUAL_DE_USUARIO_Propietarios_Inquilinos.pdf");
+
+                if (File.Exists(pdfPath))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = pdfPath,
+                        UseShellExecute = true
+                    });
+                }
+                else
+                {
+                    MessageBox.Show($"No se encontró el archivo en la ruta: {pdfPath}",
+                                    "Archivo no encontrado",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocurrió un error al intentar abrir el manual: {ex.Message}",
+                                "Error",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Error);
+            }
         }
 
         private void BtnAyuda_Click(object sender, RoutedEventArgs e)

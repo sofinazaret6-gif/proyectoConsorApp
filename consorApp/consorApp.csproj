@@ -31,11 +31,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Ayuda\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="Ayuda\MANUAL_DE_USUARIO.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Ayuda\MANUAL_DE_USUARIO_Propietarios_Inquilinos.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
