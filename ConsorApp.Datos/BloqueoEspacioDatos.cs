@@ -62,21 +62,6 @@ namespace ConsorApp.Datos
             }
         }
 
-        /// <summary>
-        /// Elimina un bloqueo específico si el mantenimiento finalizó antes de lo previsto (Desbloquear).
-        /// </summary>
-        public void EliminarBloqueo(int idBloqueo)
-        {
-            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
-            {
-                conexion.Open();
-
-                string query = "DELETE FROM BloqueoEspacio WHERE id_Bloqueo = @IdBloqueo";
-                SqlCommand comando = new SqlCommand(query, conexion);
-                comando.Parameters.AddWithValue("@IdBloqueo", idBloqueo);
-
-                comando.ExecuteNonQuery();
-            }
-        }
+       
     }
 }

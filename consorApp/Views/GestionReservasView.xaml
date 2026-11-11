@@ -121,9 +121,7 @@
                             </DataGrid.Columns>
                         </DataGrid>
 
-                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button x:Name="BtnEliminarBloqueo" Content="Remover Bloqueo Seleccionado" Width="200" Height="30" Background="#C9302C" Foreground="White" FontWeight="Bold" Cursor="Hand" Click="BtnEliminarBloqueo_Click"/>
-                        </StackPanel>
+                        
                     </Grid>
                 </Grid>
             </TabItem>

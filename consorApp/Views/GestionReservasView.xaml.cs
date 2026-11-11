@@ -250,38 +250,6 @@ namespace ConsorApp.Views
             }
         }
 
-        private void BtnEliminarBloqueo_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (DgBloqueosAdmin.SelectedItem == null)
-                {
-                    MessageBox.Show("Debe seleccionar un bloqueo de la tabla para eliminar.", "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                DataRowView fila = (DataRowView)DgBloqueosAdmin.SelectedItem;
-                int idBloqueo = Convert.ToInt32(fila["IdBloqueo"]);
-
-                MessageBoxResult resultado = MessageBox.Show(
-                    "¿Está seguro de que desea eliminar este bloqueo de mantenimiento?",
-                    "Confirmación",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-
-                if (resultado == MessageBoxResult.Yes)
-                {
-                    _bloqueoNegocio.EliminarBloqueo(idBloqueo);
-                    MessageBox.Show("El bloqueo fue eliminado correctamente.", "Operación Exitosa", MessageBoxButton.OK, MessageBoxImage.Information);
-                    LimpiarFormularioBloqueo();
-                    CargarBloqueosReales();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al eliminar el bloqueo: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
 
         private void BtnCancelarReserva_Click(object sender, RoutedEventArgs e)
         {
